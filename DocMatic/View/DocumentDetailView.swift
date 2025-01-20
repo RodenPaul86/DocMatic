@@ -8,6 +8,7 @@
 import SwiftUI
 import PDFKit
 import LocalAuthentication
+import TipKit
 
 struct DocumentDetailView: View {
     var document: Document
@@ -31,6 +32,9 @@ struct DocumentDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scene
+    
+    let allinOne = AllinOne()
+    let closingTheView = ClosingTheView()
     
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
@@ -103,17 +107,26 @@ struct DocumentDetailView: View {
             .overlay(alignment: .leading) {
                 Menu {
                     /// Share Document
-                    Button(action: { shareDocument() }) {
+                    Button(action: {
+                        shareDocument()
+                        allinOne.invalidate(reason: .actionPerformed)
+                    }) {
                         Label("Share", systemImage: "square.and.arrow.up")
                     }
                     
                     /// Save Document
-                    Button(action: { createAndShareDocument() }) {
+                    Button(action: {
+                        createAndShareDocument()
+                        allinOne.invalidate(reason: .actionPerformed)
+                    }) {
                         Label("Save to Files", systemImage: "folder")
                     }
                     
                     /// Print File
-                    Button(action: { printDocument() }) {
+                    Button(action: {
+                        printDocument()
+                        allinOne.invalidate(reason: .actionPerformed)
+                    }) {
                         Label("Print", systemImage: "printer")
                     }
                     
@@ -121,6 +134,7 @@ struct DocumentDetailView: View {
                     Button(action: {
                         newFileName = document.name // Pre-fill the current name
                         isRenaming = true
+                        allinOne.invalidate(reason: .actionPerformed)
                     }) {
                         Label("Rename", systemImage: "pencil")
                     }
@@ -130,12 +144,16 @@ struct DocumentDetailView: View {
                         document.isLocked.toggle()
                         isUnlocked = !document.isLocked
                         try? context.save()
+                        allinOne.invalidate(reason: .actionPerformed)
                     }) {
                         Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
                     }
                     
                     /// Delete File
-                    Button(role: .destructive) { deleteAlert = true } label: {
+                    Button(role: .destructive) {
+                        deleteAlert = true
+                        allinOne.invalidate(reason: .actionPerformed)
+                    } label: {
                         Label("Delete", systemImage: "trash")
                     }
                     
@@ -144,6 +162,7 @@ struct DocumentDetailView: View {
                         .font(.title3)
                         .foregroundStyle(.purple.gradient)
                 }
+                .popoverTip(allinOne)
                 .alert("Are you sure you want to delete this document?", isPresented: $deleteAlert) {
                     Button("Delete", role: .destructive) {
                         dismiss()
@@ -210,6 +229,12 @@ struct DocumentDetailView: View {
                 Rectangle()
                     .fill(.ultraThinMaterial)
                     .ignoresSafeArea()
+                
+                VStack(alignment: .center, spacing: 6) {
+                    TipView(closingTheView)
+                        .padding()
+                    Spacer()
+                }
                 
                 VStack(spacing: 6) {
                     if let isLockAvailable, !isLockAvailable {

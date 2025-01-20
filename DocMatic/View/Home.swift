@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import VisionKit
+import TipKit
 
 struct Home: View {
     /// View Properties
@@ -43,6 +44,9 @@ struct Home: View {
                         } label: {
                             DocumentCardView(document: document, animationID: animationID)
                                 .foregroundStyle(Color.primary)
+                        }
+                        .onAppear {
+                            Task { await ClosingTheView.setClosingEvent.donate()}
                         }
                     }
                 }

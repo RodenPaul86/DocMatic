@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 @main
 struct DocMaticApp: App {
@@ -15,6 +16,12 @@ struct DocMaticApp: App {
         WindowGroup {
             ContentView()
                 .modelContainer(for: Document.self)
+                .task {
+                    //try? Tips.resetDatastore()
+                    try? Tips.configure([
+                        .datastoreLocation(.applicationDefault)
+                    ])
+                }
         }
     }
 }

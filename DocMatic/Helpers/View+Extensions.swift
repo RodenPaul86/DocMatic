@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 /// Useful View Extensions
 extension View {
@@ -42,5 +43,38 @@ extension View {
     
     var snappy: Animation {
         .snappy(duration: 0.25, extraBounce: 0)
+    }
+}
+
+/// TipKit Views
+struct AllinOne: Tip {
+    var title: Text {
+        Text("What’s Next?")
+    }
+    var message: Text? {
+        Text("Select from options like editing, sharing, locking, or deleting your document.")
+    }
+    var image: Image? {
+        Image(systemName: "document.badge.ellipsis")
+    }
+}
+
+struct ClosingTheView: Tip {
+    static let setClosingEvent = Event(id: "setClosing")
+    
+    var title: Text {
+        Text("Ready to Leave?")
+    }
+    var message: Text? {
+        Text("Just swipe down to close this screen and get back to work!")
+    }
+    var image: Image? {
+        Image(systemName: "hand.draw")
+    }
+    
+    var rules: [Rule] {
+        #Rule(Self.setClosingEvent) { event in
+            event.donations.count == 1
+        }
     }
 }
