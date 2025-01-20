@@ -18,6 +18,7 @@ struct Home: View {
     @State private var documentName: String = "New Document"
     @State private var askDocumentName: Bool = false
     @State private var isLoading: Bool = false
+    @State private var isSettingsOpen: Bool = false
     @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
     
     /// Environment Values
@@ -68,9 +69,9 @@ struct Home: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Icon tapped!")
-                    }) {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
                         Image(systemName: "gear")
                             .foregroundStyle(.purple.gradient)
                     }
@@ -171,5 +172,7 @@ struct Home: View {
 }
 
 #Preview {
-    ContentView()
+    SchemeHostView {
+        ContentView()
+    }
 }
