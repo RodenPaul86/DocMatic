@@ -78,3 +78,20 @@ struct ClosingTheView: Tip {
         }
     }
 }
+
+struct searchingDocuments: Tip {
+    static let setSearchEvent = Event(id: "searchEvent")
+    
+    var title: Text {
+        Text("Search Your Documents")
+    }
+    var message: Text? {
+        Text("Type a document name to search for your document you are looking for.")
+    }
+    
+    var rules: [Rule] {
+        #Rule(Self.setSearchEvent) { event in
+            event.donations.count == 6
+        }
+    }
+}
