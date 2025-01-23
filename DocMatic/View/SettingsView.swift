@@ -15,8 +15,6 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section(header: Text("General")) {
-                    //settingsRow(iconName: "trash.fill", backgroundColor: .purple, label: "Recently Deleted") { }
-                    
                     buttonRow(iconName: "paintbrush.fill", backgroundColor: .purple, label: "Appearance") {
                         showPickerView.toggle()
                     }
@@ -27,36 +25,16 @@ struct SettingsView: View {
                 }
                 
                 Section {
-                    //settingsRow(iconName: "square.and.arrow.up.fill", backgroundColor: .purple, label: "Share App") { }
+                    navigationRow(iconName: "questionmark.bubble.fill", backgroundColor: .purple, label: "Help & FAQ", destination: AnyView(HelpFAQView()))
                     
-                    navigationRow(iconName: "questionmark.bubble.fill", backgroundColor: .purple, label: "Help & FAQ", destination: AnyView(Text("Help and FAQ View")))
+                    navigationRow(iconName: "info.circle.fill", backgroundColor: .purple, label: "Whats's New", destination: AnyView(whatsNewView()))
                 }
                 
-                Section(header: Text("Legal")) {
+                Section(header: Text("Legal"), footer: Text("Version: 1.0.0")) {
                     navigationRow(iconName: "text.document.fill", backgroundColor: .purple, label: "Terms of Use", destination: AnyView(Text("Terms of Use View")))
                     
                     navigationRow(iconName: "text.document.fill", backgroundColor: .purple, label: "Privacy Policy", destination: AnyView(Text("Privacy Policy View")))
                 }
-                
-                /*
-                Section(header: Text("Integrations")) {
-                    
-                }
-                
-                Section(header: Text("Support")) {
-                    
-                }
-                
-                Section(header: Text("About")) { /// lock.shield.fill
-                    
-                }
-                
-                Section(footer: Text("Resetting the app will permanently etase all settings. This action is irreversible.")) {
-                    settingsRow(iconName: "trash.fill", backgroundColor: .red, label: "Reset all settings") {
-                       
-                    }
-                }
-                 */
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
@@ -101,15 +79,16 @@ struct buttonRow: View {
                 
                 Text(label)
                     .font(.headline)
+                    .foregroundStyle(Color("DynamicTextColor"))
                 
                 Spacer()
                 
                 Image(systemName: "chevron.right")
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
+                    .font(.headline)
+                    .imageScale(.small)
+                    .foregroundColor(Color.init(uiColor: .systemGray3))
             }
         }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 

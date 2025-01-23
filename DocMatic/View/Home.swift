@@ -69,9 +69,7 @@ struct Home: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
-                        SettingsView()
-                    } label: {
+                    NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gear")
                             .foregroundStyle(.purple.gradient)
                     }

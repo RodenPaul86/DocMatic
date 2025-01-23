@@ -1,0 +1,135 @@
+//
+//  HelpFAQView.swift
+//  TaskSync
+//
+//  Created by Paul  on 12/28/24.
+//
+
+import SwiftUI
+
+struct FAQItem: Identifiable {
+    let id = UUID()
+    let question: String
+    let answer: String
+    var isExpanded: Bool = false
+}
+
+// MARK: Data
+struct HelpFAQView: View {
+    @State private var faqItems: [FAQItem] = [
+        FAQItem(question: "How do I scan a document?",
+                answer: "Tap the 'Scan' button on the main screen. Align the document in the camera frame, and the app will automatically detect and capture it. Once scanned, you can edit, save, or share the document."),
+        
+        FAQItem(question: "How do I organize my scanned documents?",
+                answer: "You can organize documents by creating folders. Tap 'New Folder' in the file manager, give it a name, and move your documents into the folder."),
+        
+        FAQItem(question: "How can I sync my documents across devices?",
+                answer: "Make sure you’re signed into the same Apple ID on all your devices and iCloud is enabled. DocMatic will sync your documents automatically when connected to the internet."),
+        
+        FAQItem(question: "Can I edit scanned documents?",
+                answer: "Yes, you can crop, rotate, and adjust the brightness or contrast of your scanned documents directly within the app."),
+        
+        FAQItem(question: "How do I share a scanned document?",
+                answer: "Open the document you want to share, tap the 'Share' button, and choose the desired format (PDF, JPG, etc.). Select your preferred sharing method, such as email, AirDrop, or other apps."),
+        
+        FAQItem(question: "What should I do if my scans aren't syncing?",
+                answer: "Ensure your device is connected to the internet and you’re logged into the correct Apple ID. If the issue persists, try restarting the app or logging out and back in."),
+        
+        FAQItem(question: "Can I password-protect my scanned documents?",
+                answer: "Yes, you can lock sensitive documents with a password or biometric authentication (Touch ID/Face ID). Simply enable the lock option when saving a document."),
+        
+        FAQItem(question: "How do I customize the app’s settings?",
+                answer: "Go to the settings menu to toggle between light and dark mode, change default scan formats, and manage other preferences."),
+        
+        FAQItem(question: "Can I recover deleted scans?",
+                answer: "Deleted scans are moved to the 'Trash' folder for 30 days. You can restore them from there or permanently delete them."),
+        
+        FAQItem(question: "Is my data secure in DocMatic?",
+                answer: "Absolutely. Your scans and data are securely stored in iCloud, accessible only to you through your Apple ID."),
+        
+        FAQItem(question: "How do I request new features?",
+                answer: "We value your feedback! Use the 'Contact Support' option in the settings menu to share your suggestions.")
+    ]
+    
+    // MARK: Main View
+    var body: some View {
+        NavigationStack {
+            VStack {
+                List {
+                    Section(header: Text("Frequently Asked Questions").font(.headline)) {
+                        ForEach($faqItems) { $item in
+                            FAQRow(item: $item)
+                        }
+                    }
+                    Section(header: Text("Need more help?").font(.headline)) {
+                        /*
+                        Button(action: {
+                            print("ChatBot tapped")
+                        }) {
+                            HStack {
+                                Image(systemName: "headset")
+                                Text("Help Desk")
+                                    .font(.headline)
+                            }
+                            .foregroundColor(.blue)
+                        }
+                        */
+                        Button(action: {
+                            contactSupport()
+                        }) {
+                            HStack {
+                                Image(systemName: "envelope")
+                                Text("eMail Support")
+                                    .font(.headline)
+                            }
+                            .foregroundColor(.blue)
+                        }
+                    }
+                }
+                .listStyle(InsetGroupedListStyle())
+                .safeAreaPadding(.bottom, 60)
+            }
+            .navigationTitle("Help & FAQ")
+        }
+    }
+    
+    private func contactSupport() {
+        print("Contact support tapped")
+    }
+}
+
+// MARK: Custom Row
+struct FAQRow: View {
+    @Binding var item: FAQItem
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    item.isExpanded.toggle()
+                }
+            }) {
+                HStack {
+                    Text(item.question)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Spacer()
+                    Image(systemName: item.isExpanded ? "chevron.up" : "chevron.down")
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            if item.isExpanded {
+                Text(item.answer)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 4)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+#Preview {
+    HelpFAQView()
+}
