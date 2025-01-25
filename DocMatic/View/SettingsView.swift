@@ -20,8 +20,6 @@ struct SettingsView: View {
                     }
                     
                     navigationRow(iconName: "app.fill", backgroundColor: .purple, label: "App Icon", destination: AnyView(alternativeIcons()))
-                    
-                    buttonRow(iconName: "square.2.layers.3d.fill", backgroundColor: .purple, label: "Siri Shortcuts") { }
                 }
                 
                 Section {
