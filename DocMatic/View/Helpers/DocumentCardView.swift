@@ -17,9 +17,9 @@ struct DocumentCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             /// Sorting Pages
-            if let firstPage = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex}).first {
-                GeometryReader {
-                    let size = $0.size
+            if let firstPage = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }).first {
+                GeometryReader { geometry in
+                    let size = geometry.size
                     
                     if let downsizedImage {
                         Image(uiImage: downsizedImage)
@@ -55,8 +55,9 @@ struct DocumentCardView: View {
                     }
                 }
                 .frame(height: 150)
-                .clipShape(.rect(cornerRadius: 15))
+                .clipShape(RoundedRectangle(cornerRadius: 15))
                 .matchedTransitionSource(id: document.uniqueViewID, in: animationID)
+                .shadow(radius: 5) // Added shadow for paper effect
             }
             
             Text(document.name)
