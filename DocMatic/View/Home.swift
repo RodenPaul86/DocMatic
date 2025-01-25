@@ -46,7 +46,7 @@ struct Home: View {
                         .font(.title3.italic())
                         .foregroundColor(.gray)
                         .padding()
-
+                    
                 } else {
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach(filteredDocuments) { document in
