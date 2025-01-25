@@ -12,11 +12,11 @@ struct whatsNewView: View {
         Update(
             title: "DocMatic is Here!",
             version: "v1.0.0",
-            date: "January 2025",
+            date: "February 2025",
             description: """
-            We're thrilled to introduce DocMatic, your all-in-one document scanning solution! With this first release, you can scan, organize, and securely store your documents effortlessly. Enjoy seamless syncing across devices, intuitive file management, and robust security features to keep your important files protected. DocMatic is designed to streamline your workflow and simplify document management, wherever you are.
+            We're thrilled to introduce DocMatic, your all-in-one document scanning solution! With this first release, you can scan, organize, and securely store your documents effortlessly. DocMatic is designed to streamline your workflow and simplify document management, wherever you are.
             """,
-            imageName: "exampleImage" // Replace with actual image name
+            imageName: "exampleImage" /// <-  Replace with actual image name
         )
     ]
 
