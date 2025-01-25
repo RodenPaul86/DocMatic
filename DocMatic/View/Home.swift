@@ -40,21 +40,30 @@ struct Home: View {
                 // Use adaptive grid with dynamic number of columns based on device size
                 let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))]
                 
-                LazyVGrid(columns: columns, spacing: 15) {
-                    ForEach(filteredDocuments) { document in
-                        NavigationLink {
-                            DocumentDetailView(document: document)
-                                .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
-                        } label: {
-                            DocumentCardView(document: document, animationID: animationID)
-                                .foregroundStyle(Color.primary)
-                        }
-                        .onAppear {
-                            Task { await ClosingTheView.setClosingEvent.donate() }
+                if filteredDocuments.isEmpty {
+                    // Display a message when there are no documents
+                    Text("No documents available")
+                        .font(.title3.italic())
+                        .foregroundColor(.gray)
+                        .padding()
+
+                } else {
+                    LazyVGrid(columns: columns, spacing: 15) {
+                        ForEach(filteredDocuments) { document in
+                            NavigationLink {
+                                DocumentDetailView(document: document)
+                                    .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
+                            } label: {
+                                DocumentCardView(document: document, animationID: animationID)
+                                    .foregroundStyle(Color.primary)
+                            }
+                            .onAppear {
+                                Task { await ClosingTheView.setClosingEvent.donate() }
+                            }
                         }
                     }
+                    .padding(15)
                 }
-                .padding(15)
             }
             .navigationTitle("My Documents")
             .searchable(text: $searchText, prompt: "Search")
