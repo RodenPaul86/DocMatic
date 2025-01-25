@@ -36,6 +36,8 @@ struct DocumentDetailView: View {
     let allinOne = AllinOne()
     let closingTheView = ClosingTheView()
     
+    @State private var shareButtonFrame: CGRect = .zero
+    
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
             VStack(spacing: 10) {
@@ -105,85 +107,99 @@ struct DocumentDetailView: View {
                 }
             }
             .overlay(alignment: .leading) {
-                Menu {
-                    /// Share Document
-                    Button(action: {
-                        shareDocument()
-                        allinOne.invalidate(reason: .actionPerformed)
-                    }) {
-                        Label("Share", systemImage: "square.and.arrow.up")
-                    }
-                    
-                    /// Save Document
-                    Button(action: {
-                        createAndShareDocument()
-                        allinOne.invalidate(reason: .actionPerformed)
-                    }) {
-                        Label("Save to Files", systemImage: "folder")
-                    }
-                    
-                    /// Print File
-                    Button(action: {
-                        printDocument()
-                        allinOne.invalidate(reason: .actionPerformed)
-                    }) {
-                        Label("Print", systemImage: "printer")
-                    }
-                    
-                    /// Rename File
-                    Button(action: {
-                        newFileName = document.name // Pre-fill the current name
-                        isRenaming = true
-                        allinOne.invalidate(reason: .actionPerformed)
-                    }) {
-                        Label("Rename", systemImage: "pencil")
-                    }
-                    
-                    /// Lock File
-                    Button(action: {
-                        document.isLocked.toggle()
-                        isUnlocked = !document.isLocked
-                        try? context.save()
-                        allinOne.invalidate(reason: .actionPerformed)
-                    }) {
-                        Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
-                    }
-                    
-                    /// Delete File
-                    Button(role: .destructive) {
-                        deleteAlert = true
-                        allinOne.invalidate(reason: .actionPerformed)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }
-                    
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title3)
-                        .foregroundStyle(.purple.gradient)
-                }
-                .popoverTip(allinOne)
-                .alert("Are you sure you want to delete this document?", isPresented: $deleteAlert) {
-                    Button("Delete", role: .destructive) {
-                        dismiss()
-                        Task { @MainActor in
-                            try? await Task.sleep(for: .seconds(0.3))
-                            context.delete(document)
-                            try? context.save()
+                GeometryReader { geometry in
+                    Menu {
+                        /// Share Document
+                        Button(action: {
+                            shareDocument()
+                            allinOne.invalidate(reason: .actionPerformed)
+                        }) {
+                            Label("Share", systemImage: "square.and.arrow.up")
                         }
+                        
+                        /// Save Document
+                        Button(action: {
+                            createAndShareDocument()
+                            allinOne.invalidate(reason: .actionPerformed)
+                        }) {
+                            Label("Save to Files", systemImage: "folder")
+                        }
+                        
+                        /// Print File
+                        Button(action: {
+                            printDocument()
+                            allinOne.invalidate(reason: .actionPerformed)
+                        }) {
+                            Label("Print", systemImage: "printer")
+                        }
+                        
+                        /// Rename File
+                        Button(action: {
+                            newFileName = document.name // Pre-fill the current name
+                            isRenaming = true
+                            allinOne.invalidate(reason: .actionPerformed)
+                        }) {
+                            Label("Rename", systemImage: "pencil")
+                        }
+                        
+                        /// Lock File
+                        Button(action: {
+                            document.isLocked.toggle()
+                            isUnlocked = !document.isLocked
+                            try? context.save()
+                            allinOne.invalidate(reason: .actionPerformed)
+                        }) {
+                            Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
+                        }
+                        
+                        /// Delete File
+                        Button(role: .destructive) {
+                            deleteAlert = true
+                            allinOne.invalidate(reason: .actionPerformed)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                        
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.title3)
+                            .foregroundStyle(.purple.gradient)
+                            .background(GeometryReader { buttonGeometry in
+                                Color.clear.preference(key: ButtonFrameKey.self, value: buttonGeometry.frame(in: .global))
+                            })
                     }
-                    Button("Cancel", role: .cancel) {
-                        // Alert dismisses automatically
+                    .popoverTip(allinOne)
+                    .alert("Are you sure you want to delete this document?", isPresented: $deleteAlert) {
+                        Button("Delete", role: .destructive) {
+                            dismiss()
+                            Task { @MainActor in
+                                try? await Task.sleep(for: .seconds(0.3))
+                                context.delete(document)
+                                try? context.save()
+                            }
+                        }
+                        Button("Cancel", role: .cancel) { }
+                    }
+                    .alert("Rename Document", isPresented: $isRenaming) {
+                        TextField("New File Name", text: $newFileName)
+                        Button("Save", action: renameFile)
+                        Button("Cancel", role: .cancel) { }
+                    } message: {
+                        Text("Enter a new name for your file.")
                     }
                 }
-                .alert("Rename Document", isPresented: $isRenaming) {
-                    TextField("New File Name", text: $newFileName)
-                    Button("Save", action: renameFile)
-                    Button("Cancel", role: .cancel) { }
-                } message: {
-                    Text("Enter a new name for your file.")
+                .onPreferenceChange(ButtonFrameKey.self) { frame in
+                    shareButtonFrame = frame
                 }
             }
+    }
+    
+    struct ButtonFrameKey: PreferenceKey {
+        static var defaultValue: CGRect = .zero
+        
+        static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+            value = nextValue()
+        }
     }
     
     @ViewBuilder
@@ -390,6 +406,17 @@ struct DocumentDetailView: View {
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact]
         
+        // iPad popover setup
+        if let popoverController = activityViewController.popoverPresentationController {
+            // Set the anchor point for the popover to the "Share" button position
+            popoverController.sourceView = window.rootViewController?.view
+            
+            // Update the sourceRect to use the actual share button's frame
+            popoverController.sourceRect = shareButtonFrame // Use the button's frame to anchor the popover
+            popoverController.permittedArrowDirections = .any
+        }
+        
+        // Present the activity view controller
         window.rootViewController?.present(activityViewController, animated: true, completion: nil)
     }
 }
