@@ -26,6 +26,12 @@ struct DocumentCardView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: size.width, height: size.height)
+                            .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for paper look
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .stroke(Color.gray.opacity(0.2), lineWidth: 1) // Subtle border to mimic paper edge
+                            )
+                            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) // Enhanced shadow for paper effect
                     } else {
                         Rectangle()
                             .foregroundStyle(.clear)
@@ -42,6 +48,8 @@ struct DocumentCardView: View {
                                     downsizedImage = resizedImage
                                 }
                             }
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) // Enhanced shadow for paper effect
                     }
                     
                     if document.isLocked {
@@ -55,9 +63,8 @@ struct DocumentCardView: View {
                     }
                 }
                 .frame(height: 150)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
-                .matchedTransitionSource(id: document.uniqueViewID, in: animationID)
-                .shadow(radius: 5) // Added shadow for paper effect
+                .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for paper effect
+                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) // Shadow for the entire card
             }
             
             Text(document.name)
@@ -69,5 +76,11 @@ struct DocumentCardView: View {
                 .font(.caption2)
                 .foregroundStyle(.gray)
         }
+        .padding(10) // Padding for a cleaner look around the content
+        .background(
+            LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray.opacity(0.05)]), startPoint: .top, endPoint: .bottom) // Paper-like gradient
+                .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for paper effect
+        )
+        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) // Paper shadow effect
     }
 }
