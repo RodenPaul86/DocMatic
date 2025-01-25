@@ -9,6 +9,7 @@ import SwiftUI
 
 enum AppIcon: String, CaseIterable {
     case appIcon = "Default"
+    case appIcon2 = "AppIcon2"
     
     var iconValue: String? {
         if self == .appIcon {
@@ -21,6 +22,7 @@ enum AppIcon: String, CaseIterable {
     var previewImage: String {
         switch self {
         case .appIcon: "Logo 1"
+        case .appIcon2: "Logo 2"
         }
     }
 }
@@ -47,7 +49,7 @@ struct alternativeIcons: View {
                             
                             Image(systemName: currentAppIcon == icon ? "checkmark.circle.fill" : "circle")
                                 .font(.title3)
-                                .foregroundStyle(currentAppIcon == icon ? .green : Color.primary)
+                                .foregroundStyle(currentAppIcon == icon ? .purple : Color.primary)
                         }
                         .contentShape(.rect)
                         .onTapGesture {
