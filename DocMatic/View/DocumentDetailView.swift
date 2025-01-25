@@ -20,6 +20,8 @@ struct DocumentDetailView: View {
     
     @State private var deleteAlert: Bool = false
     
+    @State private var shareButtonFrame: CGRect = .zero
+    
     /// Lock Screen Properties
     @State private var isLockAvailable: Bool?
     @State private var isUnlocked: Bool = false
@@ -28,6 +30,9 @@ struct DocumentDetailView: View {
     @State private var isRenaming: Bool = false
     @State private var newFileName: String = ""
     
+    /// Zooming Properties
+    @GestureState private var zoom = 1.0
+    
     /// Environment Values
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -35,8 +40,6 @@ struct DocumentDetailView: View {
     
     let allinOne = AllinOne()
     let closingTheView = ClosingTheView()
-    
-    @State private var shareButtonFrame: CGRect = .zero
     
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
@@ -51,6 +54,13 @@ struct DocumentDetailView: View {
                             Image(uiImage: image)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .scaleEffect(zoom)
+                                .gesture(
+                                    MagnifyGesture()
+                                        .updating($zoom) { value, gestureState, transaction in
+                                            gestureState = value.magnification
+                                        }
+                                )
                         }
                     }
                 }
