@@ -37,7 +37,10 @@ struct Home: View {
     var body: some View {
         NavigationStack {
             ScrollView(.vertical) {
-                LazyVGrid(columns: Array(repeating: GridItem(spacing: 10), count: 2), spacing: 15) {
+                // Use adaptive grid with dynamic number of columns based on device size
+                let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))]
+                
+                LazyVGrid(columns: columns, spacing: 15) {
                     ForEach(filteredDocuments) { document in
                         NavigationLink {
                             DocumentDetailView(document: document)
@@ -47,14 +50,14 @@ struct Home: View {
                                 .foregroundStyle(Color.primary)
                         }
                         .onAppear {
-                            Task { await ClosingTheView.setClosingEvent.donate()}
+                            Task { await ClosingTheView.setClosingEvent.donate() }
                         }
                     }
                 }
                 .padding(15)
             }
             .navigationTitle("My Documents")
-            .searchable(text: $searchText, prompt: "Search") /// <- Search bar added here
+            .searchable(text: $searchText, prompt: "Search")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
@@ -81,9 +84,8 @@ struct Home: View {
         }
         .fullScreenCover(isPresented: $showScannerView) {
             ScannerView { error in
-                
+                // Handle errors here
             } didCancel: {
-                /// Closing View
                 showScannerView = false
             } didFinish: { scan in
                 scanDocument = scan
@@ -120,7 +122,6 @@ struct Home: View {
         }
         .hSpacing(.center)
         .padding(.vertical, 10)
-        /// Custom Progressive Background effect
         .background {
             Rectangle()
                 .fill(.background)
@@ -147,20 +148,16 @@ struct Home: View {
             
             for pageIndex in 0..<scanDocument.pageCount {
                 let pageImage = scanDocument.imageOfPage(at: pageIndex)
-                /// Converting Image into Data
-                /// Modify the compression value as per your needs
                 guard let pageData = pageImage.jpegData(compressionQuality: 0.65) else { return }
                 let documentPage = DocumentPage(document: document, pageIndex: pageIndex, pageData: pageData)
                 pages.append(documentPage)
             }
             document.pages = pages
             
-            /// Saving data on main thread
             await MainActor.run {
                 context.insert(document)
                 try? context.save()
                 
-                /// Resetting Data
                 self.scanDocument = nil
                 isLoading = false
                 self.documentName = "New Document"
