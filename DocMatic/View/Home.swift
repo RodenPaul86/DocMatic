@@ -10,6 +10,12 @@ import SwiftData
 import VisionKit
 import TipKit
 
+enum ScannerError: Error {
+    case cameraAccessDenied
+    case scanFailed
+    case unknownError
+}
+
 struct Home: View {
     /// View Properties
     @State private var showScannerView: Bool = false
@@ -20,6 +26,9 @@ struct Home: View {
     @State private var isLoading: Bool = false
     @State private var isSettingsOpen: Bool = false
     @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     /// Environment Values
     @Namespace private var animationID
@@ -138,7 +147,7 @@ struct Home: View {
         }
         .fullScreenCover(isPresented: $showScannerView) {
             ScannerView { error in
-                // Handle errors here
+                handleScannerError(error)
             } didCancel: {
                 showScannerView = false
             } didFinish: { scan in
@@ -154,6 +163,9 @@ struct Home: View {
                 .disabled(documentName.isEmpty)
         }
         .loadingScreen(status: $isLoading)
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
     }
     
     /// Custom Scan Document Button
@@ -218,6 +230,35 @@ struct Home: View {
             }
         }
     }
+    
+    /// Error Handling
+    func handleScannerError(_ error: Error) {
+        var errorMessage: String
+
+        if let scannerError = error as? ScannerError {
+            switch scannerError {
+            case .cameraAccessDenied:
+                errorMessage = "Camera access is denied. Please allow access in Settings."
+            case .scanFailed:
+                errorMessage = "Failed to scan the document. Please try again."
+            case .unknownError:
+                errorMessage = "An unknown error occurred. Please try again."
+            }
+        } else {
+            errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
+        }
+
+        // Present an alert or some form of UI feedback
+        showAlert(with: errorMessage)
+    }
+
+    func showAlert(with message: String) {
+        // Add your alert presentation logic, e.g., using SwiftUI's `Alert`
+        alertMessage = message
+        showAlert = true
+    }
+    
+    
 }
 
 #Preview {
