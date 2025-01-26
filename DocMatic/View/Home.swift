@@ -41,11 +41,56 @@ struct Home: View {
                 let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))]
                 
                 if filteredDocuments.isEmpty {
-                    // Display a message when there are no documents
-                    Text("No documents available")
-                        .font(.title3.italic())
-                        .foregroundColor(.gray)
-                        .padding()
+                    VStack(spacing: 20) {
+                        if searchText.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "document.viewfinder")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 60, height: 60)
+                                    .foregroundStyle(.gray)
+                                
+                                Text("No Documents Yet")
+                                    .font(.title2.bold())
+                                    .foregroundStyle(.gray)
+                                
+                                Text("Your first document is just a scan away!")
+                                    .font(.body)
+                                    .foregroundStyle(.gray)
+                            }
+                            .padding(.top, 50)
+                            
+                        } else {
+                            VStack(spacing: 16) {
+                                Image(systemName: "doc.text.magnifyingglass")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 60, height: 60)
+                                    .foregroundStyle(.gray)
+                                
+                                Text("No Results Found")
+                                    .font(.title2.bold())
+                                    .foregroundStyle(.gray)
+                                
+                                Text("Hmm, no matches for \"\(searchText)\". Let’s try something else!")
+                                    .font(.body)
+                                    .multilineTextAlignment(.center)
+                                    .foregroundStyle(.gray)
+                                    .padding(.horizontal, 30)
+                                
+                                Button(action: {
+                                    // Clear search or handle action
+                                    searchText = ""
+                                }) {
+                                    Text("Clear Search")
+                                        .font(.headline)
+                                        .foregroundStyle(.purple)
+                                }
+                            }
+                            .padding(.top, 50)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
                     
                 } else {
                     LazyVGrid(columns: columns, spacing: 15) {
