@@ -31,7 +31,14 @@ struct DocumentDetailView: View {
     @State private var newFileName: String = ""
     
     /// Zooming Properties
-    @GestureState private var zoom = 1.0
+    @State private var zoom: CGFloat = 1.0          // Current zoom level
+    @State private var offset: CGSize = .zero      // Current drag offset
+    @State private var lastOffset: CGSize = .zero // Previous drag offset
+    @State private var isZooming: Bool = false   // Tracks if zooming is active
+    
+    private var zoomPercentage: Int {
+        Int(zoom * 100) // Converts zoom level (e.g., 1.0 = 100%) to percentage
+    }
     
     /// Environment Values
     @Environment(\.dismiss) private var dismiss
@@ -55,19 +62,29 @@ struct DocumentDetailView: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .scaleEffect(zoom)
+                                .offset(offset) /// <-  Apply the drag offset
                                 .gesture(
-                                    MagnifyGesture()
-                                        .updating($zoom) { value, gestureState, transaction in
-                                            gestureState = value.magnification
+                                    // Only allow dragging if zoomed in
+                                    zoom > 1.0 ? DragGesture()
+                                        .onChanged { value in
+                                            offset = CGSize(
+                                                width: lastOffset.width + value.translation.width,
+                                                height: lastOffset.height + value.translation.height
+                                            )
                                         }
+                                        .onEnded { value in
+                                            lastOffset = offset
+                                        } : nil /// <- Disable dragging if zoomed out
                                 )
+                                .animation(.easeInOut, value: zoom) /// <-  Smooth zooming animation
                         }
                     }
                 }
-                .tabViewStyle(.page)
+                .tabViewStyle(zoom > 1.0 ? .page(indexDisplayMode: .never) : .page(indexDisplayMode: .automatic))
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
                 
                 /// Footer View
-                //FooterView()
+                FooterView()
             }
             .background(.black)
             .toolbarVisibility(.hidden, for: .navigationBar)
@@ -103,7 +120,7 @@ struct DocumentDetailView: View {
     @ViewBuilder
     private func HeaderView() -> some View {
         Label(document.name, systemImage: document.isLocked ? "lock.fill" : "")
-            .font(.callout)
+            .font(.title3)
             .foregroundStyle(.white)
             .hSpacing(.center)
             .overlay(alignment: .trailing) {
@@ -215,35 +232,34 @@ struct DocumentDetailView: View {
     @ViewBuilder
     private func FooterView() -> some View {
         HStack {
-            /// Share Button
-            Button(action: createAndShareDocument) {
-                Image(systemName: "square.and.arrow.up.fill")
-                    .font(.title3)
-                    .foregroundStyle(.purple)
-            }
+            Text("Zoom: \(zoomPercentage)%")
+                .font(.callout)
+                .foregroundStyle(.white)
             
             Spacer(minLength: 0)
             
-            Button {
-                deleteAlert = true
-            } label: {
-                Image(systemName: "trash.fill")
-                    .font(.title3)
-                    .foregroundStyle(.red)
-            }
-            .alert("Are you sure you want to delete this?", isPresented: $deleteAlert) {
-                Button("Delete", role: .destructive) {
-                    dismiss()
-                    Task { @MainActor in
-                        try? await Task.sleep(for: .seconds(0.3))
-                        context.delete(document)
-                        try? context.save()
-                    }
+            Button(action: {
+                withAnimation(.easeInOut) {
+                    zoom = min(zoom + 0.5, 5.0) // Increase zoom with a maximum limit
                 }
-                Button("Cancel", role: .cancel) {
-                    // Alert dismisses automatically
-                }
+            }) {
+                Image(systemName: "plus.magnifyingglass") // Zoom-in icon
+                    .font(.title)
+                    .foregroundStyle(zoom < 5.0 ? .purple : .gray)
             }
+            .disabled(zoom >= 5.0)
+            
+            Button(action: {
+                withAnimation(.easeInOut) {
+                    zoom = 1.0 // Reset zoom
+                    offset = .zero // Reset drag offset
+                }
+            }) {
+                Image(systemName: "minus.magnifyingglass") // Zoom-out icon
+                    .font(.title)
+                    .foregroundStyle(zoom > 1.0 ? .purple : .gray)
+            }
+            .disabled(zoom <= 1.0)
         }
         .padding([.horizontal, .bottom], 15)
     }
