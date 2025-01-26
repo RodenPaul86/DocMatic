@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DocumentCardView: View {
     var document: Document
-    var animationID: Namespace.ID /// For zoom transition
+    var animationID: Namespace.ID /// <- For zoom transition
     
     /// View Properties
     @State private var downsizedImage: UIImage?
@@ -24,7 +24,7 @@ struct DocumentCardView: View {
                     if let downsizedImage {
                         Image(uiImage: downsizedImage)
                             .resizable()
-                            .aspectRatio(contentMode: .fill)
+                            .aspectRatio(8.5 / 11, contentMode: .fill) // Letter-size aspect ratio
                             .frame(width: size.width, height: size.height)
                             .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for paper look
                             .overlay(
@@ -62,7 +62,7 @@ struct DocumentCardView: View {
                         }
                     }
                 }
-                .frame(height: 150)
+                .aspectRatio(8.5 / 11, contentMode: .fit) // Maintain letter-size aspect ratio
                 .clipShape(RoundedRectangle(cornerRadius: 15)) // Rounded corners for paper effect
                 .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) // Shadow for the entire card
             }
