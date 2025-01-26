@@ -130,7 +130,7 @@ struct DocumentDetailView: View {
                 } label: {
                     Text("Done")
                         .font(.title3.bold())
-                        .foregroundStyle(.purple.gradient)
+                        .foregroundStyle(.purple)
                 }
             }
             .overlay(alignment: .leading) {
@@ -190,13 +190,13 @@ struct DocumentDetailView: View {
                     } label: {
                         Image(systemName: "ellipsis.circle")
                             .font(.title3)
-                            .foregroundStyle(.purple.gradient)
+                            .foregroundStyle(.purple)
                             .background(GeometryReader { buttonGeometry in
                                 Color.clear.preference(key: ButtonFrameKey.self, value: buttonGeometry.frame(in: .global))
                             })
                     }
                     .popoverTip(allinOne)
-                    .alert("Are you sure you want to delete this document?", isPresented: $deleteAlert) {
+                    .alert("Delete this document?", isPresented: $deleteAlert) {
                         Button("Delete", role: .destructive) {
                             dismiss()
                             Task { @MainActor in
@@ -238,24 +238,26 @@ struct DocumentDetailView: View {
             
             Spacer(minLength: 0)
             
+            // Magnifyingglass (Plus)
             Button(action: {
                 withAnimation(.easeInOut) {
-                    zoom = min(zoom + 0.5, 5.0) // Increase zoom with a maximum limit
+                    zoom = min(zoom + 0.5, 5.0) /// <- Increase zoom with a maximum limit
                 }
             }) {
-                Image(systemName: "plus.magnifyingglass") // Zoom-in icon
+                Image(systemName: "plus.magnifyingglass") /// <- Zoom-in icon
                     .font(.title)
                     .foregroundStyle(zoom < 5.0 ? .purple : .gray)
             }
             .disabled(zoom >= 5.0)
             
+            // Magnifyingglass (Minus)
             Button(action: {
                 withAnimation(.easeInOut) {
-                    zoom = 1.0 // Reset zoom
-                    offset = .zero // Reset drag offset
+                    zoom = 1.0 /// <- Reset zoom
+                    offset = .zero /// <- Reset drag offset
                 }
             }) {
-                Image(systemName: "minus.magnifyingglass") // Zoom-out icon
+                Image(systemName: "minus.magnifyingglass") /// <- Zoom-out icon
                     .font(.title)
                     .foregroundStyle(zoom > 1.0 ? .purple : .gray)
             }

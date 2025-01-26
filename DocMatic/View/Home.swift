@@ -70,7 +70,7 @@ struct Home: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        print("Icon tapped!")
+                        
                     }) {
                         HStack {
                             Image(systemName: "heart")
