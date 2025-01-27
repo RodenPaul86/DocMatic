@@ -253,8 +253,7 @@ struct DocumentDetailView: View {
             // Magnifyingglass (Minus)
             Button(action: {
                 withAnimation(.easeInOut) {
-                    zoom = 1.0 /// <- Reset zoom
-                    offset = .zero /// <- Reset drag offset
+                    zoom = max(zoom - 0.5, 1.0) /// <- Decrease zoom with a maximum limit
                 }
             }) {
                 Image(systemName: "minus.magnifyingglass") /// <- Zoom-out icon
@@ -262,6 +261,20 @@ struct DocumentDetailView: View {
                     .foregroundStyle(zoom > 1.0 ? .purple : .gray)
             }
             .disabled(zoom <= 1.0)
+            
+            if zoom > 2.5 {
+                // Magnifyingglass (All the way out)
+                Button(action: {
+                    withAnimation(.easeInOut) {
+                        zoom = 1.0 /// <- Reset zoom
+                        offset = .zero /// <- Reset drag offset
+                    }
+                }) {
+                    Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <- Zoom all the way out icon
+                        .font(.title)
+                        .foregroundStyle(.purple)
+                }
+            }
         }
         .padding([.horizontal, .bottom], 15)
     }
