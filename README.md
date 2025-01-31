@@ -92,7 +92,7 @@ end
 
 ## Support
 
-As an independent developer, I’ve worked on many apps over the years, but DocMatic is my latest creation. Bringing it to life has been an exciting journey, and I’m thrilled to see it grow.
+As an independent iOS developer, I’ve worked on many apps over the years, but DocMatic is my latest creation. Bringing it to life has been an exciting journey, and I’m thrilled to see it grow.
 
 I’m committed to continuously improving DocMatic with new features, refinements, and bug fixes. The support from this amazing community means everything to me, and your backing helps ensure that DocMatic continues to evolve and thrive.
 
