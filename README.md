@@ -92,9 +92,9 @@ end
 
 ## Support
 
-I embarked on my journey as an independent developer, and DocMatic marked one of my initial ventures as I delved into the realm of Software Development almost 10 years ago. Witnessing its remarkable evolution since then has been truly inspiring. Amidst numerous side projects I've undertaken, DocMatic has remained my unwavering focal point.
+As an independent developer, I’ve worked on many apps over the years, but DocMatic is my latest creation. Bringing it to life has been an exciting journey, and I’m thrilled to see it grow.
 
-As I strive to uphold DocMatic with a continuous stream of innovative features, refinements, and meticulous bug fixes, I am genuinely touched by the unwavering support of my incredible community. Your backing would mean the world to me, ensuring that DocMatic continues to flourish.
+I’m committed to continuously improving DocMatic with new features, refinements, and bug fixes. The support from this amazing community means everything to me, and your backing helps ensure that DocMatic continues to evolve and thrive.
 
 <p><a href="https://www.buymeacoffee.com/paulRoden"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
 <br/>
