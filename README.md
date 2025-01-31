@@ -33,7 +33,7 @@
 ## Download
 
 <div align="center">
-    <h4><b>You can get ProLight from one of the links below! 👇</b></h4>
+    <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
     <a href="https://apps.apple.com/us/app/prolight/id1173567157">
         <img src="Images/Badges/Download-on-the-AppStore.svg" alt="Get it on AppStore" height="80" width= "170" />
     </a>
@@ -92,9 +92,9 @@ end
 
 ## Support
 
-I embarked on my journey as an independent developer, and ProLight marked one of my initial ventures as I delved into the realm of Software Development almost 10 years ago. Witnessing its remarkable evolution since then has been truly inspiring. Amidst numerous side projects I've undertaken, ProLight has remained my unwavering focal point.
+I embarked on my journey as an independent developer, and DocMatic marked one of my initial ventures as I delved into the realm of Software Development almost 10 years ago. Witnessing its remarkable evolution since then has been truly inspiring. Amidst numerous side projects I've undertaken, DocMatic has remained my unwavering focal point.
 
-As I strive to uphold ProLight with a continuous stream of innovative features, refinements, and meticulous bug fixes, I am genuinely touched by the unwavering support of my incredible community. Your backing would mean the world to me, ensuring that ProLight continues to flourish.
+As I strive to uphold DocMatic with a continuous stream of innovative features, refinements, and meticulous bug fixes, I am genuinely touched by the unwavering support of my incredible community. Your backing would mean the world to me, ensuring that DocMatic continues to flourish.
 
 <p><a href="https://www.buymeacoffee.com/paulRoden"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
 <br/>
@@ -102,5 +102,5 @@ As I strive to uphold ProLight with a continuous stream of innovative features, 
 Thank you!
 
 ## License
-ProLight is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/ProLight/blob/main/LICENSE) (Version 2.0).
+DocMatic is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/ProLight/blob/main/LICENSE) (Version 2.0).
 
