@@ -1,7 +1,7 @@
 <h1 align="center">
     <img src="Images/appicon.png" alt="Appicon" width="100" style="border-radius: 25px"/>
     <br />
-    <b>ProLight</b>
+    <b>DocMatic</b>
 </h1>
 
 <div align="center">
