@@ -82,19 +82,10 @@
         
 ## Cocoapods
 ```ruby
-// Podfile
-target 'ProLight' do
-  use_frameworks!
-  pod 'BugShaker'
-  pod 'CTFeedbackSwift'
-  pod 'lottie-ios', '~> 3.4.3'
-  pod 'SwiftAlertView', '~> 2.2.1'
-  pod 'S3SwiftUIAppRater'
-  pod 'KMPlaceholderTextView'
-  pod 'ANActivityIndicator'
-  pod 'BrightnessToggle'
-  pod 'PDFReader'
-end
+// Package.swift dependencies section
+dependencies: [
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.0.0")
+]
 ```
 
 ## Support
