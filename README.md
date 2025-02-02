@@ -64,13 +64,7 @@
     <div align="left">
     <img src="Images/mainView.png" alt="First Image" width="240" />
     </a>
-    <br/>        
-    <h3><b>WatchOS:</b></h3>
-    <div align="left">
-    <img src="Images/watchView01.png" alt="watchImage01" width="240" />
-    </a>
-    <img src="Images/watchView02.png" alt="watchImage01" width="240" />
-    </a>        
+    <br/>      
 </div>
 
 ## Cocoapods
