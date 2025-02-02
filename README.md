@@ -90,9 +90,6 @@ As an independent iOS developer, I’ve built several apps over the years, but D
 
 I’m dedicated to continuously enhancing DocMatic with new features, improvements, and bug fixes. Your support means the world to me—it helps ensure that DocMatic keeps evolving and getting better. Thank you for being part of this journey!
 
-<p><a href="https://www.buymeacoffee.com/paulRoden"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
-<br/>
-
 Thank you!
 
 ## License
