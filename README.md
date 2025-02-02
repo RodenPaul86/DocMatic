@@ -30,7 +30,7 @@
     <a href="#license">License</a>
 </p>
 
-## Download
+## Download:
 
 <div align="center">
     <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
@@ -44,7 +44,7 @@
         <img src="Images/Badges/get-it-on-github.png" alt="Get it from GitHub" height="80" />
 </div>
 
-## Features
+## Features:
 
 - Ad-free.
 - Regular, Strobing, and Flashing LED Light.
@@ -52,12 +52,13 @@
 - On-board map with turn-by-turn directions.
 - Morse Code.
 
-## Requirements
+## Requirements:
 
-- Xcode 14.3.1
-- iOS 12+
+- Xcode 16.2
+- iOS & iPadOS 18+
+- MacOS 15+
 
-## Screenshots
+## Screenshots:
 
 <div align="left">
     <h3><b>iOS:</b></h3>
@@ -80,7 +81,7 @@
     </a>
     <br/>    
         
-## Cocoapods
+## Dependencies:
 ```swift
 // Package.swift dependencies section
 dependencies: [
@@ -88,7 +89,7 @@ dependencies: [
 ]
 ```
 
-## Support
+## Support Indie Developers:
 
 As an independent iOS developer, I’ve built several apps over the years, but DocMatic is my latest and most exciting project. Bringing it to life has been an incredible journey, and I’m eager to see it grow.
 
