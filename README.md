@@ -81,9 +81,11 @@
     <br/>    
         
 ## Cocoapods
-```md
-![Swift](https://img.shields.io/badge/Swift-5.9-orange)
-![RevenueCat](https://img.shields.io/badge/RevenueCat-Latest-blue)
+```swift
+// Package.swift dependencies section
+dependencies: [
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.0.0")
+]
 ```
 
 ## Support
