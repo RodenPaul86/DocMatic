@@ -86,9 +86,9 @@ end
 
 ## Support
 
-As an independent iOS developer, I’ve worked on many apps over the years, but DocMatic is my latest creation. Bringing it to life has been an exciting journey, and I’m thrilled to see it grow.
+As an independent iOS developer, I’ve built several apps over the years, but DocMatic is my latest and most exciting project. Bringing it to life has been an incredible journey, and I’m eager to see it grow.
 
-I’m committed to continuously improving DocMatic with new features, refinements, and bug fixes. The support from this amazing community means everything to me, and your backing helps ensure that DocMatic continues to evolve and thrive.
+I’m dedicated to continuously enhancing DocMatic with new features, improvements, and bug fixes. Your support means the world to me—it helps ensure that DocMatic keeps evolving and getting better. Thank you for being part of this journey!
 
 <p><a href="https://www.buymeacoffee.com/paulRoden"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="paulRoden" /></a></p><br><br>
 <br/>
