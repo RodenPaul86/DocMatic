@@ -64,8 +64,14 @@
     <div align="left">
     <img src="Images/mainView.png" alt="First Image" width="240" />
     </a>
-    <br/>      
-</div>
+    <br/>
+
+    <h3><b>iOS:</b></h3>
+    <div align="left">
+    <img src="Images/mainView.png" alt="First Image" width="240" />
+    </a>
+    <br/>          
+    </div>
 
 ## Cocoapods
 ```ruby
