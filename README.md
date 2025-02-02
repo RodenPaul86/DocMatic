@@ -66,13 +66,20 @@
     </a>
     <br/>
 
-    <h3><b>iOS:</b></h3>
+<div align="left">
+    <h3><b>iPadOS:</b></h3>
     <div align="left">
     <img src="Images/mainView.png" alt="First Image" width="240" />
     </a>
-    <br/>          
-    </div>
+    <br/>
 
+<div align="left">
+    <h3><b>MacOS:</b></h3>
+    <div align="left">
+    <img src="Images/mainView.png" alt="First Image" width="240" />
+    </a>
+    <br/>    
+        
 ## Cocoapods
 ```ruby
 // Podfile
