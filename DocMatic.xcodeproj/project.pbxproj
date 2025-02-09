@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270D2D4A659300E8D13A /* RevenueCat */; };
+		3A9D27102D4A659300E8D13A /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270F2D4A659300E8D13A /* RevenueCatUI */; };
+		3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AD12EA62D57E06E00A3699E /* StoreKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		3AA0011E2D39CBFC0087A850 /* DocMatic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocMatic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AD12EA62D57E06E00A3699E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +43,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */,
+				3A9D27102D4A659300E8D13A /* RevenueCatUI in Frameworks */,
+				3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				3AA001202D39CBFC0087A850 /* DocMatic */,
+				3AD12EA52D57E06E00A3699E /* Frameworks */,
 				3AA0011F2D39CBFC0087A850 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -56,6 +67,14 @@
 				3AA0011E2D39CBFC0087A850 /* DocMatic.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		3AD12EA52D57E06E00A3699E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3AD12EA62D57E06E00A3699E /* StoreKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +97,8 @@
 			);
 			name = DocMatic;
 			packageProductDependencies = (
+				3A9D270D2D4A659300E8D13A /* RevenueCat */,
+				3A9D270F2D4A659300E8D13A /* RevenueCatUI */,
 			);
 			productName = DocMatic;
 			productReference = 3AA0011E2D39CBFC0087A850 /* DocMatic.app */;
@@ -107,6 +128,9 @@
 			);
 			mainGroup = 3AA001152D39CBFC0087A850;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3A9D270C2D4A659300E8D13A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3AA0011F2D39CBFC0087A850 /* Products */;
 			projectDirPath = "";
@@ -362,6 +386,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3A9D270C2D4A659300E8D13A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.15.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3A9D270D2D4A659300E8D13A /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A9D270C2D4A659300E8D13A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		3A9D270F2D4A659300E8D13A /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A9D270C2D4A659300E8D13A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3AA001162D39CBFC0087A850 /* Project object */;
 }
