@@ -122,18 +122,6 @@ struct Home: View {
             .navigationTitle("My Documents")
             .searchable(text: $searchText, prompt: "Search")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        
-                    }) {
-                        HStack {
-                            Image(systemName: "heart")
-                            Text("Donate")
-                        }
-                        .foregroundStyle(.red)
-                    }
-                }
-                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gear")
