@@ -46,12 +46,11 @@
 ## Motivation
 
 <p>
-There are a lot of note-taking apps available out-there, but only a few that do it well. Well, Noto is one of them.
+There are many document-scanning apps available, but only a few that truly get it right—DocMatic is one of them.
 
-The goal of Noto is to be a minimalistic, free, and open-source note-taking application that meets the user's
-expectations, with privacy in mind.
+DocMatic is designed to be a fast, intuitive, and privacy-focused document scanner that meets users’ expectations without unnecessary complexity.
 
-Noto is also part of my [portfolio](https://paulrodenjr.org) projects. It showcases my skills regarding software development.
+As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases my expertise in iOS development, combining powerful features with a seamless user experience.
 </p>
 
 ## Features
