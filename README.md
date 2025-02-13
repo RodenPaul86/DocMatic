@@ -5,10 +5,10 @@
 </h1>
 
 <div align="center">
-    <a href="https://www.buymeacoffee.com/paulRoden">
+    <a href="https://buymeacoffee.com/paulrodenjr">
         <img src="Badges/BMC.svg" alt="Buy Me A Coffee" />
     </a>
-    <a href="https://github.com/RodenPaul86/ProLight/blob/main/LICENSE">
+    <a href="https://github.com/RodenPaul86/DocMatic/blob/main/LICENSE">
         <img src="Badges/Apache.svg" alt="License" />
     </a>
 </div>
