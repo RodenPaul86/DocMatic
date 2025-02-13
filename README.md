@@ -82,6 +82,6 @@ I’m dedicated to continuously enhancing DocMatic with new features, improvemen
 
 Thank you!
 
-## License
+## License:
 DocMatic is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/DocMatic/blob/main/LICENSE) Version 2.0).
 
