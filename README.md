@@ -70,7 +70,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.16.1")
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.15.1")
 ]
 ```
 
