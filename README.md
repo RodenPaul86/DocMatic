@@ -37,10 +37,7 @@
 <div align="center">
     <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
     <a href="https://apps.apple.com/us/app/prolight/id1173567157">
-        <img src="Badges/download-on-the-app-store-black-en-us/black_appstore_badge.svg" alt="Get it on AppStore" height="80" width="100" />
-    </a>
-    <a href="https://apps.apple.com/us/app/prolight/id1173567157">
-        <img src="Badges/google-play-badge.png" alt="Get it on GooglePlay" height="80" />
+        <img src="Badges/download-on-the-app-store-black-en-us/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
     <a href="https://github.com/RodenPaul86/ProLight/releases/tag/3.3.6">
         <img src="Badges/get-it-on-github.png" alt="Get it from GitHub" height="80" />
