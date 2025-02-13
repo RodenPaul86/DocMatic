@@ -82,8 +82,8 @@
     <br/>    
         
 ## Dependencies:
+
 ```swift
-// Package.swift dependencies section
 dependencies: [
     .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.0.0")
 ]
