@@ -85,7 +85,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.0.0")
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.16.1")
 ]
 ```
 
