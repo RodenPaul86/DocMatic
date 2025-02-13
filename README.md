@@ -55,8 +55,7 @@
 ## Requirements:
 
 - Xcode 16.2
-- iOS & iPadOS 18+
-- MacOS 15+
+- iOS 18+
 
 ## Screenshots:
 
