@@ -8,5 +8,5 @@
 import Foundation
 
 struct secrets {
-    static let apiKey: String = "appl_VOFPplPzOlqpLpeFdFTVgePvUuB"
+    static let apiKey: String = ""
 }

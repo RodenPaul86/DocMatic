@@ -8,15 +8,23 @@
 import SwiftUI
 import SwiftData
 import TipKit
+import RevenueCat
 
 @main
 struct DocMaticApp: App {
+    @StateObject var appSubModel = appSubscriptionModel()
+    
+    init() {
+        Purchases.logLevel = .debug
+        Purchases.configure(withAPIKey: secrets.apiKey)
+    }
 
     var body: some Scene {
         WindowGroup {
             SchemeHostView {
                 ContentView()
                     .modelContainer(for: Document.self)
+                    .environmentObject(appSubModel)
                     .task {
                         //try? Tips.resetDatastore()
                         try? Tips.configure([

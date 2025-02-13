@@ -9,6 +9,8 @@ import SwiftUI
 import SwiftData
 import VisionKit
 import TipKit
+import RevenueCat
+import RevenueCatUI
 
 enum ScannerError: Error {
     case cameraAccessDenied
@@ -30,6 +32,9 @@ struct Home: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     
+    @State private var isPresentedManageSubscription = false
+    
+    
     /// Environment Values
     @Namespace private var animationID
     @Environment(\.modelContext) private var context
@@ -42,6 +47,9 @@ struct Home: View {
             return documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
+    
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @State private var isPaywallPresented: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -63,11 +71,13 @@ struct Home: View {
                                     .font(.title2.bold())
                                     .foregroundStyle(.gray)
                                 
-                                Text("Your first document is just a scan away!")
+                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a scan away!" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
                                     .font(.body)
+                                    .multilineTextAlignment(.center) /// <-- Centers long text
                                     .foregroundStyle(.gray)
                             }
                             .padding(.top, 50)
+                            .frame(maxWidth: .infinity) /// <-- Ensures centering horizontally
                             
                         } else {
                             VStack(spacing: 16) {
@@ -122,10 +132,36 @@ struct Home: View {
             .navigationTitle("My Documents")
             .searchable(text: $searchText, prompt: "Search")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        if appSubModel.isSubscriptionActive {
+                            showAlert.toggle()
+                        } else {
+                            isPaywallPresented = true
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "laurel.leading")
+                            Image(systemName: "laurel.trailing")
+                        }
+                        .foregroundStyle(Color("Accent").gradient)
+                    }
+                    .alert(isPresented: $showAlert) {
+                        Alert(
+                            title: Text("Pro Subscriber"),
+                            message: Text("Thank you for your subscription! We truly appreciate your support. You can manage your subscription at anytime."),
+                            primaryButton: .default(Text("Manage Subscription")) {
+                                isPresentedManageSubscription = true
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gear")
-                            .foregroundStyle(.purple.gradient)
+                            .foregroundStyle(Color("Accent").gradient)
                     }
                 }
             }
@@ -151,28 +187,36 @@ struct Home: View {
                 .disabled(documentName.isEmpty)
         }
         .loadingScreen(status: $isLoading)
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text("Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        .fullScreenCover(isPresented: $isPaywallPresented) {
+            SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                .preferredColorScheme(.dark)
         }
+        .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
     }
     
     /// Custom Scan Document Button
     @ViewBuilder
     private func CreateButton() -> some View {
         Button {
-            showScannerView.toggle()
+            if appSubModel.isSubscriptionActive {
+                showScannerView.toggle()
+            } else if ScanManager.shared.scansLeft > 0 {
+                showScannerView.toggle()
+            } else {
+                isPaywallPresented = true
+            }
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "document.viewfinder.fill")
                     .font(.title3)
                 
-                Text("Scan Documents")
+                Text(appSubModel.isSubscriptionActive ? "Scan Documents" : "Scans Left: \(ScanManager.shared.scansLeft)")
             }
             .foregroundStyle(.white)
             .fontWeight(.semibold)
             .padding(.vertical, 10)
             .padding(.horizontal, 20)
-            .background(.purple.gradient, in: .capsule)
+            .background(Color("Accent").gradient, in: .capsule)
         }
         .hSpacing(.center)
         .padding(.vertical, 10)
@@ -209,6 +253,8 @@ struct Home: View {
             document.pages = pages
             
             await MainActor.run {
+                ScanManager.shared.incrementScanCount()
+                
                 context.insert(document)
                 try? context.save()
                 
@@ -245,8 +291,6 @@ struct Home: View {
         alertMessage = message
         showAlert = true
     }
-    
-    
 }
 
 #Preview {

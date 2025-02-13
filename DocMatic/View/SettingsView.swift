@@ -6,37 +6,61 @@
 //
 
 import SwiftUI
+import RevenueCat
 
 struct SettingsView: View {
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     
+    @State private var showDebug: Bool = false
+    
+    @State private var debugMessage: String = ""
+    
     var body: some View {
         NavigationStack {
             List {
                 Section(header: Text("General")) {
-                    buttonRow(iconName: "paintbrush.fill", backgroundColor: .purple, label: "Appearance") {
+                    buttonRow(iconName: "paintbrush.fill", backgroundColor: Color("Accent"), label: "Appearance") {
                         showPickerView.toggle()
                     }
                     
-                    navigationRow(iconName: "app.fill", backgroundColor: .purple, label: "App Icon", destination: AnyView(alternativeIcons()))
+                    navigationRow(iconName: "app.fill", backgroundColor: Color("Accent"), label: "App Icon", destination: AnyView(alternativeIcons()))
                 }
                 
                 Section {
-                    navigationRow(iconName: "questionmark.bubble.fill", backgroundColor: .purple, label: "Help & FAQ", destination: AnyView(HelpFAQView()))
+                    navigationRow(iconName: "questionmark.bubble.fill", backgroundColor: Color("Accent"), label: "Help & FAQ", destination: AnyView(HelpFAQView()))
                     
-                    navigationRow(iconName: "info.circle.fill", backgroundColor: .purple, label: "Whats's New", destination: AnyView(whatsNewView()))
+                    navigationRow(iconName: "info.circle.fill", backgroundColor: Color("Accent"), label: "Whats's New", destination: AnyView(whatsNewView()))
                 }
                 
                 Section(header: Text("Legal"), footer: Text("Version: 1.0.0")) {
-                    navigationRow(iconName: "text.document.fill", backgroundColor: .purple, label: "Terms of Use", destination: AnyView(Text("Terms of Use View")))
+                    navigationRow(iconName: "text.document.fill", backgroundColor: Color("Accent"), label: "Terms of Use", destination: AnyView(Text("Terms of Use View")))
                     
-                    navigationRow(iconName: "text.document.fill", backgroundColor: .purple, label: "Privacy Policy", destination: AnyView(Text("Privacy Policy View")))
+                    navigationRow(iconName: "text.document.fill", backgroundColor: Color("Accent"), label: "Privacy Policy", destination: AnyView(Text("Privacy Policy View")))
                 }
+                
+#if DEBUG
+                Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
+                    Button {
+                        showDebug = true
+                    } label: {
+                        Label("RC Debug Overlay", systemImage: "ladybug")
+                    }
+                    
+                    Button {
+                        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+                        UserDefaults.standard.synchronize()
+                        debugMessage = "userDefaults reset successfully."
+                    } label: {
+                        Label("Reset User Defaults", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                    }
+                }
+#endif
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
         }
+        .debugRevenueCatOverlay(isPresented: $showDebug)
         .animation(.easeInOut, value: appScheme)
     }
 }
