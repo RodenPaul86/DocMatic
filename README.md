@@ -46,15 +46,24 @@
 
 ## Motivation
 
-## Features:
+<p>
+There are a lot of note-taking apps available out-there, but only a few that do it well. Well, Noto is one of them.
 
-General
-- Ad-free.
-- Regular, Strobing, and Flashing LED Light.
-- Screen Light: The user uses the screen for light.
-- On-board map with turn-by-turn directions.
-- Morse Code.
+The goal of Noto is to be a minimalistic, free, and open-source note-taking application that meets the user's
+expectations, with privacy in mind.
 
+Noto is also part of my [portfolio](https://paulrodenjr.org) projects. It showcases my skills regarding software development.
+</p>
+
+## Features
+
+### General
+* Ad-free.
+
+### Settings
+
+* Custom app icons.
+  
 ## Requirements:
 
 - Xcode 16.2
