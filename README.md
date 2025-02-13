@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="Images/appicon.png" alt="Appicon" width="100" style="border-radius: 25px"/>
+    <img src="Images/appicon.png" alt="Icon" width="100" style="border-radius: 25px"/>
     <br />
     <b>DocMatic - Document Scanner</b>
 </h1>
@@ -17,16 +17,18 @@
 <p align="center">
     <a href="#download">Download</a>
     •
+    <a href="#features">Motivation</a>
+    •    
     <a href="#features">Features</a>
-    •
+    •    
     <a href="#requirements">Requirements</a>
     •    
     <a href="#screenshots">Screenshots</a>
-    •    
-    <a href="#cocoapods">Dependencies</a>
+    •
+    <a href="#support">Dependencies</a>
     •
     <a href="#support">Support</a>
-    •
+    •    
     <a href="#license">License</a>
 </p>
 
@@ -35,13 +37,13 @@
 <div align="center">
     <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
     <a href="https://apps.apple.com/us/app/prolight/id1173567157">
-        <img src="Images/Badges/Download-on-the-AppStore.svg" alt="Get it on AppStore" height="80" width= "170" />
+        <img src="Images/Badges/Download-on-the-AppStore.svg" alt="Get it on AppStore" height="60" />
     </a>
     <a href="https://apps.apple.com/us/app/prolight/id1173567157">
-        <img src="Images/Badges/google-play-badge.png" alt="Get it on GooglePlay" height="80" />
+        <img src="Images/Badges/google-play-badge.png" alt="Get it on GooglePlay" height="60" />
     </a>
     <a href="https://github.com/RodenPaul86/ProLight/releases/tag/3.3.6">
-        <img src="Images/Badges/get-it-on-github.png" alt="Get it from GitHub" height="80" />
+        <img src="Images/Badges/get-it-on-github.png" alt="Get it from GitHub" height="60" />
 </div>
 
 ## Motivation
@@ -62,14 +64,14 @@ Noto is also part of my [portfolio](https://paulrodenjr.org) projects. It showca
 
 ### Settings
 
-* Custom app icons.
+* Alternate app icons.
   
-## Requirements:
+## Requirements
 
 - Xcode 16.2
 - iOS 18+
 
-## Screenshots:
+## Screenshots
 
 <div align="left">
     <h3><b>iOS:</b></h3>
@@ -78,7 +80,7 @@ Noto is also part of my [portfolio](https://paulrodenjr.org) projects. It showca
     </a>
     <br/>
         
-## Dependencies:
+## Dependencies
 
 ```swift
 dependencies: [
@@ -86,7 +88,7 @@ dependencies: [
 ]
 ```
 
-## Support:
+## Support
 
 As an independent iOS developer, I’ve built several apps over the years, but DocMatic is my latest and most exciting project. Bringing it to life has been an incredible journey, and I’m eager to see it grow.
 
@@ -94,6 +96,6 @@ I’m dedicated to continuously enhancing DocMatic with new features, improvemen
 
 Thank you!
 
-## License:
+## License
 DocMatic is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/DocMatic/blob/main/LICENSE) Version 2.0).
 
