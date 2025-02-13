@@ -30,7 +30,7 @@
     <a href="#license">License</a>
 </p>
 
-## Download:
+## Download
 
 <div align="center">
     <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
@@ -44,8 +44,11 @@
         <img src="Images/Badges/get-it-on-github.png" alt="Get it from GitHub" height="80" />
 </div>
 
+## Motivation
+
 ## Features:
 
+General
 - Ad-free.
 - Regular, Strobing, and Flashing LED Light.
 - Screen Light: The user uses the screen for light.
