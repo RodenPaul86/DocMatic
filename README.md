@@ -23,7 +23,7 @@
     •    
     <a href="#screenshots">Screenshots</a>
     •    
-    <a href="#cocoapods">Cocoapods</a>
+    <a href="#cocoapods">Dependencies</a>
     •
     <a href="#support">Support</a>
     •
@@ -74,7 +74,7 @@ dependencies: [
 ]
 ```
 
-## Support Indie Developers:
+## Support:
 
 As an independent iOS developer, I’ve built several apps over the years, but DocMatic is my latest and most exciting project. Bringing it to life has been an incredible journey, and I’m eager to see it grow.
 
