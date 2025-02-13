@@ -201,6 +201,7 @@ struct DocumentDetailView: View {
                             dismiss()
                             Task { @MainActor in
                                 try? await Task.sleep(for: .seconds(0.3))
+                                ScanManager.shared.decrementScanCount()
                                 context.delete(document)
                                 try? context.save()
                             }
