@@ -56,10 +56,17 @@ As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases 
 ## Features
 
 ### General
+
 * Ad-free.
+* Document Scanning.
+* Save & Share.
+* Biometric Lock.
+* Local Storage.
+* Apple’s Files App Integration.
 
 ### Settings
 
+* Changing the appearance.
 * Alternate app icons.
   
 ## Requirements
