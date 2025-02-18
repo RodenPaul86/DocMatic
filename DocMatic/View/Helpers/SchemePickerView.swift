@@ -22,6 +22,7 @@ fileprivate struct SchemePreview: Identifiable {
 struct SchemeHostView<Content: View>: View {
     var content: Content
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    
     init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content()
         
@@ -30,9 +31,7 @@ struct SchemeHostView<Content: View>: View {
         }
     }
     
-    
     /// View Properties
-    
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @Environment(\.colorScheme) private var scheme
     @State private var schemePreviews: [SchemePreview] = []
@@ -136,10 +135,12 @@ struct SchemePickerView: View {
             Text("Appearance")
                 .font(.title3.bold())
             
+            Divider()
+            
             Spacer(minLength: 0)
             
             GeometryReader { _ in
-                HStack(spacing: 0) {
+                HStack(spacing: 10) {
                     ForEach(previews) { preview in
                         SchemeCardView([preview])
                     }
@@ -159,7 +160,7 @@ struct SchemePickerView: View {
             }
             .clipShape(.rect(cornerRadius: 20))
         }
-        .padding(.horizontal, 15)
+        .padding([.horizontal, .bottom], 10)
         .presentationDetents([.height(320)])
         .presentationBackground(.clear)
         .onChange(of: appScheme, initial: true) { oldValue, newValue in
