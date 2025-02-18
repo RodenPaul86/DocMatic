@@ -268,7 +268,7 @@ struct Home: View {
     /// Error Handling
     func handleScannerError(_ error: Error) {
         var errorMessage: String
-
+        
         if let scannerError = error as? ScannerError {
             switch scannerError {
             case .cameraAccessDenied:
@@ -281,11 +281,11 @@ struct Home: View {
         } else {
             errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
         }
-
+        
         // Present an alert or some form of UI feedback
         showAlert(with: errorMessage)
     }
-
+    
     func showAlert(with message: String) {
         // Add your alert presentation logic, e.g., using SwiftUI's `Alert`
         alertMessage = message
