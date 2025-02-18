@@ -60,6 +60,7 @@ struct alternativeIcons: View {
                 }
             }
             .navigationTitle("App Icon")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
             if let alternativeAppIcon = UIApplication.shared.alternateIconName, let appIcon = AppIcon.allCases.first(where: { $0.rawValue == alternativeAppIcon }) {
