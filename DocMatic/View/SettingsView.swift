@@ -7,58 +7,76 @@
 
 import SwiftUI
 import RevenueCat
+import WebKit
 
 struct SettingsView: View {
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     
     @State private var showDebug: Bool = false
-    
     @State private var debugMessage: String = ""
+    
+    @State private var isPaywallPresented: Bool = false
     
     var body: some View {
         NavigationStack {
             List {
-                Section(header: Text("General")) {
-                    buttonRow(iconName: "paintbrush.fill", backgroundColor: Color("Accent"), label: "Appearance") {
+                Section(header: Text("Costomization")) {
+                    customRow(icon: "paintbrush", iconBG_Color: Color("Accent"), firstLabel: "Appearance", secondLabel: "", action: {
                         showPickerView.toggle()
-                    }
+                    })
                     
-                    navigationRow(iconName: "app.fill", backgroundColor: Color("Accent"), label: "App Icon", destination: AnyView(alternativeIcons()))
+                    customRow(icon: "questionmark.app.dashed", iconBG_Color: Color("Accent"), firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
+                }
+                
+                Section(header: Text("App Info")) {
+                    customRow(icon: "app", iconBG_Color: Color("Accent"), firstLabel: "Application", secondLabel: Bundle.main.appName)
+                    customRow(icon: "curlybraces", iconBG_Color: Color("Accent"), firstLabel: "Language", secondLabel: "Swift / SwiftUI")
+                    customRow(icon: "square.on.square.dashed", iconBG_Color: Color("Accent"), firstLabel: "Version", secondLabel: Bundle.main.appVersion)
+                    customRow(icon: "hammer", iconBG_Color: Color("Accent"), firstLabel: "Build", secondLabel: Bundle.main.appBuild)
+                    customRow(icon: "app.badge", iconBG_Color: Color("Accent"), firstLabel: "What's New", secondLabel: "", destination: AnyView(whatsNewView()))
                 }
                 
                 Section {
-                    navigationRow(iconName: "questionmark.bubble.fill", backgroundColor: Color("Accent"), label: "Help & FAQ", destination: AnyView(HelpFAQView()))
+                    customRow(icon: "laptopcomputer", iconBG_Color: Color("Accent"), firstLabel: "Developer", secondLabel: "Paul Roden Jr.")
                     
-                    navigationRow(iconName: "info.circle.fill", backgroundColor: Color("Accent"), label: "Whats's New", destination: AnyView(whatsNewView()))
+                    Text("DocMatic was crafted by a single dedicated indie developer, who relies on your support to grow. \n\nTogether, we'll continuously expand and enrich the experience, ensuring you always get the most out of your subscription. \n\nThank you for being a part of this journey!")
+                        .font(.subheadline)
+                    
+                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "My Website", secondLabel: "", url: "https://paulrodenjr.org")
+                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
+                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "Buy me a coffee", secondLabel: "", url: "https://buymeacoffee.com/paulrodenjr")
                 }
                 
-                Section(header: Text("Legal"), footer: Text("Version: 1.0.0")) {
-                    navigationRow(iconName: "text.document.fill", backgroundColor: Color("Accent"), label: "Terms of Use", destination: AnyView(Text("Terms of Use View")))
-                    
-                    navigationRow(iconName: "text.document.fill", backgroundColor: Color("Accent"), label: "Privacy Policy", destination: AnyView(Text("Privacy Policy View")))
+                Section(header: Text("Support")) {
+                    customRow(icon: "questionmark.bubble", iconBG_Color: Color("Accent"), firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(HelpFAQView()))
+                    /*
+                    customRow(icon: "lock.shield", iconBG_Color: Color("Accent"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
+                    */
+                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
                 }
-                
 #if DEBUG
                 Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
-                    Button {
+                    customRow(icon: "ladybug", iconBG_Color: Color("Accent"), firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true
-                    } label: {
-                        Label("RC Debug Overlay", systemImage: "ladybug")
                     }
-                    
-                    Button {
+                    customRow(icon: "dollarsign.circle", iconBG_Color: Color("Accent"), firstLabel: "Show Paywall for (Debuging)", secondLabel: "") {
+                        isPaywallPresented.toggle()
+                    }
+                    .sheet(isPresented: $isPaywallPresented) {
+                        SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    }
+                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", iconBG_Color: Color("Accent"), firstLabel: "Reset userDefaults", secondLabel: "") {
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         UserDefaults.standard.synchronize()
-                        debugMessage = "userDefaults reset successfully."
-                    } label: {
-                        Label("Reset User Defaults", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                        debugMessage = "Successfully reset."
                     }
                 }
 #endif
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
         }
         .debugRevenueCatOverlay(isPresented: $showDebug)
         .animation(.easeInOut, value: appScheme)
@@ -69,13 +87,6 @@ struct SettingsView: View {
     SettingsView()
 }
 
-struct FAQView: View {
-    var body: some View {
-        Text("FAQ content goes here.")
-            .navigationTitle("Help & FAQ")
-    }
-}
-
 struct TermsAndPrivacyView: View {
     var body: some View {
         Text("Terms and Privacy content goes here.")
@@ -83,57 +94,94 @@ struct TermsAndPrivacyView: View {
     }
 }
 
-struct buttonRow: View {
-    var iconName: String
-    var backgroundColor: Color
-    var label: String
-    var action: () -> Void
+struct customRow: View {
+    var icon: String
+    var iconBG_Color: Color
+    var firstLabel: String
+    var firstLabelColor: Color = .gray
+    var secondLabel: String
+    var action: (() -> Void)? = nil  // Optional action
+    var destination: AnyView? = nil  // Optional navigation
+    var url: String? = nil           // Optional URL
+    
+    @State private var isNavigating = false
     
     var body: some View {
-        Button(action: action) {
-            HStack {
-                Image(systemName: iconName)
-                    .font(.title3)
-                    .foregroundColor(.white)
-                    .frame(width: 32, height: 32)
-                    .background(backgroundColor.gradient)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                
-                Text(label)
-                    .font(.headline)
-                    .foregroundStyle(Color("DynamicTextColor"))
-                
-                Spacer()
-                
+        if let urlString = url {
+            NavigationLink {
+                webView(url: urlString)
+                    .edgesIgnoringSafeArea(.all)
+                    .navigationTitle(firstLabel)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            if let link = URL(string: urlString) {
+                                Link(destination: link) {
+                                    Image(systemName: "safari")
+                                }
+                            }
+                        }
+                    }
+            } label: {
+                rowContent(showChevron: false)
+            }
+            .buttonStyle(.plain)
+        } else if let destination = destination {
+            NavigationLink {
+                destination
+            } label: {
+                rowContent(showChevron: false)
+            }
+            .buttonStyle(.plain) // Keeps it looking like a row
+        } else {
+            rowContent(showChevron: action != nil)
+                .onTapGesture {
+                    action?()
+                }
+        }
+    }
+    
+    private func rowContent(showChevron: Bool) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundColor(.white)
+                .frame(width: 32, height: 32)
+                .background(iconBG_Color.gradient)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            
+            Text(firstLabel)
+                .font(.headline)
+                .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : Color("DynamicTextColor"))
+            
+            Spacer()
+            
+            if showChevron {
                 Image(systemName: "chevron.right")
                     .font(.headline)
                     .imageScale(.small)
                     .foregroundColor(Color.init(uiColor: .systemGray3))
+            } else {
+                Text(secondLabel)
+                    .font(.headline)
+                    .foregroundStyle(Color("DynamicTextColor"))
             }
         }
+        .contentShape(Rectangle())
+    }
+    
+    private func isWebsite(_ urlString: String) -> Bool {
+        return urlString.hasPrefix("http") // Simple check for URLs
     }
 }
 
-struct navigationRow: View {
-    var iconName: String
-    var backgroundColor: Color
-    var label: String
-    var destination: AnyView
-    
-    var body: some View {
-        NavigationLink(destination: destination) {
-            HStack {
-                Image(systemName: iconName)
-                    .font(.title3)
-                    .foregroundColor(.white)
-                    .frame(width: 32, height: 32)
-                    .background(backgroundColor.gradient)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                
-                Text(label)
-                    .font(.headline)
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
+struct webView: UIViewRepresentable {
+    var url: String
+    func makeUIView(context: UIViewRepresentableContext<webView>) -> WKWebView {
+        let view = WKWebView()
+        view.load(URLRequest(url: URL(string: url)!))
+        return view
+    }
+    func updateUIView(_ uiView: WKWebView, context: UIViewRepresentableContext<webView>) {
     }
 }

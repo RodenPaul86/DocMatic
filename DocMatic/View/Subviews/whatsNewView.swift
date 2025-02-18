@@ -29,10 +29,10 @@ struct whatsNewView: View {
                     }
                 }
                 .padding()
+                .safeAreaPadding(.bottom, 60)
             }
             .navigationTitle("What's New")
-            .navigationBarTitleDisplayMode(.automatic)
-            .safeAreaPadding(.bottom, 60)
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
