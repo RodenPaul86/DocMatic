@@ -51,8 +51,8 @@ struct SettingsView: View {
                 Section(header: Text("Support")) {
                     customRow(icon: "questionmark.bubble", iconBG_Color: Color("Accent"), firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(HelpFAQView()))
                     /*
-                    customRow(icon: "lock.shield", iconBG_Color: Color("Accent"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
-                    */
+                     customRow(icon: "lock.shield", iconBG_Color: Color("Accent"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
+                     */
                     customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
                 }
 #if DEBUG
@@ -152,7 +152,7 @@ struct customRow: View {
             
             Text(firstLabel)
                 .font(.headline)
-                .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : Color("DynamicTextColor"))
+                .foregroundStyle(Color("DynamicTextColor"))
             
             Spacer()
             
@@ -164,7 +164,7 @@ struct customRow: View {
             } else {
                 Text(secondLabel)
                     .font(.headline)
-                    .foregroundStyle(Color("DynamicTextColor"))
+                    .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : Color("DynamicTextColor"))
             }
         }
         .contentShape(Rectangle())
