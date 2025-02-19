@@ -11,11 +11,14 @@ struct ContentView: View {
     @AppStorage("showIntroView") private var showIntroView: Bool = true
     
     var body: some View {
-        Home()
-            .sheet(isPresented: $showIntroView) {
-                IntroScreen()
-                    .interactiveDismissDisabled()
-            }
+        NavigationStack {
+            Home()
+                .sheet(isPresented: $showIntroView) {
+                    IntroScreen()
+                        .interactiveDismissDisabled()
+                }
+        }
+        .tint(Color("Accent").gradient)
     }
 }
 
