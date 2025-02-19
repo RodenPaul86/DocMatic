@@ -10,7 +10,7 @@ import RevenueCat
 
 // Enum for Subscription Plans
 enum SubscriptionPlan: String {
-    case annual = "Annualy"
+    case annual = "Annually"
     case monthly = "Monthly"
     case lifetime = "Lifetime"
 }
