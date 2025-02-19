@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
-        ("Document Scans", "5", .infinity, true),
+        ("Scanned Documents", "5", .infinity, true),
         ("Alternate App Icons", nil, .checkmark, false)
     ]
     
@@ -52,6 +52,7 @@ struct PricingView: View {
                     if let freeValue = feature.free {
                         Text(freeValue)
                             .frame(width: 50, alignment: .center)
+                            .foregroundStyle(.gray)
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
                             .foregroundColor(feature.freeHasAccess ? .purple : .red)

@@ -10,7 +10,7 @@ import RevenueCat
 
 // Enum for Subscription Plans
 enum SubscriptionPlan: String {
-    case annual = "Annual"
+    case annual = "Annualy"
     case monthly = "Monthly"
     case lifetime = "Lifetime"
 }
@@ -80,11 +80,11 @@ struct SubscriptionButton: View {
             
             // Display the appropriate price
             if plan == .annual {
-                Text("\(price) / year")
+                Text("\(price) / yr")
                     .foregroundColor(.white)
                     .bold()
             } else if plan == .monthly {
-                Text("\(price) / month")
+                Text("\(price) / mo")
                     .foregroundColor(.white)
                     .bold()
             } else if plan == .lifetime {
