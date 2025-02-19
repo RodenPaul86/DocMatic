@@ -66,7 +66,7 @@ struct feedbackView: View {
                         }
                         
                         // Image section
-                        PhotosPicker(selection: $selectedItem, matching: .images) {
+                        PhotosPicker(selection: $selectedItem, matching: .screenshots) {
                             Text("Select an image to attach...")
                         }
                         .onChange(of: selectedItem) { oldItem, newItem in
