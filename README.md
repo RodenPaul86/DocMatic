@@ -97,6 +97,17 @@ As an independent iOS developer, I’ve built several apps over the years, but D
 
 I’m dedicated to continuously enhancing DocMatic with new features, improvements, and bug fixes. Your support means the world to me—it helps ensure that DocMatic keeps evolving and getting better. Thank you for being part of this journey!
 
+<br />
+<div align="center">
+    <a href="https://buymeacoffee.com/paulrodenjr">
+        <img src="Images/Badges/BMC.svg" alt="Buy Me A Coffee" />
+    </a>
+    <a href="https://github.com/RodenPaul86/DocMatic/blob/main/LICENSE">
+        <img src="Images/Badges/Apache.svg" alt="License" />
+    </a>
+</div>
+<br />
+
 Thank you!
 
 ## License
