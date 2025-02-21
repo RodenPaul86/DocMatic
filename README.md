@@ -1,15 +1,15 @@
 <h1 align="center">
-    <img src="Images/appicon.png" alt="icon" width="100" style="border-radius: 25px"/>
+    <img src="Images/Regular1024.png" alt="icon" width="100" style="border-radius: 25px"/>
     <br />
     <b>DocMatic - Document Scanner</b>
 </h1>
 
 <div align="center">
     <a href="https://buymeacoffee.com/paulrodenjr">
-        <img src="Badges/BMC.svg" alt="Buy Me A Coffee" />
+        <img src="Images/Badges/BMC.svg" alt="Buy Me A Coffee" />
     </a>
     <a href="https://github.com/RodenPaul86/DocMatic/blob/main/LICENSE">
-        <img src="Badges/Apache.svg" alt="License" />
+        <img src="Images/Badges/Apache.svg" alt="License" />
     </a>
 </div>
 <br />
@@ -37,10 +37,10 @@
 <div align="center">
     <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
     <a href="https://apps.apple.com/us/app/prolight/id1173567157">
-        <img src="Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
+        <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
     <a href="https://github.com/RodenPaul86/ProLight/releases/tag/3.3.6">
-        <img src="Badges/github-badge.png" height="80" />
+        <img src="Images/Badges/github-badge.png" height="80" />
 </div>
 
 ## Motivation
