@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="Images/Regular1024.png" alt="icon" width="100" style="border-radius: 25px"/>
+    <img src="Images/Regular1024.png" alt="icon" width="100" style="border-radius: 25px;">
     <br />
     <b>DocMatic - Document Scanner</b>
 </h1>
