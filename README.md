@@ -41,7 +41,7 @@
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
     <a href="https://github.com/RodenPaul86/ProLight/releases/tag/3.3.6">
-        <img src="Images/Badges/github-badge.png" height="80" />
+        <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
 </div>
 
 ## Motivation
