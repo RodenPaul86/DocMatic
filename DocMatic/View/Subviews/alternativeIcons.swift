@@ -11,6 +11,9 @@ enum AppIcon: String, CaseIterable {
     case appIcon = "Default"
     case appIcon8 = "Starlight"
     case appIcon9 = "Obsidian"
+#if DEBUG
+    case appIcon0 = "Debug"
+#endif
     
     var iconValue: String? {
         if self == .appIcon {
@@ -25,6 +28,9 @@ enum AppIcon: String, CaseIterable {
         case .appIcon: "Logo1"
         case .appIcon8: "Logo8"
         case .appIcon9: "Logo9"
+#if DEBUG
+        case .appIcon0: "Logo0"
+#endif
         }
     }
 }
@@ -50,6 +56,7 @@ struct alternativeIcons: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .stroke(currentAppIcon == icon ? Color("Default") : .gray, lineWidth: 2)
                                     )
+                                    .opacity((icon != .appIcon && icon != .appIcon0 && !appSubModel.isSubscriptionActive) ? 0.5 : 1.0) // Dim only locked icons
                             }
                             
                             Text(icon.rawValue)
@@ -57,8 +64,8 @@ struct alternativeIcons: View {
                             
                             Spacer(minLength: 0)
                             
-                            // Show padlock icon for locked icons (not the first one)
-                            if icon != .appIcon && !appSubModel.isSubscriptionActive {
+                            // Lock all icons except Default and Debug if subscription is inactive
+                            if icon != .appIcon && icon != .appIcon0 && !appSubModel.isSubscriptionActive {
                                 Image(systemName: "lock.fill")
                                     .font(.title3)
                                     .foregroundColor(.red)
@@ -70,7 +77,7 @@ struct alternativeIcons: View {
                         }
                         .contentShape(.rect)
                         .onTapGesture {
-                            if appSubModel.isSubscriptionActive || icon == .appIcon {
+                            if appSubModel.isSubscriptionActive || icon == .appIcon || icon == .appIcon0 {
                                 currentAppIcon = icon
                                 UIApplication.shared.setAlternateIconName(icon.iconValue)
                             } else {
