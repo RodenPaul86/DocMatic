@@ -166,7 +166,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "Lavender Neptune Serpent Celestial Ember Molten Starlight Obsidian";
-				ASSETCATALOG_COMPILER_APPICON_NAME = Default;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Debug;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DocMatic/DocMatic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
