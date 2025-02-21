@@ -22,51 +22,51 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section(header: Text("Costomization")) {
-                    customRow(icon: "paintbrush", iconBG_Color: Color("Accent"), firstLabel: "Appearance", secondLabel: "", action: {
+                    customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
                         showPickerView.toggle()
                     })
                     
-                    customRow(icon: "questionmark.app.dashed", iconBG_Color: Color("Accent"), firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
+                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
                 }
                 
                 Section(header: Text("App Info")) {
-                    customRow(icon: "app", iconBG_Color: Color("Accent"), firstLabel: "Application", secondLabel: Bundle.main.appName)
-                    customRow(icon: "curlybraces", iconBG_Color: Color("Accent"), firstLabel: "Language", secondLabel: "Swift / SwiftUI")
-                    customRow(icon: "square.on.square.dashed", iconBG_Color: Color("Accent"), firstLabel: "Version", secondLabel: Bundle.main.appVersion)
-                    customRow(icon: "hammer", iconBG_Color: Color("Accent"), firstLabel: "Build", secondLabel: Bundle.main.appBuild)
-                    customRow(icon: "app.badge", iconBG_Color: Color("Accent"), firstLabel: "What's New", secondLabel: "", destination: AnyView(whatsNewView()))
+                    customRow(icon: "app", firstLabel: "Application", secondLabel: Bundle.main.appName)
+                    customRow(icon: "curlybraces", firstLabel: "Language", secondLabel: "Swift / SwiftUI")
+                    customRow(icon: "square.on.square.dashed", firstLabel: "Version", secondLabel: Bundle.main.appVersion)
+                    customRow(icon: "hammer", firstLabel: "Build", secondLabel: Bundle.main.appBuild)
+                    customRow(icon: "app.badge", firstLabel: "What's New", secondLabel: "", destination: AnyView(whatsNewView()))
                 }
                 
                 Section {
-                    customRow(icon: "laptopcomputer", iconBG_Color: Color("Accent"), firstLabel: "Developer", secondLabel: "Paul Roden Jr.")
+                    customRow(icon: "laptopcomputer", firstLabel: "Developer", secondLabel: "Paul Roden Jr.")
                     
                     Text("DocMatic was crafted by a single dedicated indie developer, who relies on your support to grow. \n\nTogether, we'll continuously expand and enrich the experience, ensuring you always get the most out of your subscription. \n\nThank you for being a part of this journey!")
                         .font(.subheadline)
                     
-                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "My Website", secondLabel: "", url: "https://paulrodenjr.org")
-                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
-                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "Buy me a coffee", secondLabel: "", url: "https://buymeacoffee.com/paulrodenjr")
+                    customRow(icon: "link", firstLabel: "My Website", secondLabel: "", url: "https://paulrodenjr.org")
+                    customRow(icon: "link", firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
+                    customRow(icon: "link", firstLabel: "Buy me a coffee", secondLabel: "", url: "https://buymeacoffee.com/paulrodenjr")
                 }
                 
                 Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", iconBG_Color: Color("Accent"), firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(HelpFAQView()))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(HelpFAQView()))
                     /*
-                     customRow(icon: "lock.shield", iconBG_Color: Color("Accent"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
+                     customRow(icon: "lock.shield", iconBG_Color: Color("Default"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
                      */
-                    customRow(icon: "link", iconBG_Color: Color("Accent"), firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
+                    customRow(icon: "link", firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
                 }
 #if DEBUG
                 Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
-                    customRow(icon: "ladybug", iconBG_Color: Color("Accent"), firstLabel: "RC Debug Overlay", secondLabel: "") {
+                    customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true
                     }
-                    customRow(icon: "dollarsign.circle", iconBG_Color: Color("Accent"), firstLabel: "Show Paywall for (Debuging)", secondLabel: "") {
+                    customRow(icon: "dollarsign.circle", firstLabel: "Show Paywall for (Debuging)", secondLabel: "") {
                         isPaywallPresented.toggle()
                     }
                     .sheet(isPresented: $isPaywallPresented) {
                         SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     }
-                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", iconBG_Color: Color("Accent"), firstLabel: "Reset userDefaults", secondLabel: "") {
+                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         UserDefaults.standard.synchronize()
                         debugMessage = "Successfully reset."
@@ -96,7 +96,6 @@ struct TermsAndPrivacyView: View {
 
 struct customRow: View {
     var icon: String
-    var iconBG_Color: Color
     var firstLabel: String
     var firstLabelColor: Color = .gray
     var secondLabel: String
@@ -147,7 +146,7 @@ struct customRow: View {
                 .font(.title3)
                 .foregroundColor(.white)
                 .frame(width: 32, height: 32)
-                .background(iconBG_Color.gradient)
+                .background(Color("Default").gradient)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Text(firstLabel)

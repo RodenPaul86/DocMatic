@@ -143,7 +143,7 @@ struct Home: View {
                             Image(systemName: "laurel.leading")
                             Image(systemName: "laurel.trailing")
                         }
-                        .foregroundStyle(Color("Accent").gradient)
+                        .foregroundStyle(Color("Default").gradient)
                     }
                     .alert(isPresented: $showAlert) {
                         Alert(
@@ -160,7 +160,7 @@ struct Home: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gear")
-                            .foregroundStyle(Color("Accent").gradient)
+                            .foregroundStyle(Color("Default").gradient)
                     }
                 }
             }
@@ -215,7 +215,7 @@ struct Home: View {
             .fontWeight(.semibold)
             .padding(.vertical, 10)
             .padding(.horizontal, 20)
-            .background(Color("Accent").gradient, in: .capsule)
+            .background(Color("Default").gradient, in: .capsule)
         }
         .hSpacing(.center)
         .padding(.vertical, 10)

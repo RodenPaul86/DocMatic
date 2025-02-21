@@ -18,7 +18,7 @@ struct ContentView: View {
                         .interactiveDismissDisabled()
                 }
         }
-        .tint(Color("Accent").gradient)
+        .tint(Color("Default").gradient)
     }
 }
 

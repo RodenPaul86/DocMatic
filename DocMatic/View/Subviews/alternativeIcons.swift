@@ -39,27 +39,13 @@ enum AppIcon: String, CaseIterable {
         case .appIcon9: "Logo9"
         }
     }
-    
-    var accentColor: Color {
-        switch self {
-        case .appIcon: return .blue
-        case .appIcon2: return .purple
-        case .appIcon3: return .green
-        case .appIcon4: return .red
-        case .appIcon5: return .yellow
-        case .appIcon6: return .orange
-        case .appIcon7: return .pink
-        case .appIcon8: return .cyan
-        case .appIcon9: return .gray
-        }
-    }
 }
 
 struct alternativeIcons: View {
     @State private var currentAppIcon: AppIcon = .appIcon
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
-
+    
     var body: some View {
         NavigationStack {
             List {
@@ -74,7 +60,7 @@ struct alternativeIcons: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .stroke(currentAppIcon == icon ? Color("Accent") : .gray, lineWidth: 2)
+                                            .stroke(currentAppIcon == icon ? Color("Default") : .gray, lineWidth: 2)
                                     )
                             }
                             
@@ -91,7 +77,7 @@ struct alternativeIcons: View {
                             } else {
                                 Image(systemName: currentAppIcon == icon ? "checkmark.circle.fill" : "circle")
                                     .font(.title3)
-                                    .foregroundStyle(currentAppIcon == icon ? Color("Accent") : .gray)
+                                    .foregroundStyle(currentAppIcon == icon ? Color("Default") : .gray)
                             }
                         }
                         .contentShape(.rect)
