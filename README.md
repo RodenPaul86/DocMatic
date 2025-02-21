@@ -12,6 +12,7 @@
         <img src="Images/Badges/Apache.svg" alt="License" />
     </a>
 </div>
+
 <br />
 
 <p align="center">
