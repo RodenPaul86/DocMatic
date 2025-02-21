@@ -9,7 +9,14 @@ import SwiftUI
 
 enum AppIcon: String, CaseIterable {
     case appIcon = "Default"
-    case appIcon2 = "AppIcon2"
+    case appIcon2 = "Lavender"
+    case appIcon3 = "Neptune"
+    case appIcon4 = "Serpent"
+    case appIcon5 = "Celestial"
+    case appIcon6 = "Ember"
+    case appIcon7 = "Molten"
+    case appIcon8 = "Starlight"
+    case appIcon9 = "Obsidian"
     
     var iconValue: String? {
         if self == .appIcon {
@@ -21,49 +28,105 @@ enum AppIcon: String, CaseIterable {
     
     var previewImage: String {
         switch self {
-        case .appIcon: "Logo 1"
-        case .appIcon2: "Logo 2"
+        case .appIcon: "Logo1"
+        case .appIcon2: "Logo2"
+        case .appIcon3: "Logo3"
+        case .appIcon4: "Logo4"
+        case .appIcon5: "Logo5"
+        case .appIcon6: "Logo6"
+        case .appIcon7: "Logo7"
+        case .appIcon8: "Logo8"
+        case .appIcon9: "Logo9"
+        }
+    }
+    
+    var accentColor: Color {
+        switch self {
+        case .appIcon: return .blue
+        case .appIcon2: return .purple
+        case .appIcon3: return .green
+        case .appIcon4: return .red
+        case .appIcon5: return .yellow
+        case .appIcon6: return .orange
+        case .appIcon7: return .pink
+        case .appIcon8: return .cyan
+        case .appIcon9: return .gray
         }
     }
 }
 
 struct alternativeIcons: View {
     @State private var currentAppIcon: AppIcon = .appIcon
-    
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @State private var isPaywallPresented: Bool = false
+
     var body: some View {
         NavigationStack {
             List {
-                Section("Choose a App Icon") {
+                Section("Choose an App Icon") {
                     ForEach(AppIcon.allCases, id: \.rawValue) { icon in
                         HStack(spacing: 15) {
-                            Image(icon.previewImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 60, height: 60)
-                                .clipShape(.rect(cornerRadius: 10))
+                            ZStack {
+                                Image(icon.previewImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(currentAppIcon == icon ? Color("Accent") : .gray, lineWidth: 2)
+                                    )
+                            }
                             
                             Text(icon.rawValue)
                                 .fontWeight(.semibold)
                             
                             Spacer(minLength: 0)
                             
-                            Image(systemName: currentAppIcon == icon ? "checkmark.circle.fill" : "circle")
-                                .font(.title3)
-                                .foregroundStyle(currentAppIcon == icon ? .purple : Color.primary)
+                            // Show padlock icon for locked icons (not the first one)
+                            if icon != .appIcon && !appSubModel.isSubscriptionActive {
+                                Image(systemName: "lock.fill")
+                                    .font(.title3)
+                                    .foregroundColor(.red)
+                            } else {
+                                Image(systemName: currentAppIcon == icon ? "checkmark.circle.fill" : "circle")
+                                    .font(.title3)
+                                    .foregroundStyle(currentAppIcon == icon ? Color("Accent") : .gray)
+                            }
                         }
                         .contentShape(.rect)
                         .onTapGesture {
-                            currentAppIcon = icon
-                            UIApplication.shared.setAlternateIconName(icon.iconValue)
+                            if appSubModel.isSubscriptionActive || icon == .appIcon {
+                                currentAppIcon = icon
+                                UIApplication.shared.setAlternateIconName(icon.iconValue)
+                            } else {
+                                isPaywallPresented = true // Trigger the sheet for the paywall
+                            }
                         }
                     }
                 }
             }
             .navigationTitle("App Icon")
             .navigationBarTitleDisplayMode(.inline)
+            .alert(isPresented: $isPaywallPresented) {
+                Alert(
+                    title: Text("Upgrade to Unlock"),
+                    message: Text("Unlock more app icons by subscribing!"),
+                    primaryButton: .default(Text("Subscribe")) {
+                        isPaywallPresented = true
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
+            .fullScreenCover(isPresented: $isPaywallPresented) {
+                SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    .preferredColorScheme(.dark)
+            }
         }
         .onAppear {
-            if let alternativeAppIcon = UIApplication.shared.alternateIconName, let appIcon = AppIcon.allCases.first(where: { $0.rawValue == alternativeAppIcon }) {
+            // Check for current icon on view appearance, and only reset if needed
+            if let alternativeAppIcon = UIApplication.shared.alternateIconName,
+               let appIcon = AppIcon.allCases.first(where: { $0.rawValue == alternativeAppIcon }) {
                 currentAppIcon = appIcon
             } else {
                 currentAppIcon = AppIcon.appIcon

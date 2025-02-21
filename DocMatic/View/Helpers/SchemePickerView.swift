@@ -196,7 +196,7 @@ struct SchemePickerView: View {
                     .clipShape(.rect(cornerRadius: 15))
                     .overlay(
                         RoundedRectangle(cornerRadius: 15)
-                            .stroke(isSelected ? Color.purple.gradient : Color.gray.gradient, lineWidth: 1)
+                            .stroke(isSelected ? Color("Accent").gradient : Color.gray.gradient, lineWidth: 1)
                             .animation(.easeInOut, value: isSelected)
                     )
             }
@@ -212,7 +212,7 @@ struct SchemePickerView: View {
                 
                 if localSchemeState.rawValue == text {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.purple.gradient)
+                        .foregroundStyle(Color("Accent").gradient)
                         .transition(.blurReplace)
                 }
             }

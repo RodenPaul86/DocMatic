@@ -34,7 +34,6 @@ struct Home: View {
     
     @State private var isPresentedManageSubscription = false
     
-    
     /// Environment Values
     @Namespace private var animationID
     @Environment(\.modelContext) private var context
