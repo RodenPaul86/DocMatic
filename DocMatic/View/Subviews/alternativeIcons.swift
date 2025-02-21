@@ -9,12 +9,6 @@ import SwiftUI
 
 enum AppIcon: String, CaseIterable {
     case appIcon = "Default"
-    case appIcon2 = "Lavender"
-    case appIcon3 = "Neptune"
-    case appIcon4 = "Serpent"
-    case appIcon5 = "Celestial"
-    case appIcon6 = "Ember"
-    case appIcon7 = "Molten"
     case appIcon8 = "Starlight"
     case appIcon9 = "Obsidian"
     
@@ -29,12 +23,6 @@ enum AppIcon: String, CaseIterable {
     var previewImage: String {
         switch self {
         case .appIcon: "Logo1"
-        case .appIcon2: "Logo2"
-        case .appIcon3: "Logo3"
-        case .appIcon4: "Logo4"
-        case .appIcon5: "Logo5"
-        case .appIcon6: "Logo6"
-        case .appIcon7: "Logo7"
         case .appIcon8: "Logo8"
         case .appIcon9: "Logo9"
         }
