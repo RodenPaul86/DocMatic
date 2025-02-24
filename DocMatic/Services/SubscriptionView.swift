@@ -16,6 +16,8 @@ struct SubscriptionView: View {
     @State private var currentOffering: Offering?
     @State private var isLoading = true
     
+    @State private var showLegal: Bool = false
+    
     var body: some View {
         VStack {
             // MARK: Custom Navigation Bar
@@ -111,7 +113,7 @@ struct SubscriptionView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                     }
                     .padding(.top)
-                    
+                    /*
                     HStack {
                         Button(action: {
                             // Handle Policy action
@@ -129,6 +131,7 @@ struct SubscriptionView: View {
                     }
                     .font(.caption)
                     .foregroundStyle(.gray)
+                     */
                 }
                 .padding(.horizontal)
                 .padding(.vertical)

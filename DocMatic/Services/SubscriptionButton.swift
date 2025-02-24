@@ -88,7 +88,7 @@ struct SubscriptionButton: View {
                     .foregroundColor(.white)
                     .bold()
             } else if plan == .lifetime {
-                Text("\(price) one-time")
+                Text("\(price) / one-time")
                     .foregroundColor(.white)
                     .bold()
             }

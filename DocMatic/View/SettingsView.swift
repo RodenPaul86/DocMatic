@@ -55,6 +55,12 @@ struct SettingsView: View {
                      */
                     customRow(icon: "link", firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
                 }
+                
+                Section(header: Text("Legal")) {
+                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://docmatic.app/privacy.html")
+                    customRow(icon: "link", firstLabel: "Terms of Service", secondLabel: "", url: "https://docmatic.app/terms.html")
+                    customRow(icon: "link", firstLabel: "EULA", secondLabel: "", url: "https://docmatic.app/EULA.html")
+                }
 #if DEBUG
                 Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
