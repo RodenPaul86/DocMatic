@@ -16,7 +16,7 @@ struct DocMaticApp: App {
     
     init() {
         Purchases.logLevel = .debug
-        Purchases.configure(withAPIKey: secrets.apiKey)
+        Purchases.configure(withAPIKey: publicAPI.apiKey)
     }
 
     var body: some Scene {

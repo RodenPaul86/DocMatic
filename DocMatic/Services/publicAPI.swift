@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct secrets {
+struct publicAPI {
     static let apiKey: String = "appl_VOFPplPzOlqpLpeFdFTVgePvUuB"
 }
