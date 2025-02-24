@@ -1,0 +1,58 @@
+
+/* Background Style */
+
+body {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(91,46,131,1) 35%, rgba(0,212,255,1) 100%);
+    background-attachment: fixed;
+    background-size: 400% 400%;
+  }
+
+@keyframes gradient {
+0% {
+    background-position: 0% 50%;
+}
+50% {
+    background-position: 100% 50%;
+}
+100% {
+    background-position: 0% 50%;
+}
+}
+
+/* Copyright Styling */
+.copyright {
+    color: white;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Footer Links Container */
+  .footer-links {
+    display: flex;
+    gap: 40px; /* Space between Site Map and Other Apps */
+  }
+
+  /* Site Map and Other Apps Common Styling */
+  .site-map, .other-apps {
+    display: flex;
+    flex-direction: column; /* Stack links vertically */
+  }
+
+  .site-map strong, .other-apps strong {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .site-map a, .other-apps a {
+    margin-bottom: 8px;
+    color: gray;
+    text-decoration: none;
+    transition: color 0.3s ease, text-decoration 0.3s ease;
+  }
+
+  .site-map a:hover, .other-apps a:hover {
+    color: white;
+    text-decoration: underline;
+  }
