@@ -14,7 +14,7 @@ struct feedbackView: View {
     @State private var isShowingMailView = false
     @State private var textBody: String = ""
     @State private var selectedTopic: String = "Feedback"
-    private let topics = ["Feedback", "Question", "Request", "Bug Report", "Other"]
+    private let topics = ["Feedback", "Question", "Request", "Bug Report"]
     
     @State private var selectedImage: UIImage? = nil
     @State private var selectedItem: PhotosPickerItem? = nil
@@ -53,7 +53,7 @@ struct feedbackView: View {
                     .padding(.vertical, 8)
                     .frame(minHeight: 120, alignment: .top) // Ensures expansion
                 
-                Section {
+                Section(footer: Text("Only upload images related to your \(selectedTopic).")) {
                     HStack {
                         // Image Preview
                         if let image = selectedImage {
