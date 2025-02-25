@@ -8,9 +8,6 @@
 import SwiftUI
 
 enum AppIcon: String, CaseIterable {
-#if DEBUG
-    case appIcon0 = "Debug"
-#endif
     case appIcon = "Default"
     case appIcon8 = "Starlight"
     case appIcon9 = "Obsidian"
@@ -25,13 +22,9 @@ enum AppIcon: String, CaseIterable {
     
     var previewImage: String {
         switch self {
-#if DEBUG
-        case .appIcon0: "Logo0"
-#endif
         case .appIcon: "Logo1"
         case .appIcon8: "Logo8"
         case .appIcon9: "Logo9"
-            
         }
     }
 }
@@ -91,7 +84,7 @@ struct AppIconRow: View {
     @Binding var isPaywallPresented: Bool
     
     var body: some View {
-        let isLocked = (icon != .appIcon && icon != .appIcon0 && !isSubscriptionActive)
+        let isLocked = (icon != .appIcon && !isSubscriptionActive)
         let isSelected = (currentAppIcon == icon)
         
         HStack(spacing: 15) {
