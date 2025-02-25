@@ -84,8 +84,10 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
         }
-        .debugRevenueCatOverlay(isPresented: $showDebug)
         .animation(.easeInOut, value: appScheme)
+#if debug
+        .debugRevenueCatOverlay(isPresented: $showDebug)
+#endif
     }
 }
 
