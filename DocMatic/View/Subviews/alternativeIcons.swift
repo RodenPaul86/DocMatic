@@ -46,45 +46,12 @@ struct alternativeIcons: View {
             List {
                 Section("Choose an App Icon") {
                     ForEach(AppIcon.allCases, id: \.rawValue) { icon in
-                        HStack(spacing: 15) {
-                            ZStack {
-                                Image(icon.previewImage)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 60, height: 60)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 10)
-                                            .stroke(currentAppIcon == icon ? Color("Default") : .gray, lineWidth: 2)
-                                    )
-                                    .opacity((icon != .appIcon && icon != .appIcon0 && !appSubModel.isSubscriptionActive) ? 0.5 : 1.0) // Dim only locked icons
-                            }
-                            
-                            Text(icon.rawValue)
-                                .fontWeight(.semibold)
-                            
-                            Spacer(minLength: 0)
-                            
-                            // Lock all icons except Default and Debug if subscription is inactive
-                            if icon != .appIcon && icon != .appIcon0 && !appSubModel.isSubscriptionActive {
-                                Image(systemName: "lock.fill")
-                                    .font(.title3)
-                                    .foregroundColor(.red)
-                            } else {
-                                Image(systemName: currentAppIcon == icon ? "checkmark.circle.fill" : "circle")
-                                    .font(.title3)
-                                    .foregroundStyle(currentAppIcon == icon ? Color("Default") : .gray)
-                            }
-                        }
-                        .contentShape(.rect)
-                        .onTapGesture {
-                            if appSubModel.isSubscriptionActive || icon == .appIcon || icon == .appIcon0 {
-                                currentAppIcon = icon
-                                UIApplication.shared.setAlternateIconName(icon.iconValue)
-                            } else {
-                                isPaywallPresented = true // Trigger the sheet for the paywall
-                            }
-                        }
+                        AppIconRow(
+                            icon: icon,
+                            currentAppIcon: $currentAppIcon,
+                            isSubscriptionActive: appSubModel.isSubscriptionActive,
+                            isPaywallPresented: $isPaywallPresented
+                        )
                     }
                 }
             }
@@ -106,12 +73,63 @@ struct alternativeIcons: View {
             }
         }
         .onAppear {
-            // Check for current icon on view appearance, and only reset if needed
+            // Check for the current icon on view appearance, and only reset if needed
             if let alternativeAppIcon = UIApplication.shared.alternateIconName,
                let appIcon = AppIcon.allCases.first(where: { $0.rawValue == alternativeAppIcon }) {
                 currentAppIcon = appIcon
             } else {
                 currentAppIcon = AppIcon.appIcon
+            }
+        }
+    }
+}
+
+struct AppIconRow: View {
+    let icon: AppIcon
+    @Binding var currentAppIcon: AppIcon
+    let isSubscriptionActive: Bool
+    @Binding var isPaywallPresented: Bool
+    
+    var body: some View {
+        let isLocked = (icon != .appIcon && icon != .appIcon0 && !isSubscriptionActive)
+        let isSelected = (currentAppIcon == icon)
+        
+        HStack(spacing: 15) {
+            ZStack {
+                Image(icon.previewImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(isSelected ? Color("Default") : .gray, lineWidth: 2)
+                    )
+                    .opacity(isLocked ? 0.5 : 1.0)
+            }
+            
+            Text(icon.rawValue)
+                .fontWeight(.semibold)
+            
+            Spacer(minLength: 0)
+            
+            if isLocked {
+                Image(systemName: "lock.fill")
+                    .font(.title3)
+                    .foregroundColor(.red)
+            } else {
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .font(.title3)
+                    .foregroundStyle(isSelected ? Color("Default") : .gray)
+            }
+        }
+        .contentShape(.rect)
+        .onTapGesture {
+            if !isLocked {
+                currentAppIcon = icon
+                UIApplication.shared.setAlternateIconName(icon.iconValue)
+            } else {
+                isPaywallPresented = true
             }
         }
     }
