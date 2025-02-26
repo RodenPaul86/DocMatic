@@ -18,7 +18,7 @@ struct DocMaticApp: App {
         Purchases.logLevel = .debug
         Purchases.configure(withAPIKey: publicAPI.apiKey)
     }
-
+    
     var body: some Scene {
         WindowGroup {
             SchemeHostView {
