@@ -43,7 +43,7 @@
     <a href="https://apps.apple.com/us/app/prolight/id1173567157">
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
-    <a href="https://github.com/RodenPaul86/ProLight/releases/tag/3.3.6">
+    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.0.0">
         <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
 </div>
 
