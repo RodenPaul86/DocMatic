@@ -40,7 +40,7 @@
 
 <div align="center">
     <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
-    <a href="https://apps.apple.com/us/app/prolight/id1173567157">
+    <a href="https://apps.apple.com/us/app/docmatic-document-scanner/id6740615012">
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
     <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.0.0">
