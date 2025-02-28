@@ -1,3 +1,3 @@
 # Welcome!
-### This is a simple landing page for DocMatic.
+### This is a simple landing page for DocMatic's website.
 
