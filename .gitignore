@@ -1,0 +1,39 @@
+# Xcode
+# User-specific files
+.idea/
+*.swp
+*.xcodeproj/*
+*.xcworkspace/
+
+# Build results
+build/
+DerivedData/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/
+
+# Swift Package Manager
+.swiftpm/
+
+# Xcode Coverage
+*.gcda
+*.gcno
+
+# Secrets - Sensitive Data
+Config/Secrets.xcconfig
+*.key
+
+# App configuration files (if you are using Fastlane or other tools)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+
+# Ignore configuration files for other tools
+.vscode/
+.idea/
+
+# Ignore Podfile.lock and other common dependency manager files
+Podfile.lock
