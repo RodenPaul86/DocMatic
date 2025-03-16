@@ -16,7 +16,9 @@ struct DocMaticApp: App {
     
     init() {
         Purchases.logLevel = .debug
-        Purchases.configure(withAPIKey: publicAPI.apiKey)
+        if let apiKey = Bundle.main.infoDictionary?["REVENUECAT_API_KEY"] as? String {
+            Purchases.configure(withAPIKey: apiKey)
+        }
     }
     
     var body: some Scene {
