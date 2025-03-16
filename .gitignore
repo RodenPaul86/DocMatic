@@ -23,7 +23,7 @@ Carthage/
 *.gcno
 
 # Secrets - Sensitive Data
-Config/Secrets.xcconfig
+Config/DocMaticSecrets.xcconfig
 *.key
 
 # App configuration files (if you are using Fastlane or other tools)
