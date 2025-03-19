@@ -11,9 +11,11 @@ struct IntroScreen: View {
     @AppStorage("showIntroView") private var showIntroView: Bool = true
     @StateObject private var biometricManager = BiometricManager()
     
+    var onContinue: () -> Void
+    
     var body: some View {
         VStack(spacing: 15) {
-            Text("What's New in \nDocMatic")
+            Text("Welcome to \nDocMatic")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
                 .padding(.top, 65)
@@ -21,11 +23,13 @@ struct IntroScreen: View {
             
             /// Points
             VStack(alignment: .leading, spacing: 25) {
-                PointView(title: "Scan and Digitize", image: "scanner", description: "Effortlessly scan and digitize any document.")
+                pointView(title: "Scan and Digitize", image: "scanner", description: "Effortlessly scan and digitize any document.")
                 
-                PointView(title: "Store Scanned Files", image: "tray.full", description: "Securely store scanned documents using the new SwiftData model.")
+                pointView(title: "Store Scanned Files", image: "tray.full", description: "Securely store scanned documents using the new SwiftData model.")
                 
-                PointView(title: "Secure Documents", image: biometricManager.biometricIcon, description: "Protect your documents with \(biometricManager.biometricType), ensuring only you can unlock them.")
+                pointView(title: "Secure Documents", image: biometricManager.biometricIcon, description: "Protect your documents with \(biometricManager.biometricType), ensuring only you can unlock them.")
+                
+                pointView(title: "Ad-Free Experience", image: "party.popper", description: "Thank you for downloading my app, I hope you enjoy it!")
             }
             .padding(.horizontal, 25)
             
@@ -34,6 +38,7 @@ struct IntroScreen: View {
             /// Continue Button
             Button {
                 showIntroView = false
+                onContinue() /// <-- Trigger Paywall
             } label: {
                 Text("Continue")
                     .fontWeight(.bold)
@@ -50,7 +55,7 @@ struct IntroScreen: View {
     }
     
     @ViewBuilder
-    private func PointView(title: String, image: String, description: String) -> some View {
+    private func pointView(title: String, image: String, description: String) -> some View {
         HStack(spacing: 15) {
             Image(systemName: image)
                 .font(.largeTitle)
@@ -70,5 +75,5 @@ struct IntroScreen: View {
 }
 
 #Preview {
-    IntroScreen()
+    IntroScreen(onContinue: {})
 }

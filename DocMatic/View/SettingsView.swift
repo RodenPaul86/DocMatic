@@ -75,7 +75,7 @@ struct SettingsView: View {
                     customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         UserDefaults.standard.synchronize()
-                        debugMessage = "Successfully reset."
+                        debugMessage = "Success!!, re-launch the app"
                     }
                 }
 #endif
