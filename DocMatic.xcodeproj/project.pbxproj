@@ -164,8 +164,6 @@
 /* Begin XCBuildConfiguration section */
 		3AA001302D39CBFE0087A850 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3AA001202D39CBFC0087A850 /* DocMatic */;
-			baseConfigurationReferenceRelativePath = Config/Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "Lavender Neptune Serpent Celestial Ember Molten Starlight Obsidian Debug";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Default;
@@ -211,8 +209,6 @@
 		};
 		3AA001312D39CBFE0087A850 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3AA001202D39CBFC0087A850 /* DocMatic */;
-			baseConfigurationReferenceRelativePath = Config/Secrets.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "Lavender Neptune Serpent Celestial Ember Molten Starlight Obsidian Debug";
 				ASSETCATALOG_COMPILER_APPICON_NAME = Default;
@@ -258,8 +254,6 @@
 		};
 		3AA001322D39CBFE0087A850 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3AA001202D39CBFC0087A850 /* DocMatic */;
-			baseConfigurationReferenceRelativePath = Config/Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -321,8 +315,6 @@
 		};
 		3AA001332D39CBFE0087A850 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3AA001202D39CBFC0087A850 /* DocMatic */;
-			baseConfigurationReferenceRelativePath = Config/Secrets.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
