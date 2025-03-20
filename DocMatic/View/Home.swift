@@ -80,7 +80,7 @@ struct Home: View {
                             
                         } else {
                             VStack(spacing: 16) {
-                                Image(systemName: "doc.text.magnifyingglass")
+                                Image(systemName: "magnifyingglass")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 60, height: 60)
