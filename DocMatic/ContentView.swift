@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @AppStorage("showIntroView") private var showIntroView: Bool = true
     @State private var isPaywallPresented: Bool = false
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
         NavigationStack {
@@ -27,6 +28,11 @@ struct ContentView: View {
                 }
         }
         .tint(Color("Default").gradient)
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            if newPhase == .active && !showIntroView {
+                isPaywallPresented = true
+            }
+        }
     }
 }
 
