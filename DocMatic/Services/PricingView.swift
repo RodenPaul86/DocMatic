@@ -9,8 +9,9 @@ import SwiftUI
 
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
-        ("Scanned Documents", "5", .infinity, true),
-        ("Alternate App Icons", nil, .checkmark, false)
+        ("Document Scans", "5", .infinity, true),
+        ("Alternate App Icons", nil, .checkmark, false),
+        ("Remove Paywall", nil, .checkmark, false)
     ]
     
     enum ProFeatureType {

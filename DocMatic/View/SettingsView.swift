@@ -15,7 +15,6 @@ struct SettingsView: View {
     
     @State private var showDebug: Bool = false
     @State private var debugMessage: String = ""
-    
     @State private var isPaywallPresented: Bool = false
     
     var body: some View {
@@ -75,8 +74,11 @@ struct SettingsView: View {
                     customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         UserDefaults.standard.synchronize()
-                        debugMessage = "Successfully reset."
+                        debugMessage = "Success!!"
                     }
+                    
+                    let scanCount = UserDefaults.standard.value(forKey: "scanCount")
+                    customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
                 }
 #endif
             }
@@ -85,9 +87,7 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .animation(.easeInOut, value: appScheme)
-#if debug
         .debugRevenueCatOverlay(isPresented: $showDebug)
-#endif
     }
 }
 

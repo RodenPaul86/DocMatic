@@ -58,7 +58,7 @@ struct DocumentCardView: View {
                                 .fill(.ultraThinMaterial)
                             
                             Image(systemName: "lock.fill")
-                                .font(.title3)
+                                .font(.largeTitle)
                         }
                     }
                 }
@@ -81,7 +81,6 @@ struct DocumentCardView: View {
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        Color.white,
                         Color.gray.opacity(0.1),
                         Color.gray.opacity(0.05)
                     ]),

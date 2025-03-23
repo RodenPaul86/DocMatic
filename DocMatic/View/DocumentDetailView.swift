@@ -13,7 +13,7 @@ import TipKit
 struct DocumentDetailView: View {
     var document: Document
     
-    /// View Properties
+    // View Properties
     @State private var isLoading: Bool = false
     @State private var showFileMover: Bool = false
     @State private var fileURL: URL?
@@ -22,25 +22,25 @@ struct DocumentDetailView: View {
     
     @State private var shareButtonFrame: CGRect = .zero
     
-    /// Lock Screen Properties
+    // Lock Screen Properties
     @State private var isLockAvailable: Bool?
     @State private var isUnlocked: Bool = false
     
-    /// Renaming Properties
+    // Renaming Properties
     @State private var isRenaming: Bool = false
     @State private var newFileName: String = ""
     
-    /// Zooming Properties
-    @State private var zoom: CGFloat = 1.0          // Current zoom level
-    @State private var offset: CGSize = .zero      // Current drag offset
-    @State private var lastOffset: CGSize = .zero // Previous drag offset
-    @State private var isZooming: Bool = false   // Tracks if zooming is active
+    // Zooming Properties
+    @State private var zoom: CGFloat = 1.0          /// <-- Current zoom level
+    @State private var offset: CGSize = .zero      /// <-- Current drag offset
+    @State private var lastOffset: CGSize = .zero /// <-- Previous drag offset
+    @State private var isZooming: Bool = false   /// <-- Tracks if zooming is active
     
     private var zoomPercentage: Int {
-        Int(zoom * 100) // Converts zoom level (e.g., 1.0 = 100%) to percentage
+        Int(zoom * 100) /// <-- Converts zoom level (e.g., 1.0 = 100%) to percentage
     }
     
-    /// Environment Values
+    // Environment Values
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scene
@@ -51,7 +51,7 @@ struct DocumentDetailView: View {
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
             VStack(spacing: 10) {
-                /// Header View
+                // Header View
                 HeaderView()
                     .padding([.horizontal, .top], 15)
                 
@@ -81,9 +81,9 @@ struct DocumentDetailView: View {
                     }
                 }
                 .tabViewStyle(zoom > 1.0 ? .page(indexDisplayMode: .never) : .page(indexDisplayMode: .automatic))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
+                .indexViewStyle(.page(backgroundDisplayMode: .automatic))
                 
-                /// Footer View
+                // Footer View
                 FooterView()
             }
             .background(.black)
@@ -94,7 +94,7 @@ struct DocumentDetailView: View {
             }
             .fileMover(isPresented: $showFileMover, file: fileURL) { result in
                 if case .failure(_) = result {
-                    /// Removing the temp file
+                    // Removing the temp file
                     guard let fileURL else { return }
                     try? FileManager.default.removeItem(at: fileURL)
                     self.fileURL = nil
@@ -124,7 +124,7 @@ struct DocumentDetailView: View {
             .foregroundStyle(.white)
             .hSpacing(.center)
             .overlay(alignment: .trailing) {
-                /// Close Button
+                // Close Button
                 Button {
                     dismiss()
                 } label: {
@@ -136,7 +136,7 @@ struct DocumentDetailView: View {
             .overlay(alignment: .leading) {
                 GeometryReader { geometry in
                     Menu {
-                        /// Share Document
+                        // Share Document
                         Button(action: {
                             shareDocument()
                             allinOne.invalidate(reason: .actionPerformed)
@@ -144,7 +144,7 @@ struct DocumentDetailView: View {
                             Label("Share", systemImage: "square.and.arrow.up")
                         }
                         
-                        /// Save Document
+                        // Save Document
                         Button(action: {
                             createAndShareDocument()
                             allinOne.invalidate(reason: .actionPerformed)
@@ -152,7 +152,7 @@ struct DocumentDetailView: View {
                             Label("Save to Files", systemImage: "folder")
                         }
                         
-                        /// Print File
+                        // Print File
                         Button(action: {
                             printDocument()
                             allinOne.invalidate(reason: .actionPerformed)
@@ -160,16 +160,16 @@ struct DocumentDetailView: View {
                             Label("Print", systemImage: "printer")
                         }
                         
-                        /// Rename File
+                        // Rename File
                         Button(action: {
-                            newFileName = document.name // Pre-fill the current name
+                            newFileName = document.name /// <-- Pre-fill the current name
                             isRenaming = true
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Rename", systemImage: "pencil")
                         }
                         
-                        /// Lock File
+                        // Lock File
                         Button(action: {
                             document.isLocked.toggle()
                             isUnlocked = !document.isLocked
@@ -179,7 +179,7 @@ struct DocumentDetailView: View {
                             Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
                         }
                         
-                        /// Delete File
+                        // Delete File
                         Button(role: .destructive) {
                             deleteAlert = true
                             allinOne.invalidate(reason: .actionPerformed)
@@ -332,7 +332,7 @@ struct DocumentDetailView: View {
     }
     
     private func createAndShareDocument() {
-        /// Converting SwiftData document into a PDF Document
+        // Converting SwiftData document into a PDF Document
         guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return }
         isLoading = true
         

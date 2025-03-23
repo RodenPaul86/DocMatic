@@ -80,7 +80,7 @@ struct Home: View {
                             
                         } else {
                             VStack(spacing: 16) {
-                                Image(systemName: "doc.text.magnifyingglass")
+                                Image(systemName: "magnifyingglass")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 60, height: 60)
@@ -209,7 +209,7 @@ struct Home: View {
                 Image(systemName: "document.viewfinder.fill")
                     .font(.title3)
                 
-                Text(appSubModel.isSubscriptionActive ? "Scan Documents" : "Scans Left: \(ScanManager.shared.scansLeft)")
+                Text(appSubModel.isSubscriptionActive ? "Scan Document" : "Scans Left: \(ScanManager.shared.scansLeft)")
             }
             .foregroundStyle(.white)
             .fontWeight(.semibold)
@@ -262,6 +262,8 @@ struct Home: View {
                 self.documentName = "New Document"
             }
         }
+        ReviewManager.incrementLaunchCount()
+        ReviewManager.checkMajorVersion()
     }
     
     /// Error Handling

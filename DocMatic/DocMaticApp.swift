@@ -15,10 +15,8 @@ struct DocMaticApp: App {
     @StateObject var appSubModel = appSubscriptionModel()
     
     init() {
-        Purchases.logLevel = .debug
-        if let apiKey = Bundle.main.infoDictionary?["REVENUECAT_API_KEY"] as? String {
-            Purchases.configure(withAPIKey: apiKey)
-        }
+        Purchases.logLevel = .error
+        Purchases.configure(withAPIKey: apiKeys.revenueCat)
     }
     
     var body: some Scene {
