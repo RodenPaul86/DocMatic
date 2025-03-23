@@ -103,7 +103,7 @@ I’m dedicated to continuously enhancing DocMatic with new features, improvemen
 
 <br />
 
-<div align="center">
+<div align="left">
     <a href="https://buymeacoffee.com/paulrodenjr">
         <img src="Images/Badges/bmc-button.png" alt="Buy Me A Coffee" height="50" />
     </a>
