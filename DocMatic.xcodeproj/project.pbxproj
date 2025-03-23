@@ -170,7 +170,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DocMatic/DocMatic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25.02.02;
+				CURRENT_PROJECT_VERSION = 2025.02;
 				DEVELOPMENT_ASSET_PATHS = "\"DocMatic/Preview Content\"";
 				DEVELOPMENT_TEAM = WM7RG95JZ8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -194,7 +194,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.studio4design.DocMatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -215,7 +215,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DocMatic/DocMatic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25.02.02;
+				CURRENT_PROJECT_VERSION = 2025.02;
 				DEVELOPMENT_ASSET_PATHS = "\"DocMatic/Preview Content\"";
 				DEVELOPMENT_TEAM = WM7RG95JZ8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -239,7 +239,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = org.studio4design.DocMatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
