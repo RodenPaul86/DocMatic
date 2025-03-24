@@ -21,9 +21,9 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section(header: Text("Costomization")) {
-                    customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
+                    customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "") {
                         showPickerView.toggle()
-                    })
+                    }
                     
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
                 }
@@ -44,21 +44,16 @@ struct SettingsView: View {
                     
                     customRow(icon: "link", firstLabel: "My Website", secondLabel: "", url: "https://paulrodenjr.org")
                     customRow(icon: "link", firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
-                    customRow(icon: "link", firstLabel: "Buy me a coffee", secondLabel: "", url: "https://buymeacoffee.com/paulrodenjr")
                 }
                 
                 Section(header: Text("Support")) {
                     customRow(icon: "questionmark.bubble", firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(HelpFAQView()))
-                    /*
-                     customRow(icon: "lock.shield", iconBG_Color: Color("Default"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
-                     */
                     customRow(icon: "link", firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
                 }
                 
                 Section(header: Text("Legal")) {
                     customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://docmatic.app/privacy.html")
                     customRow(icon: "link", firstLabel: "Terms of Service", secondLabel: "", url: "https://docmatic.app/terms.html")
-                    customRow(icon: "link", firstLabel: "EULA", secondLabel: "", url: "https://docmatic.app/EULA.html")
                 }
 #if DEBUG
                 Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message

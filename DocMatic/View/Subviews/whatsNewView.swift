@@ -82,7 +82,7 @@ struct Update: Identifiable {
     let version: String
     let date: String
     let description: String
-    let imageName: String? // Optional for updates without images
+    let imageName: String? /// <-- Optional for updates without images
 }
 
 // Preview
