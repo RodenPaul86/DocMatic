@@ -82,7 +82,7 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .animation(.easeInOut, value: appScheme)
-        .debugRevenueCatOverlay(isPresented: $showDebug)
+        //.debugRevenueCatOverlay(isPresented: $showDebug)
     }
 }
 
