@@ -12,6 +12,7 @@ import RevenueCat
 enum SubscriptionPlan: String {
     case annual = "Annually"
     case monthly = "Monthly"
+    case weekly = "Weekly"
     case lifetime = "Lifetime"
 }
 
@@ -39,6 +40,8 @@ struct SubscriptionButton: View {
             return offering?.annual?.localizedPriceString ?? "N/A"
         case .monthly:
             return offering?.monthly?.localizedPriceString ?? "N/A"
+        case .weekly:
+            return offering?.weekly?.localizedPriceString ?? "N/A"
         case .lifetime:
             return offering?.lifetime?.localizedPriceString ?? "N/A"
         }
@@ -85,6 +88,14 @@ struct SubscriptionButton: View {
                     .bold()
             } else if plan == .monthly {
                 Text("\(price) / mo")
+                    .foregroundColor(.white)
+                    .bold()
+            } else if plan == .weekly {
+                Text("3-Day Trial")
+                    .foregroundStyle(.blue)
+                    .bold()
+                
+                Text("\(price) / wk")
                     .foregroundColor(.white)
                     .bold()
             } else if plan == .lifetime {

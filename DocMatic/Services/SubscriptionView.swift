@@ -85,7 +85,10 @@ struct SubscriptionView: View {
                 // MARK: Subscription Options
                 VStack(spacing: 15) {
                     // MARK: Feature List
-                    PricingView()
+                    ScrollView(.vertical, showsIndicators: false) {
+                        PricingView()
+                            .padding(.top)
+                    }
                     
                     Spacer()
                     
@@ -104,7 +107,7 @@ struct SubscriptionView: View {
                     Button(action: {
                         purchase(selectedPlan)
                     }) {
-                        Text("Subscribe")
+                        Text(hasIntroOffer(for: selectedPlan) ? "Try for Free!" : "Subscribe")
                             .foregroundColor(.white)
                             .bold()
                             .frame(maxWidth: .infinity)
@@ -114,23 +117,23 @@ struct SubscriptionView: View {
                     }
                     .padding(.top)
                     /*
-                    HStack {
-                        Button(action: {
-                            // Handle Policy action
-                        }) {
-                            Text("Privacy Policy")
-                        }
-                        
-                        Text("-")
-                        
-                        Button(action: {
-                            // Handle Terms action
-                        }) {
-                            Text("Terms of Service")
-                        }
-                    }
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                     HStack {
+                     Button(action: {
+                     // Handle Policy action
+                     }) {
+                     Text("Privacy Policy")
+                     }
+                     
+                     Text("-")
+                     
+                     Button(action: {
+                     // Handle Terms action
+                     }) {
+                     Text("Terms of Service")
+                     }
+                     }
+                     .font(.caption)
+                     .foregroundStyle(.gray)
                      */
                 }
                 .padding(.horizontal)
@@ -182,6 +185,8 @@ struct SubscriptionView: View {
             product = offering.annual
         case .monthly:
             product = offering.monthly
+        case .weekly:
+            product = offering.weekly
         case .lifetime:
             product = offering.lifetime
         }
@@ -208,8 +213,29 @@ struct SubscriptionView: View {
             }
         }
     }
+    
+    func hasIntroOffer(for plan: SubscriptionPlan) -> Bool {
+        guard let package = getPackage(for: plan) else { return false }
+        return package.storeProduct.introductoryDiscount != nil
+    }
+    
+    func getPackage(for plan: SubscriptionPlan) -> Package? {
+        guard let offering = currentOffering else { return nil }
+        
+        switch plan {
+        case .annual:
+            return offering.annual
+        case .monthly:
+            return offering.monthly
+        case .weekly:
+            return offering.weekly
+        case .lifetime:
+            return offering.lifetime
+        }
+    }
 }
 
 #Preview {
     SubscriptionView(isPaywallPresented: .constant(false))
+        .preferredColorScheme(.dark)
 }
