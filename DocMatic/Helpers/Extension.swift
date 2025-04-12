@@ -14,10 +14,11 @@ import StoreKit
 extension Package {
     func terms(for package: Package) -> String {
         if let intro = package.storeProduct.introductoryDiscount {
+            let period = intro.subscriptionPeriod
             if intro.price == 0 {
-                return "\(intro.subscriptionPeriod.periodTitle) free trial"
+                return "\(period.periodTitle) free trial"
             } else {
-                return "\(package.localizedIntroductoryPriceString!) for \(intro.subscriptionPeriod.periodTitle)"
+                return "\(package.localizedIntroductoryPriceString!) for \(period.periodTitle)"
             }
         } else {
             return "Unlocks Premium"
@@ -25,7 +26,7 @@ extension Package {
     }
 }
 
-extension SubscriptionPeriod {
+extension RevenueCat.SubscriptionPeriod {
     var durationTitle: String {
         switch self.unit {
         case .day: return "Day"
@@ -35,7 +36,7 @@ extension SubscriptionPeriod {
         @unknown default: return "Unknown"
         }
     }
-    
+
     var periodTitle: String {
         let periodString = "\(self.value) \(self.durationTitle)"
         let pluralized = self.value > 1 ? periodString + "s" : periodString
