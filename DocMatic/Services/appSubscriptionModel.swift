@@ -1,5 +1,5 @@
 //
-//  appSubModel.swift
+//  appSubscriptionModel.swift
 //  DocMatic
 //
 //  Created by Paul  on 2/11/25.

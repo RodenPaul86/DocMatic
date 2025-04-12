@@ -74,9 +74,7 @@ struct PricingView: View {
     }
 }
 
-struct PricingView_Previews: PreviewProvider {
-    static var previews: some View {
-        PricingView()
-            .preferredColorScheme(.dark)
-    }
+#Preview {
+    PricingView()
+        .preferredColorScheme(.dark)
 }
