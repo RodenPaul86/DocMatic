@@ -15,7 +15,7 @@ struct FAQItem: Identifiable {
 }
 
 // MARK: Data
-struct HelpFAQView: View {
+struct helpFAQView: View {
     @StateObject private var biometricManager = BiometricManager()
     @State private var faqItems: [FAQItem] = [
         FAQItem(question: "How do I scan a document?",
@@ -126,5 +126,5 @@ struct FAQRow: View {
 }
 
 #Preview {
-    HelpFAQView()
+    helpFAQView()
 }

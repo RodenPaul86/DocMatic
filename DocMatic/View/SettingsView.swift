@@ -48,7 +48,7 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(HelpFAQView()))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(helpFAQView()))
                     /*
                      customRow(icon: "lock.shield", iconBG_Color: Color("Default"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
                      */
