@@ -48,7 +48,7 @@ struct feedbackView: View {
                     }
                 }
                 
-                // Expanding TextField
+                // MARK: Expanding TextField
                 TextField("Enter text here...", text: $textBody, axis: .vertical)
                     .padding(.vertical, 8)
                     .frame(minHeight: 120, alignment: .top) // Ensures expansion
@@ -60,7 +60,6 @@ struct feedbackView: View {
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFit()
-                                //.frame(height: 200)
                                 .frame(width: 70, height: 70)
                                 .cornerRadius(10)
                         }
@@ -80,7 +79,7 @@ struct feedbackView: View {
                     }
                 }
                 
-                // Other sections
+                // MARK: Other sections
                 Section(header: Text("Device Info")) {
                     HStack {
                         Text("Device")
@@ -195,7 +194,7 @@ struct feedbackView: View {
             """
     }
     
-    // Function to load image from PhotosPicker
+    // MARK: Function to load image from PhotosPicker
     private func loadImage(from item: PhotosPickerItem?) {
         guard let item = item else { return }
         
