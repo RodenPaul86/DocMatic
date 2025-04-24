@@ -60,7 +60,7 @@ struct helpFAQView: View {
                 answer: "Your scanned documents are stored securely on your device. You can also save them to the 'Files' app."),
         
         FAQItem(question: "How do I request new features?",
-                answer: "We value your feedback! Use the 'Contact Support' button to share your suggestions, feedback or bug reports.")
+                answer: "We’d love to hear from you! Reach out via the “Contact Support” button in Settings or email us at support@docmatic.app.")
     ]
     
     // MARK: Main View
@@ -68,28 +68,18 @@ struct helpFAQView: View {
         NavigationStack {
             VStack {
                 List {
-                    Section(header: Text("Frequently Asked Questions").font(.headline)) {
+                    Section(header: Text("").font(.headline)) {
                         ForEach($faqItems) { $item in
                             FAQRow(item: $item)
-                        }
-                    }
-                    Section(header: Text("Need more help?").font(.headline)) {
-                        NavigationLink(destination: feedbackView()) {
-                            Label("Contact Support", systemImage: "envelope")
-                                .font(.headline)
                         }
                     }
                 }
                 .listStyle(InsetGroupedListStyle())
                 .safeAreaPadding(.bottom, 60)
             }
-            .navigationTitle("Help & FAQ")
+            .navigationTitle("FAQS")
             .navigationBarTitleDisplayMode(.inline)
         }
-    }
-    
-    private func contactSupport() {
-        print("Contact support tapped")
     }
 }
 
@@ -102,6 +92,7 @@ struct FAQRow: View {
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     item.isExpanded.toggle()
+                    HapticManager.shared.notify(.impact(.light))
                 }
             }) {
                 HStack {

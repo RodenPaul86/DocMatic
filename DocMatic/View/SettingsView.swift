@@ -12,14 +12,24 @@ import WebKit
 struct SettingsView: View {
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     
     @State private var showDebug: Bool = false
     @State private var debugMessage: String = ""
     @State private var isPaywallPresented: Bool = false
+    @State private var isPresentedManageSubscription = false
     
     var body: some View {
         NavigationStack {
             List {
+                if !appSubModel.isSubscriptionActive {
+                    customPremiumBanner {
+                        isPaywallPresented = true
+                        HapticManager.shared.notify(.notification(.success))
+                    }
+                    .listRowInsets(EdgeInsets())
+                }
+                
                 Section(header: Text("Costomization")) {
                     customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
                         showPickerView.toggle()
@@ -28,31 +38,30 @@ struct SettingsView: View {
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
                 }
                 
-                Section(header: Text("App Info")) {
-                    customRow(icon: "app", firstLabel: "Application", secondLabel: Bundle.main.appName)
-                    customRow(icon: "curlybraces", firstLabel: "Language", secondLabel: "Swift / SwiftUI")
-                    customRow(icon: "square.on.square.dashed", firstLabel: "Version", secondLabel: Bundle.main.appVersion)
-                    customRow(icon: "hammer", firstLabel: "Build", secondLabel: Bundle.main.appBuild)
-                    customRow(icon: "app.badge", firstLabel: "What's New", secondLabel: "", destination: AnyView(whatsNewView()))
-                }
-                
-                Section {
-                    customRow(icon: "laptopcomputer", firstLabel: "Developer", secondLabel: "Paul Roden Jr.")
-                    
-                    Text("DocMatic was crafted by a single dedicated indie developer, who relies on your support to grow. \n\nTogether, we'll continuously expand and enrich the experience, ensuring you always get the most out of your subscription. \n\nThank you for being a part of this journey!")
-                        .font(.subheadline)
-                    
-                    customRow(icon: "link", firstLabel: "My Website", secondLabel: "", url: "https://paulrodenjr.org")
-                    customRow(icon: "link", firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
-                    customRow(icon: "link", firstLabel: "Buy me a coffee", secondLabel: "", url: "https://buymeacoffee.com/paulrodenjr")
-                }
-                
                 Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", firstLabel: "Help & Feedback", secondLabel: "", destination: AnyView(helpFAQView()))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
+                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
                     /*
                      customRow(icon: "lock.shield", iconBG_Color: Color("Default"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
                      */
-                    customRow(icon: "link", firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
+                }
+                
+                Section(header: Text("Info")) {
+                    customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
+                    
+                    if appSubModel.isSubscriptionActive {
+                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
+                            isPresentedManageSubscription = true
+                        }
+                    }
+                    
+                    if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6740615012") {
+                        customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    
+                    customRow(icon: "app.badge", firstLabel: "What's New", secondLabel: "", destination: AnyView(whatsNewView()))
                 }
                 
                 Section(header: Text("Legal")) {
@@ -85,21 +94,15 @@ struct SettingsView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
+            .animation(.easeInOut, value: appScheme)
+            .debugRevenueCatOverlay(isPresented: $showDebug)
         }
-        .animation(.easeInOut, value: appScheme)
-        .debugRevenueCatOverlay(isPresented: $showDebug)
     }
 }
 
 #Preview {
     SettingsView()
-}
-
-struct TermsAndPrivacyView: View {
-    var body: some View {
-        Text("Terms and Privacy content goes here.")
-            .navigationTitle("Terms & Privacy")
-    }
 }
 
 struct customRow: View {
@@ -182,6 +185,7 @@ struct customRow: View {
     }
 }
 
+// MARK: WebView
 struct webView: UIViewRepresentable {
     var url: String
     func makeUIView(context: UIViewRepresentableContext<webView>) -> WKWebView {
@@ -190,5 +194,66 @@ struct webView: UIViewRepresentable {
         return view
     }
     func updateUIView(_ uiView: WKWebView, context: UIViewRepresentableContext<webView>) {
+    }
+}
+
+// MARK: Custom Banner
+struct customPremiumBanner: View {
+    var onTap: () -> Void
+    
+    let features = [
+        "Unlimited Scans",
+        "and more"
+    ]
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("\(Bundle.main.appName) Pro")
+                        .font(.title3.bold())
+                        .foregroundStyle(.white)
+                    
+                    ForEach(features, id: \.self) { feature in
+                        Text("- \(feature)")
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
+                            .opacity(0.7)
+                    }
+                }
+                
+                Spacer()
+                
+                ZStack {
+                    Image(systemName: "document.viewfinder")
+                        .font(.system(size: 70)) /// <-- Originally the size was 80
+                        .foregroundStyle(.white)
+                        .opacity(0.1)
+                        .rotationEffect(.degrees(-20))
+                        .scaleEffect(1.8) /// <-- Make it larger without affecting layout
+                        .offset(x: -10, y: 20)
+                        .allowsHitTesting(false) /// <-- Avoids affecting taps
+                    
+                    HStack {
+                        Image(systemName: "laurel.leading")
+                        Image(systemName: "laurel.trailing")
+                    }
+                    .font(.system(size: 50))
+                    .foregroundStyle(.white)
+                }
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color("Default"), Color("Default").opacity(0.8)]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+        }
+        .buttonStyle(PlainButtonStyle()) /// <-- Prevents default blue button style
     }
 }
