@@ -8,37 +8,106 @@
 import SwiftUI
 
 enum AppIcon: String, CaseIterable {
-    case appIcon = "Default"
-    case appIcon1 = "Light"
-    case appIcon2 = "Dark"
+    case defaultIcon = "Default"
+    case lightIcon = "Light"
+    case darkIcon = "Dark"
+    case sunbeamIcon = "Sunbeam"
+    case peachPopIcon = "Peach Pop"
+    case firestarterIcon = "Firestarter"
+    case roseEmberIcon = "Rose Ember"
+    case jungleWalkIcon = "Jungle Walk"
+    case pineMistIcon = "Pine Mist"
+    case indigoPulseIcon = "Indigo Pulse"
+    case oceanDriftIcon  = "Ocean Drift"
+    case electricTideIcon = "Electric Tide"
+    case frostedBlueIcon = "Frosted Blue"
+    case stormWalkIcon = "Storm Walk"
+    case shadowStepIcon = "Shadow Step"
     
     var iconValue: String? {
-        if self == .appIcon {
-            return nil
-        } else {
-            return rawValue
-        }
+        self == .defaultIcon ? nil : rawValue
     }
     
     var previewImage: String {
         switch self {
-        case .appIcon: "Logo1"
-        case .appIcon1: "Logo2"
-        case .appIcon2: "Logo3"
+        case .defaultIcon: "Logo0"
+        case .lightIcon: "Logo1"
+        case .darkIcon: "Logo2"
+        case .sunbeamIcon: "Logo3"
+        case .peachPopIcon: "Logo4"
+        case .firestarterIcon: "Logo5"
+        case .roseEmberIcon: "Logo6"
+        case .jungleWalkIcon: "Logo7"
+        case .pineMistIcon: "Logo8"
+        case .indigoPulseIcon: "Logo9"
+        case .oceanDriftIcon : "Logo10"
+        case .electricTideIcon: "Logo11"
+        case .frostedBlueIcon: "Logo12"
+        case .stormWalkIcon: "Logo13"
+        case .shadowStepIcon: "Logo14"
         }
+    }
+    
+    static var mainIcons: [AppIcon] {
+        [.defaultIcon, .lightIcon, .darkIcon]
+    }
+    
+    static var warmIcons: [AppIcon] {
+        [.sunbeamIcon, .peachPopIcon, .firestarterIcon, .roseEmberIcon]
+    }
+    
+    static var greenBlueIcons: [AppIcon] {
+        [.jungleWalkIcon, .pineMistIcon, .indigoPulseIcon, .oceanDriftIcon ]
+    }
+    
+    static var bluesNeutralIcons: [AppIcon] {
+        [.electricTideIcon, .frostedBlueIcon, .stormWalkIcon, .shadowStepIcon]
     }
 }
 
 struct alternativeIcons: View {
-    @State private var currentAppIcon: AppIcon = .appIcon
+    @State private var currentAppIcon: AppIcon = .defaultIcon
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
     
     var body: some View {
         NavigationStack {
             List {
-                Section("Choose an App Icon") {
-                    ForEach(AppIcon.allCases, id: \.rawValue) { icon in
+                Section("Original") {
+                    ForEach(AppIcon.mainIcons, id: \.rawValue) { icon in
+                        AppIconRow(
+                            icon: icon,
+                            currentAppIcon: $currentAppIcon,
+                            isSubscriptionActive: appSubModel.isSubscriptionActive,
+                            isPaywallPresented: $isPaywallPresented
+                        )
+                    }
+                }
+                
+                Section("Oranges & Reds") {
+                    ForEach(AppIcon.warmIcons, id: \.rawValue) { icon in
+                        AppIconRow(
+                            icon: icon,
+                            currentAppIcon: $currentAppIcon,
+                            isSubscriptionActive: appSubModel.isSubscriptionActive,
+                            isPaywallPresented: $isPaywallPresented
+                        )
+                    }
+                }
+                
+                Section("Greens & Blues") {
+                    ForEach(AppIcon.greenBlueIcons, id: \.rawValue) { icon in
+                        AppIconRow(
+                            icon: icon,
+                            currentAppIcon: $currentAppIcon,
+                            isSubscriptionActive: appSubModel.isSubscriptionActive,
+                            isPaywallPresented: $isPaywallPresented
+                        )
+                    }
+                }
+                
+                Section("Blues & Neutrals") {
+                    ForEach(AppIcon.bluesNeutralIcons, id: \.rawValue) { icon in
                         AppIconRow(
                             icon: icon,
                             currentAppIcon: $currentAppIcon,
@@ -48,8 +117,7 @@ struct alternativeIcons: View {
                     }
                 }
             }
-            .navigationTitle("App Icon")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Alternate Icons")
             .alert(isPresented: $isPaywallPresented) {
                 Alert(
                     title: Text("Upgrade to Unlock"),
@@ -71,7 +139,7 @@ struct alternativeIcons: View {
                let appIcon = AppIcon.allCases.first(where: { $0.rawValue == alternativeAppIcon }) {
                 currentAppIcon = appIcon
             } else {
-                currentAppIcon = AppIcon.appIcon
+                currentAppIcon = AppIcon.defaultIcon
             }
         }
     }
@@ -84,7 +152,7 @@ struct AppIconRow: View {
     @Binding var isPaywallPresented: Bool
     
     var body: some View {
-        let isLocked = (icon != .appIcon && !isSubscriptionActive)
+        let isLocked = (icon != .defaultIcon && !isSubscriptionActive)
         let isSelected = (currentAppIcon == icon)
         
         HStack(spacing: 15) {
