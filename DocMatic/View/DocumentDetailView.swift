@@ -130,7 +130,7 @@ struct DocumentDetailView: View {
                 } label: {
                     Text("Done")
                         .font(.title3.bold())
-                        .foregroundStyle(.purple)
+                        .foregroundStyle(Color("Default").gradient)
                 }
             }
             .overlay(alignment: .leading) {
@@ -142,6 +142,7 @@ struct DocumentDetailView: View {
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Share", systemImage: "square.and.arrow.up")
+                                .tint(.primary)
                         }
                         
                         // Save Document
@@ -150,6 +151,7 @@ struct DocumentDetailView: View {
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Save to Files", systemImage: "folder")
+                                .tint(.primary)
                         }
                         
                         // Print File
@@ -158,6 +160,7 @@ struct DocumentDetailView: View {
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Print", systemImage: "printer")
+                                .tint(.primary)
                         }
                         
                         // Rename File
@@ -167,6 +170,7 @@ struct DocumentDetailView: View {
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Rename", systemImage: "pencil")
+                                .tint(.primary)
                         }
                         
                         // Lock File
@@ -177,6 +181,7 @@ struct DocumentDetailView: View {
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
+                                .tint(.primary)
                         }
                         
                         // Delete File
@@ -185,15 +190,13 @@ struct DocumentDetailView: View {
                             allinOne.invalidate(reason: .actionPerformed)
                         } label: {
                             Label("Delete", systemImage: "trash")
+                                .tint(.red)
                         }
                         
                     } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title3)
-                            .foregroundStyle(.purple)
-                            .background(GeometryReader { buttonGeometry in
-                                Color.clear.preference(key: ButtonFrameKey.self, value: buttonGeometry.frame(in: .global))
-                            })
+                        Image(systemName: "list.bullet.indent")
+                            .font(.title2)
+                            .foregroundStyle(Color("Default").gradient)
                     }
                     .popoverTip(allinOne)
                     .alert("Delete this document?", isPresented: $deleteAlert) {
@@ -242,28 +245,29 @@ struct DocumentDetailView: View {
             // Magnifyingglass (Plus)
             Button(action: {
                 withAnimation(.easeInOut) {
-                    zoom = min(zoom + 0.5, 5.0) /// <- Increase zoom with a maximum limit
+                    zoom = min(zoom + 1.0, 5.0) /// <- Increase zoom with a maximum limit
                 }
             }) {
                 Image(systemName: "plus.magnifyingglass") /// <- Zoom-in icon
                     .font(.title)
-                    .foregroundStyle(zoom < 5.0 ? .purple : .gray)
+                    .foregroundStyle(zoom < 5.0 ? Color("Default").gradient : Color.gray.gradient)
             }
             .disabled(zoom >= 5.0)
             
-            // Magnifyingglass (Minus)
-            Button(action: {
-                withAnimation(.easeInOut) {
-                    zoom = max(zoom - 0.5, 1.0) /// <- Decrease zoom with a maximum limit
+            if zoom > 1.0 {
+                // Magnifyingglass (Minus)
+                Button(action: {
+                    withAnimation(.easeInOut) {
+                        zoom = max(zoom - 0.5, 1.0) /// <- Decrease zoom with a maximum limit
+                    }
+                }) {
+                    Image(systemName: "minus.magnifyingglass") /// <- Zoom-out icon
+                        .font(.title)
+                        .foregroundStyle(Color("Default").gradient)
                 }
-            }) {
-                Image(systemName: "minus.magnifyingglass") /// <- Zoom-out icon
-                    .font(.title)
-                    .foregroundStyle(zoom > 1.0 ? .purple : .gray)
             }
-            .disabled(zoom <= 1.0)
             
-            if zoom > 2.5 {
+            if zoom > 1.5 {
                 // Magnifyingglass (All the way out)
                 Button(action: {
                     withAnimation(.easeInOut) {
@@ -273,7 +277,7 @@ struct DocumentDetailView: View {
                 }) {
                     Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <- Zoom all the way out icon
                         .font(.title)
-                        .foregroundStyle(.purple)
+                        .foregroundStyle(Color("Default").gradient)
                 }
             }
         }
