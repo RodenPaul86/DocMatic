@@ -26,8 +26,8 @@ struct aboutView: View {
                         .font(.subheadline)
                     
                     customRow(icon: "link", firstLabel: "My Website", secondLabel: "", url: "https://paulrodenjr.org")
-                    customRow(icon: "link", firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
                     customRow(icon: "link", firstLabel: "DocMatic Website", secondLabel: "", url: "https://docmatic.app")
+                    customRow(icon: "link", firstLabel: "GitHub", secondLabel: "", url: "https://github.com/RodenPaul86")
                 }
             }
             .navigationTitle("About")
