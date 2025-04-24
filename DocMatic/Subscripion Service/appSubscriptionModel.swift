@@ -11,10 +11,20 @@ import RevenueCat
 
 class appSubscriptionModel: ObservableObject {
     @Published var isSubscriptionActive = false
+    @Published var isLoading = true
     
     init() {
+        refreshSubscriptionStatus()
+    }
+    
+    func refreshSubscriptionStatus() {
+        isLoading = true
         Purchases.shared.getCustomerInfo { customerInfo, error in
-            self.isSubscriptionActive = customerInfo?.entitlements.all["premium"]?.isActive == true
+            DispatchQueue.main.async {
+                let isActive = customerInfo?.entitlements.all["premium"]?.isActive == true
+                self.isSubscriptionActive = isActive
+                self.isLoading = false
+            }
         }
     }
     
@@ -28,7 +38,6 @@ class appSubscriptionModel: ObservableObject {
     }
     
     private func resetAppIconToDefault() {
-        // Reset the app icon to default when the subscription is no longer active
-        UIApplication.shared.setAlternateIconName(nil) // Reset to default icon
+        UIApplication.shared.setAlternateIconName(nil) /// <-- Reset to default icon
     }
 }

@@ -96,9 +96,8 @@ struct AppIconRow: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(isSelected ? Color("Default").gradient : Color.gray.gradient, lineWidth: 2)
+                            .stroke(isSelected ? Color("Default").gradient : Color.gray.gradient, lineWidth: 1)
                     )
-                    .opacity(isLocked ? 0.5 : 1.0)
             }
             
             Text(icon.rawValue)

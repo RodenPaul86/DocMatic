@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct IntroScreen: View {
-    @AppStorage("showIntroView") private var showIntroView: Bool = true
+    @Binding var showIntroView: Bool
     @StateObject private var biometricManager = BiometricManager()
     
     var onContinue: () -> Void
@@ -36,7 +36,7 @@ struct IntroScreen: View {
             
             // MARK: Continue Button
             Button {
-                showIntroView = false
+                showIntroView = true
                 onContinue() /// <-- Trigger Paywall
             } label: {
                 Text("Continue")
@@ -74,8 +74,4 @@ struct IntroScreen: View {
             }
         }
     }
-}
-
-#Preview {
-    IntroScreen(onContinue: {})
 }
