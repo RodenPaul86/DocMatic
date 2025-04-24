@@ -129,6 +129,7 @@ struct feedbackView: View {
                 }
             }
             .navigationBarTitle("Support")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
@@ -156,7 +157,7 @@ struct feedbackView: View {
     struct TopicSelectionView: View {
         @Binding var selectedTopic: String
         let topics: [String]
-
+        
         var body: some View {
             List {
                 ForEach(topics, id: \.self) { topic in

@@ -78,6 +78,7 @@ struct helpFAQView: View {
                 .safeAreaPadding(.bottom, 60)
             }
             .navigationTitle("FAQS")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
