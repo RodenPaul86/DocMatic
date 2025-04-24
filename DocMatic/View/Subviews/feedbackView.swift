@@ -14,7 +14,7 @@ struct feedbackView: View {
     @State private var isShowingMailView = false
     @State private var textBody: String = ""
     @State private var selectedTopic: String = "Feedback"
-    private let topics = ["Feedback", "Question", "Request", "Bug Report"]
+    private let topics = ["Feedback", "Question", "Request", "Bug Report", "Other"]
     
     @State private var selectedImage: UIImage? = nil
     @State private var selectedItem: PhotosPickerItem? = nil
@@ -53,7 +53,7 @@ struct feedbackView: View {
                     .padding(.vertical, 8)
                     .frame(minHeight: 120, alignment: .top) // Ensures expansion
                 
-                Section(footer: Text("Only upload images related to your \(selectedTopic).")) {
+                Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
                     HStack {
                         // Image Preview
                         if let image = selectedImage {
@@ -127,7 +127,7 @@ struct feedbackView: View {
                     }
                 }
             }
-            .navigationBarTitle("Feedback")
+            .navigationBarTitle("Support")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -179,14 +179,19 @@ struct feedbackView: View {
     
     private func generateEmailBody() -> String {
         return """
-            \(textBody)
+            <html>
+                  <body style="font-family: -apple-system; font-size: 16px; color: #ffffff; background-color: #000000;">
+                    <p style="margin-bottom: 20px;">\(textBody)</p><br><br><br>
             
-            
-            Device: \(UIDevice.current.modelName)
-            \(UIDevice.current.deviceOS): \(UIDevice.current.OSVersion)
-            App: \(Bundle.main.appName)
-            Version: \(Bundle.main.appVersion)
-            Build: \(Bundle.main.appBuild)
+                    <table style="border-collapse: collapse; font-size: 16px;">
+                      <tr><td><strong>Device:</strong></td><td style="padding-left: 15px;">\(UIDevice.current.modelName)</td></tr>
+                      <tr><td><strong>\(UIDevice.current.deviceOS):</strong></td><td style="padding-left: 15px;">\(UIDevice.current.OSVersion)</td></tr>
+                      <tr><td><strong>App:</strong></td><td style="padding-left: 15px;">\(Bundle.main.appName)</td></tr>
+                      <tr><td><strong>Version:</strong></td><td style="padding-left: 15px;">\(Bundle.main.appVersion)</td></tr>
+                      <tr><td><strong>Build:</strong></td><td style="padding-left: 15px;">\(Bundle.main.appBuild)</td></tr>
+                    </table>
+                  </body>
+                </html>
             """
     }
     
@@ -243,7 +248,7 @@ struct MailView: UIViewControllerRepresentable {
         let mailComposeVC = MFMailComposeViewController()
         mailComposeVC.setToRecipients([recipient])
         mailComposeVC.setSubject(subject)
-        mailComposeVC.setMessageBody(body, isHTML: false)
+        mailComposeVC.setMessageBody(body, isHTML: true)
         mailComposeVC.mailComposeDelegate = context.coordinator
         
         // Attach the image if available
