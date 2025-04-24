@@ -13,7 +13,7 @@ import TipKit
 struct DocumentDetailView: View {
     var document: Document
     
-    // View Properties
+    // MARK: View Properties
     @State private var isLoading: Bool = false
     @State private var showFileMover: Bool = false
     @State private var fileURL: URL?
@@ -22,15 +22,15 @@ struct DocumentDetailView: View {
     
     @State private var shareButtonFrame: CGRect = .zero
     
-    // Lock Screen Properties
+    // MARK: Lock Screen Properties
     @State private var isLockAvailable: Bool?
     @State private var isUnlocked: Bool = false
     
-    // Renaming Properties
+    // MARK: Renaming Properties
     @State private var isRenaming: Bool = false
     @State private var newFileName: String = ""
     
-    // Zooming Properties
+    // MARK: Zooming Properties
     @State private var zoom: CGFloat = 1.0          /// <-- Current zoom level
     @State private var offset: CGSize = .zero      /// <-- Current drag offset
     @State private var lastOffset: CGSize = .zero /// <-- Previous drag offset
@@ -40,7 +40,7 @@ struct DocumentDetailView: View {
         Int(zoom * 100) /// <-- Converts zoom level (e.g., 1.0 = 100%) to percentage
     }
     
-    // Environment Values
+    // MARK: Environment Values
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scene
@@ -64,7 +64,7 @@ struct DocumentDetailView: View {
                                 .scaleEffect(zoom)
                                 .offset(offset) /// <-  Apply the drag offset
                                 .gesture(
-                                    // Only allow dragging if zoomed in
+                                    // MARK: Only allow dragging if zoomed in
                                     zoom > 1.0 ? DragGesture()
                                         .onChanged { value in
                                             offset = CGSize(
@@ -136,7 +136,7 @@ struct DocumentDetailView: View {
             .overlay(alignment: .leading) {
                 GeometryReader { geometry in
                     Menu {
-                        // Share Document
+                        // MARK: Share Document
                         Button(action: {
                             shareDocument()
                             allinOne.invalidate(reason: .actionPerformed)
@@ -145,7 +145,7 @@ struct DocumentDetailView: View {
                                 .tint(.primary)
                         }
                         
-                        // Save Document
+                        // MARK: Save Document
                         Button(action: {
                             createAndShareDocument()
                             allinOne.invalidate(reason: .actionPerformed)
@@ -154,7 +154,7 @@ struct DocumentDetailView: View {
                                 .tint(.primary)
                         }
                         
-                        // Print File
+                        // MARK: Print File
                         Button(action: {
                             printDocument()
                             allinOne.invalidate(reason: .actionPerformed)
@@ -163,7 +163,7 @@ struct DocumentDetailView: View {
                                 .tint(.primary)
                         }
                         
-                        // Rename File
+                        // MARK: Rename File
                         Button(action: {
                             newFileName = document.name /// <-- Pre-fill the current name
                             isRenaming = true
@@ -173,7 +173,7 @@ struct DocumentDetailView: View {
                                 .tint(.primary)
                         }
                         
-                        // Lock File
+                        // MARK: Lock File
                         Button(action: {
                             document.isLocked.toggle()
                             isUnlocked = !document.isLocked
@@ -184,7 +184,7 @@ struct DocumentDetailView: View {
                                 .tint(.primary)
                         }
                         
-                        // Delete File
+                        // MARK: Delete File
                         Button(role: .destructive) {
                             deleteAlert = true
                             allinOne.invalidate(reason: .actionPerformed)
@@ -242,7 +242,7 @@ struct DocumentDetailView: View {
             
             Spacer(minLength: 0)
             
-            // Magnifyingglass (Plus)
+            // MARK: Magnifyingglass (Plus)
             Button(action: {
                 withAnimation(.easeInOut) {
                     zoom = min(zoom + 1.0, 5.0) /// <- Increase zoom with a maximum limit
@@ -254,8 +254,8 @@ struct DocumentDetailView: View {
             }
             .disabled(zoom >= 5.0)
             
+            // MARK: Magnifyingglass (Minus)
             if zoom > 1.0 {
-                // Magnifyingglass (Minus)
                 Button(action: {
                     withAnimation(.easeInOut) {
                         zoom = max(zoom - 0.5, 1.0) /// <- Decrease zoom with a maximum limit
@@ -267,8 +267,8 @@ struct DocumentDetailView: View {
                 }
             }
             
+            // MARK: Magnifyingglass (All the way out)
             if zoom > 1.5 {
-                // Magnifyingglass (All the way out)
                 Button(action: {
                     withAnimation(.easeInOut) {
                         zoom = 1.0 /// <- Reset zoom
@@ -336,7 +336,7 @@ struct DocumentDetailView: View {
     }
     
     private func createAndShareDocument() {
-        // Converting SwiftData document into a PDF Document
+        // MARK: Converting SwiftData document into a PDF Document
         guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return }
         isLoading = true
         
@@ -452,7 +452,7 @@ struct DocumentDetailView: View {
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact]
         
-        // iPad popover setup
+        // MARK: iPad popover setup
         if let popoverController = activityViewController.popoverPresentationController {
             // Set the anchor point for the popover to the "Share" button position
             popoverController.sourceView = window.rootViewController?.view
