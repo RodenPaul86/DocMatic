@@ -37,6 +37,7 @@ struct Home: View {
     /// Environment Values
     @Namespace private var animationID
     @Environment(\.modelContext) private var context
+    @Environment(\.requestReview) var requestReview
     
     /// Filtered documents based on search text
     var filteredDocuments: [Document] {
@@ -131,32 +132,6 @@ struct Home: View {
             .navigationTitle("My Documents")
             .searchable(text: $searchText, prompt: "Search")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        if appSubModel.isSubscriptionActive {
-                            showAlert.toggle()
-                        } else {
-                            isPaywallPresented = true
-                        }
-                    } label: {
-                        HStack {
-                            Image(systemName: "laurel.leading")
-                            Image(systemName: "laurel.trailing")
-                        }
-                        .foregroundStyle(Color("Default").gradient)
-                    }
-                    .alert(isPresented: $showAlert) {
-                        Alert(
-                            title: Text("Pro Subscriber"),
-                            message: Text("Thank you for your subscription! We truly appreciate your support. You can manage your subscription at anytime."),
-                            primaryButton: .default(Text("Manage Subscription")) {
-                                isPresentedManageSubscription = true
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-                }
-                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gear")
@@ -261,10 +236,19 @@ struct Home: View {
                 self.scanDocument = nil
                 isLoading = false
                 self.documentName = "New Document"
+                
+                if AppReviewRequest.requestAvailable {
+                    Task {
+                        try await Task.sleep(
+                            until: .now + .seconds(1),
+                            tolerance: .seconds(0.5),
+                            clock: .suspending
+                        )
+                        requestReview()
+                    }
+                }
             }
         }
-        ReviewManager.incrementLaunchCount()
-        ReviewManager.checkMajorVersion()
     }
     
     /// Error Handling
