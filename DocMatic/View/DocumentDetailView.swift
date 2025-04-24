@@ -202,7 +202,7 @@ struct DocumentDetailView: View {
                             .foregroundStyle(Color("Default").gradient)
                     }
                     .popoverTip(allinOne)
-                    .alert("Delete this document?", isPresented: $deleteAlert) {
+                    .confirmationDialog("Are you sure you want to delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
                         Button("Delete", role: .destructive) {
                             dismiss()
                             Task { @MainActor in
@@ -212,14 +212,14 @@ struct DocumentDetailView: View {
                                 try? context.save()
                             }
                         }
-                        Button("Cancel", role: .cancel) { }
+                        Button("Cancel", role: .cancel) {}
                     }
-                    .alert("Rename Document", isPresented: $isRenaming) {
+                    .alert("Renaming?", isPresented: $isRenaming) {
                         TextField("New File Name", text: $newFileName)
                         Button("Save", action: renameFile)
                         Button("Cancel", role: .cancel) { }
                     } message: {
-                        Text("Enter a new name for your file.")
+                        Text("Enter a new name for your document.")
                     }
                 }
                 .onPreferenceChange(ButtonFrameKey.self) { frame in

@@ -11,8 +11,19 @@ struct DocumentCardView: View {
     var document: Document
     var animationID: Namespace.ID /// <- For zoom transition
     
-    /// View Properties
+    // MARK: View Properties
     @State private var downsizedImage: UIImage?
+    
+    // MARK: Renaming Properties
+    @Environment(\.modelContext) private var context
+    @State private var isRenaming: Bool = false
+    @State private var newFileName: String = ""
+    
+    // MARK: Deleting Properties
+    @State private var deleteAlert: Bool = false
+    
+    // MARK: Lock Document
+    @State private var isUnlocked: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -53,17 +64,13 @@ struct DocumentCardView: View {
                     }
                     
                     if document.isLocked {
-                        Color.black.opacity(0.2) /// <-- Optional: A slight dark tint behind the blur
-                            .overlay(
-                                VisualEffectBlur(blurStyle: .systemThinMaterial)
-                                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                            )
-                            .overlay(
-                                Image(systemName: "lock.fill")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.primary)
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                        ZStack {
+                            Rectangle()
+                                .fill(.ultraThinMaterial)
+                            
+                            Image(systemName: "lock.fill")
+                                .font(.largeTitle)
+                        }
                     }
                 }
                 .aspectRatio(8.5 / 11, contentMode: .fit) /// <- Maintain letter-size aspect ratio
@@ -81,6 +88,49 @@ struct DocumentCardView: View {
                 .foregroundStyle(.gray)
         }
         .padding(10) /// <- Padding for a cleaner look around the content
+        .contextMenu {
+            Button {
+                newFileName = document.name /// <-- Pre-fill the current name
+                isRenaming = true
+            } label: {
+                Label("Rename", systemImage: "pencil")
+                    .tint(.primary)
+            }
+            
+            Button {
+                document.isLocked.toggle()
+                isUnlocked = !document.isLocked
+                try? context.save()
+            } label: {
+                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock.fill")
+                    .tint(.primary)
+            }
+            
+            Button(role: .destructive) {
+                deleteAlert = true
+            } label: {
+                Label("Delete", systemImage: "trash")
+                    .tint(.red)
+            }
+        }
+        .confirmationDialog("Are you sure you want to delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                Task { @MainActor in
+                    try? await Task.sleep(for: .seconds(0.3))
+                    ScanManager.shared.decrementScanCount()
+                    context.delete(document)
+                    try? context.save()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .alert("Renaming?", isPresented: $isRenaming) {
+            TextField("New File Name", text: $newFileName)
+            Button("Save", action: renameFile)
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Enter a new name for your document.")
+        }
         .background(
             ZStack {
                 LinearGradient(
@@ -99,5 +149,16 @@ struct DocumentCardView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 15)) /// <- Keep rounded corners for the "paper" effect
         )
         .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) /// <- Paper shadow effect
+    }
+    
+    // MARK: Renaming Files
+    private func renameFile() {
+        guard !newFileName.isEmpty else { return }
+        document.name = newFileName
+        do {
+            try context.save()
+        } catch {
+            print("Failed to rename the file: \(error)")
+        }
     }
 }
