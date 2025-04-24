@@ -11,7 +11,7 @@ struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
         ("Document Scans", "5", .infinity, true),
         ("Alternate App Icons", nil, .checkmark, false),
-        ("Remove Paywall", nil, .checkmark, false)
+        ("Remove Annoying Paywalls", nil, .checkmark, false)
     ]
     
     enum ProFeatureType {
@@ -24,17 +24,17 @@ struct PricingView: View {
             HStack {
                 Text("Features")
                     .font(.headline)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Text("Free")
                     .font(.headline)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.gray)
                     .frame(width: 50) /// <-- Fixed width for alignment
                 
                 Text("Pro")
                     .font(.headline)
-                    .foregroundColor(.purple)
+                    .foregroundStyle(Color("Default").gradient)
                     .frame(width: 50) /// <-- Fixed width for alignment
             }
             
@@ -56,18 +56,19 @@ struct PricingView: View {
                             .foregroundStyle(.gray)
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundColor(feature.freeHasAccess ? .purple : .red)
+                            .foregroundStyle(feature.freeHasAccess ? Color("Default").gradient : Color.red.gradient)
                             .frame(width: 50)
                     }
                     
                     // Pro Version Column
                     Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
-                        .foregroundColor(.purple)
+                        .foregroundStyle(Color("Default").gradient)
                         .frame(width: 50)
                 }
                 .padding(.vertical, 5)
             }
         }
+        .font(.subheadline)
         .padding()
         .background(Color.gray.opacity(0.2))
         .cornerRadius(15)
@@ -75,6 +76,6 @@ struct PricingView: View {
 }
 
 #Preview {
-    PricingView()
+    SubscriptionView(isPaywallPresented: .constant(false))
         .preferredColorScheme(.dark)
 }
