@@ -9,8 +9,8 @@ import SwiftUI
 
 enum AppIcon: String, CaseIterable {
     case appIcon = "Default"
-    case appIcon8 = "Starlight"
-    case appIcon9 = "Obsidian"
+    case appIcon1 = "Light"
+    case appIcon2 = "Dark"
     
     var iconValue: String? {
         if self == .appIcon {
@@ -23,8 +23,8 @@ enum AppIcon: String, CaseIterable {
     var previewImage: String {
         switch self {
         case .appIcon: "Logo1"
-        case .appIcon8: "Logo8"
-        case .appIcon9: "Logo9"
+        case .appIcon1: "Logo2"
+        case .appIcon2: "Logo3"
         }
     }
 }
