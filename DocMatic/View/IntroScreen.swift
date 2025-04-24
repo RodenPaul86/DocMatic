@@ -13,15 +13,14 @@ struct IntroScreen: View {
     
     var onContinue: () -> Void
     
+    // MARK: Main View
     var body: some View {
         VStack(spacing: 15) {
-            Text("Welcome to \nDocMatic")
+            Text("Welcome to \n\(Bundle.main.appName)")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
-                .padding(.top, 65)
-                .padding(.bottom, 35)
+                .padding([.top, .bottom], 30)
             
-            /// Points
             VStack(alignment: .leading, spacing: 25) {
                 keyPoints(title: "Scan and Digitize", image: "scanner", description: "Effortlessly scan and digitize any document.")
                 
@@ -35,7 +34,7 @@ struct IntroScreen: View {
             
             Spacer(minLength: 0)
             
-            /// Continue Button
+            // MARK: Continue Button
             Button {
                 showIntroView = false
                 onContinue() /// <-- Trigger Paywall
@@ -43,9 +42,11 @@ struct IntroScreen: View {
                 Text("Continue")
                     .fontWeight(.bold)
                     .foregroundStyle(.white)
-                    .hSpacing(.center)
-                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity)
+                    .padding()
                     .background(Color("Default").gradient, in: .capsule)
+                    .foregroundColor(.white)
+                    .cornerRadius(14)
             }
         }
         .padding(15)
@@ -54,6 +55,7 @@ struct IntroScreen: View {
         }
     }
     
+    // MARK: Key Points
     @ViewBuilder
     private func keyPoints(title: String, image: String, description: String) -> some View {
         HStack(spacing: 15) {
