@@ -179,6 +179,7 @@ struct DocumentDetailView: View {
                             isUnlocked = !document.isLocked
                             try? context.save()
                             allinOne.invalidate(reason: .actionPerformed)
+                            dismiss()
                         }) {
                             Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
                                 .tint(.primary)
