@@ -53,13 +53,17 @@ struct DocumentCardView: View {
                     }
                     
                     if document.isLocked {
-                        ZStack {
-                            Rectangle()
-                                .fill(.ultraThinMaterial)
-                            
-                            Image(systemName: "lock.fill")
-                                .font(.largeTitle)
-                        }
+                        Color.black.opacity(0.2) /// <-- Optional: A slight dark tint behind the blur
+                            .overlay(
+                                VisualEffectBlur(blurStyle: .systemThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                            )
+                            .overlay(
+                                Image(systemName: "lock.fill")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.primary)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
                     }
                 }
                 .aspectRatio(8.5 / 11, contentMode: .fit) /// <- Maintain letter-size aspect ratio
