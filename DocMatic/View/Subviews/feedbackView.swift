@@ -24,34 +24,36 @@ struct feedbackView: View {
         NavigationStack {
             List {
                 // Topic Row
-                HStack {
-                    Text("Topic")
-                        .font(.headline)
-                    Spacer()
-                    
-                    // Menu with Chevron
-                    Menu {
-                        ForEach(topics, id: \.self) { topic in
-                            Button(action: {
-                                selectedTopic = topic
-                            }) {
-                                Text(topic)
+                Section("") {
+                    HStack {
+                        Text("Topic")
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        Menu { /// <-- Menu with Chevron
+                            ForEach(topics, id: \.self) { topic in
+                                Button(action: {
+                                    selectedTopic = topic
+                                }) {
+                                    Text(topic)
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text(selectedTopic)
+                                    .foregroundColor(.gray)
+                                Image(systemName: "chevron.right") /// <-- Chevron next to text
+                                    .foregroundColor(.gray)
                             }
                         }
-                    } label: {
-                        HStack {
-                            Text(selectedTopic)
-                                .foregroundColor(.gray)
-                            Image(systemName: "chevron.right") // Chevron next to text
-                                .foregroundColor(.gray)
-                        }
                     }
+                    
+                    // MARK: Expanding TextField
+                    TextField("Enter text here...", text: $textBody, axis: .vertical)
+                        .padding(.vertical, 8)
+                        .frame(minHeight: 120, alignment: .top) /// <-- Ensures expansion
                 }
-                
-                // MARK: Expanding TextField
-                TextField("Enter text here...", text: $textBody, axis: .vertical)
-                    .padding(.vertical, 8)
-                    .frame(minHeight: 120, alignment: .top) // Ensures expansion
                 
                 Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
                     HStack {
@@ -127,7 +129,6 @@ struct feedbackView: View {
                 }
             }
             .navigationBarTitle("Support")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {

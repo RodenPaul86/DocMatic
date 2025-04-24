@@ -93,7 +93,6 @@ struct SettingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .animation(.easeInOut, value: appScheme)
             .debugRevenueCatOverlay(isPresented: $showDebug)

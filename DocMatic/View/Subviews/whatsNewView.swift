@@ -21,18 +21,15 @@ struct whatsNewView: View {
     ]
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    ForEach(updates, id: \.id) { update in
-                        UpdateCard(update: update)
-                    }
+        ScrollView {
+            VStack(spacing: 16) {
+                ForEach(updates, id: \.id) { update in
+                    UpdateCard(update: update)
                 }
-                .padding()
-                .safeAreaPadding(.bottom, 60)
             }
+            .padding()
+            .safeAreaPadding(.bottom, 60)
             .navigationTitle("What's New")
-            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }
