@@ -102,6 +102,7 @@ struct SubscriptionView: View {
                     // MARK: Subscribe Button (Full Width)
                     Button(action: {
                         purchase(selectedPlan)
+                        HapticManager.shared.notify(.impact(.light))
                     }) {
                         Text(hasIntroOffer(for: selectedPlan) ? "Try for Free!" : "Subscribe")
                             .fontWeight(.bold)

@@ -204,6 +204,7 @@ struct Home: View {
             } else {
                 isPaywallPresented = true
             }
+            HapticManager.shared.notify(.impact(.light))
         } label: {
             HStack(spacing: 6) {
                 Image(systemName: "document.viewfinder.fill")
