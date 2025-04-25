@@ -18,7 +18,7 @@ enum ScannerError: Error {
 }
 
 struct Home: View {
-    /// View Properties
+    // MARK: View Properties
     @State private var showScannerView: Bool = false
     @State private var scanDocument: VNDocumentCameraScan?
     @State private var searchText = "" /// <- Holds the search input
@@ -33,12 +33,12 @@ struct Home: View {
     
     @State private var isPresentedManageSubscription = false
     
-    /// Environment Values
+    // MARK: Environment Values
     @Namespace private var animationID
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     
-    /// Filtered documents based on search text
+    // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
         if searchText.isEmpty {
             return documents
@@ -167,7 +167,7 @@ struct Home: View {
         .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
     }
     
-    /// Custom Scan Document Button
+    // MARK: Custom Scan Document Button
     @ViewBuilder
     private func CreateButton() -> some View {
         Button {
@@ -210,7 +210,7 @@ struct Home: View {
         }
     }
     
-    /// Helper Methods
+    // MARK: Helper Methods
     private func createDocument() {
         guard let scanDocument else { return }
         isLoading = true
@@ -250,7 +250,7 @@ struct Home: View {
         }
     }
     
-    /// Error Handling
+    // MARK: Error Handling
     func handleScannerError(_ error: Error) {
         var errorMessage: String
         
