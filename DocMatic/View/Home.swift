@@ -10,7 +10,6 @@ import SwiftData
 import VisionKit
 import TipKit
 import RevenueCat
-import RevenueCatUI
 
 enum ScannerError: Error {
     case cameraAccessDenied
