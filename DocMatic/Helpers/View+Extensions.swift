@@ -47,6 +47,20 @@ extension View {
 }
 
 /// TipKit Views
+struct Welcome: Tip {
+    var title: Text {
+        Text("can Your First Document")
+    }
+    
+    var message: Text? {
+        Text("Use the camera to scan and save documents securely with DocMatic.")
+    }
+    
+    var image: Image? {
+        Image(systemName: "doc.text.viewfinder")
+    }
+}
+
 struct AllinOne: Tip {
     var title: Text {
         Text("What’s Next?")

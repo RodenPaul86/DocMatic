@@ -21,7 +21,7 @@ struct Home: View {
     // MARK: View Properties
     @State private var showScannerView: Bool = false
     @State private var scanDocument: VNDocumentCameraScan?
-    @State private var searchText = "" /// <- Holds the search input
+    @State private var searchText: String = "" /// <- Holds the search input
     @State private var documentName: String = "New Document"
     @State private var askDocumentName: Bool = false
     @State private var isLoading: Bool = false
@@ -47,6 +47,8 @@ struct Home: View {
         }
     }
     
+    let showWelcomTip = Welcome()
+    
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
     
@@ -55,6 +57,9 @@ struct Home: View {
             ScrollView(.vertical) {
                 // Use adaptive grid with dynamic number of columns based on device size
                 let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))]
+                
+                TipView(showWelcomTip)
+                    .padding(.horizontal)
                 
                 if filteredDocuments.isEmpty {
                     VStack(spacing: 20) {
