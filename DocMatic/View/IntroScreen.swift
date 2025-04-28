@@ -21,6 +21,7 @@ struct IntroScreen: View {
                 .multilineTextAlignment(.center)
                 .padding([.top, .bottom], 30)
             
+            // MARK: Points
             VStack(alignment: .leading, spacing: 25) {
                 keyPoints(title: "Scan and Digitize", image: "scanner", description: "Effortlessly scan and digitize any document.")
                 
