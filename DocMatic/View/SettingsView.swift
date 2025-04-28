@@ -8,10 +8,12 @@
 import SwiftUI
 import RevenueCat
 import WebKit
+import TipKit
 
 struct SettingsView: View {
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     @EnvironmentObject var appSubModel: appSubscriptionModel
     
     @State private var showDebug: Bool = false
@@ -88,11 +90,24 @@ struct SettingsView: View {
                     
                     let scanCount = UserDefaults.standard.value(forKey: "scanCount")
                     customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
+                    
+                    customRow(icon: "lightbulb.max", firstLabel: "Show Tips For Testing", secondLabel: "", showToggle: true, toggleValue: $showTipsForTesting)
+                        .onChange(of: showTipsForTesting) { oldValue, newValue in
+                            if newValue {
+                                Tips.showAllTipsForTesting()
+                            } else {
+                                try? Tips.resetDatastore()
+                            }
+                        }
                 }
 #endif
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
+            .fullScreenCover(isPresented: $isPaywallPresented) {
+                SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    .preferredColorScheme(.dark)
+            }
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .animation(.easeInOut, value: appScheme)
             .debugRevenueCatOverlay(isPresented: $showDebug)
@@ -109,9 +124,11 @@ struct customRow: View {
     var firstLabel: String
     var firstLabelColor: Color = .gray
     var secondLabel: String
-    var action: (() -> Void)? = nil  // Optional action
-    var destination: AnyView? = nil  // Optional navigation
-    var url: String? = nil           // Optional URL
+    var action: (() -> Void)? = nil  /// <-- Optional action
+    var destination: AnyView? = nil  /// <-- Optional navigation
+    var url: String? = nil           /// <-- Optional URL
+    var showToggle: Bool = false
+    var toggleValue: Binding<Bool>? = nil /// <-- Optional toggle switch
     
     @State private var isNavigating = false
     
@@ -141,7 +158,9 @@ struct customRow: View {
             } label: {
                 rowContent(showChevron: false)
             }
-            .buttonStyle(.plain) // Keeps it looking like a row
+            .buttonStyle(.plain) /// <-- Keeps it looking like a row
+        } else if showToggle {
+            rowContent(showChevron: false)
         } else {
             rowContent(showChevron: action != nil)
                 .onTapGesture {
@@ -161,26 +180,28 @@ struct customRow: View {
             
             Text(firstLabel)
                 .font(.headline)
-                .foregroundStyle(Color("DynamicTextColor"))
+                .foregroundStyle(.primary)
             
             Spacer()
             
-            if showChevron {
+            if showToggle, let binding = toggleValue {
+                Toggle("", isOn: binding)
+                    .labelsHidden()
+            } else if showChevron {
                 Image(systemName: "chevron.right")
                     .font(.headline)
                     .imageScale(.small)
                     .foregroundColor(Color.init(uiColor: .systemGray3))
             } else {
                 Text(secondLabel)
-                    .font(.headline)
-                    .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : Color("DynamicTextColor"))
+                    .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : .primary)
             }
         }
         .contentShape(Rectangle())
     }
     
     private func isWebsite(_ urlString: String) -> Bool {
-        return urlString.hasPrefix("http") // Simple check for URLs
+        return urlString.hasPrefix("http") /// <-- Simple check for URLs
     }
 }
 

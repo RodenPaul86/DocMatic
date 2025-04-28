@@ -26,7 +26,8 @@ struct DocMaticApp: App {
                     .modelContainer(for: Document.self)
                     .environmentObject(appSubModel)
                     .task {
-                        //try? Tips.resetDatastore()
+                        //try? Tips.resetDatastore() /// <-- This is to reset data store
+                        //Tips.showAllTipsForTesting() /// <-- Shows all tips for testing
                         try? Tips.configure([
                             .datastoreLocation(.applicationDefault)
                         ])
