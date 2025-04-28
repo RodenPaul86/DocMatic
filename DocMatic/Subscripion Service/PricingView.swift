@@ -33,7 +33,7 @@ struct PricingView: View {
                     .frame(width: 50) /// <-- Fixed width for alignment
                 
                 Text("Pro")
-                    .font(.headline)
+                    .font(.headline.italic())
                     .foregroundStyle(Color("Default").gradient)
                     .frame(width: 50) /// <-- Fixed width for alignment
             }
@@ -67,6 +67,12 @@ struct PricingView: View {
                 }
                 .padding(.vertical, 5)
             }
+            
+            Divider()
+            
+            Text("Subscribe for $19.99 / year. Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. Manage or cancel anytime in your iTunes settings.")
+                .font(.caption)
+                .foregroundStyle(.gray)
         }
         .font(.subheadline)
         .padding()

@@ -33,7 +33,7 @@ struct SubscriptionView: View {
                 
                 Spacer()
                 
-                // MARK: Title: TaskSync
+                // MARK: Title: DocMatic
                 Text(Bundle.main.appName)
                     .font(.headline)
                     .foregroundColor(.white)
@@ -52,15 +52,13 @@ struct SubscriptionView: View {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Image(systemName: "xmark")
-                        .font(.caption.bold())
-                        .foregroundColor(.black)
-                        .frame(width: 25, height: 25)
-                        .background(Color.gray)
-                        .clipShape(Circle())
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .tint(Color(.lightGray))
+                        .opacity(0.25)
                 }
             }
-            .padding()
+            .padding([.top, .horizontal])
             
             Spacer()
             
