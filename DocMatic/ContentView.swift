@@ -9,44 +9,45 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @EnvironmentObject var appSubModel: appSubscriptionModel
-    @AppStorage("showIntroView") private var hasSeenIntro: Bool = true
+    @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
+    
     @State private var showIntro: Bool = false
     @State private var isPaywallPresented: Bool = false
     
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    
     var body: some View {
-        NavigationStack {
-            Home()
-                .onAppear {
+        Home()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                checkAccessFlow()
+            }
+            .onChange(of: appSubModel.isLoading) { _, newValue in
+                if !newValue {
                     checkAccessFlow()
                 }
-                .onChange(of: appSubModel.isLoading) { _, newValue in
-                    if !newValue {
-                        checkAccessFlow()
-                    }
-                }
-                .task {
-                    // Refresh subscription when view loads
-                    appSubModel.refreshSubscriptionStatus()
-                }
-                .sheet(isPresented: $showIntro) {
-                    IntroScreen(showIntroView: $hasSeenIntro) {
-                        hasSeenIntro = true
-                        showIntro = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            if !appSubModel.isSubscriptionActive {
-                                isPaywallPresented = true
-                            }
+            }
+            .task {
+                // Refresh subscription when view loads
+                appSubModel.refreshSubscriptionStatus()
+            }
+            .sheet(isPresented: $showIntro) {
+                IntroScreen(showIntroView: $hasSeenIntro) {
+                    hasSeenIntro = true
+                    showIntro = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        if !appSubModel.isSubscriptionActive {
+                            isPaywallPresented = true
                         }
                     }
-                    .interactiveDismissDisabled()
                 }
-                .fullScreenCover(isPresented: $isPaywallPresented) {
-                    SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                        .preferredColorScheme(.dark)
-                }
-        }
-        .tint(Color("Default").gradient)
+                .interactiveDismissDisabled()
+            }
+            .fullScreenCover(isPresented: $isPaywallPresented) {
+                SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    .preferredColorScheme(.dark)
+            }
+            .tint(Color("Default").gradient)
     }
     
     private func checkAccessFlow() {
@@ -62,8 +63,4 @@ struct ContentView: View {
             isPaywallPresented = false
         }
     }
-}
-
-#Preview {
-    ContentView()
 }
