@@ -17,6 +17,11 @@ enum ScannerError: Error {
     case unknownError
 }
 
+enum SortOrder: String {
+    case newestFirst
+    case oldestFirst
+}
+
 struct Home: View {
     // MARK: View Properties
     @State private var showScannerView: Bool = false
@@ -26,7 +31,7 @@ struct Home: View {
     @State private var askDocumentName: Bool = false
     @State private var isLoading: Bool = false
     @State private var isSettingsOpen: Bool = false
-    @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
+    @Query private var documents: [Document]
     
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -38,12 +43,17 @@ struct Home: View {
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     
+    @State private var sortOrder: SortOrder = .newestFirst
+    
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
-        if searchText.isEmpty {
-            return documents
-        } else {
-            return documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        let base = searchText.isEmpty ? documents : documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        
+        switch sortOrder {
+        case .newestFirst:
+            return base.sorted { $0.createdAt > $1.createdAt }
+        case .oldestFirst:
+            return base.sorted { $0.createdAt < $1.createdAt }
         }
     }
     
@@ -136,6 +146,26 @@ struct Home: View {
             .navigationTitle("My Documents")
             .searchable(text: $searchText, prompt: "Search")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Menu {
+                        VStack {
+                            Button(action: {
+                                sortOrder = (sortOrder == .newestFirst) ? .oldestFirst : .newestFirst
+                            }) {
+                                Label(
+                                    sortOrder == .newestFirst ? "Sort by Oldest First" : "Sort by Newest First",
+                                    systemImage: "arrow.up.arrow.down"
+                                )
+                            }
+                        }
+                        .tint(Color.primary)
+                        
+                    } label: {
+                        Text("Sort")
+                            .foregroundStyle(Color("Default").gradient)
+                    }
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gear")
