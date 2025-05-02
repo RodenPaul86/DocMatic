@@ -79,19 +79,17 @@ struct Home: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 55, height: 55)
-                                    .foregroundStyle(.gray)
                                 
                                 Text("No Documents Yet!")
                                     .font(.title3.bold())
-                                    .foregroundStyle(.gray)
                                 
                                 Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
                                     .font(.body)
                                     .multilineTextAlignment(.center) /// <-- Centers long text
-                                    .foregroundStyle(.gray)
                             }
                             .padding(.top, 50)
                             .frame(maxWidth: .infinity) /// <-- Ensures centering horizontally
+                            .foregroundStyle(.gray.opacity(0.5))
                             
                         } else {
                             VStack(spacing: 16) {
