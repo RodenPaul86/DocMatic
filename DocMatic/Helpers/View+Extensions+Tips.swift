@@ -69,26 +69,6 @@ struct AllinOne: Tip {
     }
 }
 
-struct ClosingTheView: Tip {
-    static let setClosingEvent = Event(id: "setClosing")
-    
-    var title: Text {
-        Text("Ready to Leave?")
-    }
-    var message: Text? {
-        Text("Just swipe down to close this screen and get back to work!")
-    }
-    var image: Image? {
-        Image(systemName: "hand.draw")
-    }
-    
-    var rules: [Rule] {
-        #Rule(Self.setClosingEvent) { event in
-            event.donations.count == 1
-        }
-    }
-}
-
 struct searchingDocuments: Tip {
     static let setSearchEvent = Event(id: "searchEvent")
     

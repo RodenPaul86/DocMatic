@@ -46,7 +46,6 @@ struct DocumentDetailView: View {
     @Environment(\.scenePhase) private var scene
     
     let allinOne = AllinOne()
-    let closingTheView = ClosingTheView()
     
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
@@ -124,7 +123,7 @@ struct DocumentDetailView: View {
             .foregroundStyle(.white)
             .hSpacing(.center)
             .overlay(alignment: .trailing) {
-                // Close Button
+                // MARK: Close Button
                 Button {
                     dismiss()
                 } label: {
@@ -294,12 +293,6 @@ struct DocumentDetailView: View {
                 Rectangle()
                     .fill(.ultraThinMaterial)
                     .ignoresSafeArea()
-                
-                VStack(alignment: .center, spacing: 6) {
-                    TipView(closingTheView)
-                        .padding()
-                    Spacer()
-                }
                 
                 VStack(spacing: 6) {
                     if let isLockAvailable, !isLockAvailable {
