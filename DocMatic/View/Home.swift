@@ -85,7 +85,7 @@ struct Home: View {
                                     .font(.title3.bold())
                                     .foregroundStyle(.gray)
                                 
-                                Text(appSubModel.isSubscriptionActive ? "" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
+                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
                                     .font(.body)
                                     .multilineTextAlignment(.center) /// <-- Centers long text
                                     .foregroundStyle(.gray)
@@ -134,9 +134,6 @@ struct Home: View {
                             } label: {
                                 DocumentCardView(document: document, animationID: animationID)
                                     .foregroundStyle(Color.primary)
-                            }
-                            .onAppear {
-                                Task { await ClosingTheView.setClosingEvent.donate() }
                             }
                         }
                     }
