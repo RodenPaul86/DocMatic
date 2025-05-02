@@ -176,7 +176,6 @@ struct SubscriptionView: View {
             } else {
                 alertMessage = "Something went wrong: \(error?.localizedDescription ?? "Unknown error")"
             }
-            
             showAlert = true
         }
     }
