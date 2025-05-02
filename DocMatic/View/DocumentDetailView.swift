@@ -201,7 +201,7 @@ struct DocumentDetailView: View {
                             .foregroundStyle(Color("Default").gradient)
                     }
                     .popoverTip(allinOne)
-                    .confirmationDialog("Are you sure you want to delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
+                    .confirmationDialog("Permanently delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
                         Button("Delete", role: .destructive) {
                             dismiss()
                             Task { @MainActor in
