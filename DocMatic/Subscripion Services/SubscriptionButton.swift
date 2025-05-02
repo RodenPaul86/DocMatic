@@ -23,7 +23,7 @@ struct SubscriptionButton: View {
     var offering: Offering?
     
     @State private var currentOffering: Offering?
-    @State private var originalYearlyPrice: Double = 199.99
+    @State private var originalYearlyPrice: Double = 259.48
     
     @State private var isTrialEligible: Bool = false
     
@@ -90,7 +90,7 @@ struct SubscriptionButton: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color("Default").gradient : Color.gray.gradient, lineWidth: 2)
+                .stroke(isSelected ? Color("Default").gradient : Color(.systemGray6).gradient, lineWidth: 2)
         )
         .onTapGesture {
             selectedPlan = plan

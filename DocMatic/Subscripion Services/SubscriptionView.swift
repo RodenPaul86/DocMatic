@@ -15,8 +15,9 @@ struct SubscriptionView: View {
     @State private var selectedPlan: SubscriptionPlan = .annual
     @State private var currentOffering: Offering?
     @State private var isLoading = true
-    
     @State private var showLegal: Bool = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     var body: some View {
         VStack {
@@ -27,7 +28,7 @@ struct SubscriptionView: View {
                     restorePurchases()
                 }) {
                     Text("Restore")
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray.opacity(0.5))
                         .bold()
                 }
                 
@@ -136,6 +137,9 @@ struct SubscriptionView: View {
                 .padding(.vertical)
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Restore Purchases"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+        }
         .onAppear {
             fetchOfferings()
         }
@@ -157,16 +161,23 @@ struct SubscriptionView: View {
     func restorePurchases() {
         isLoading = true
         Purchases.shared.restorePurchases { (completed, error) in
-            if (completed != nil) {
-                print("Purchases restored successfully")
-                appSubModel.isSubscriptionActive = completed?.entitlements.all["premium"]?.isActive == true
-                isPaywallPresented = false
-                isLoading = false
+            isLoading = false
+            
+            if let completed = completed {
+                let isActive = completed.entitlements.all["premium"]?.isActive == true
+                appSubModel.isSubscriptionActive = isActive
                 
+                if isActive {
+                    alertMessage = "Thank you! Your subscription has been successfully restored."
+                    isPaywallPresented = false
+                } else {
+                    alertMessage = "No active subscription was found to restore."
+                }
             } else {
-                print("Error restoring purchases: \(String(describing: error))")
-                isLoading = false
+                alertMessage = "Something went wrong: \(error?.localizedDescription ?? "Unknown error")"
             }
+            
+            showAlert = true
         }
     }
     
