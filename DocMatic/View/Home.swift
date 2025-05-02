@@ -75,17 +75,17 @@ struct Home: View {
                     VStack(spacing: 20) {
                         if searchText.isEmpty {
                             VStack(spacing: 16) {
-                                Image(systemName: "document.viewfinder")
+                                Image(systemName: "document")
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 60, height: 60)
+                                    .frame(width: 55, height: 55)
                                     .foregroundStyle(.gray)
                                 
-                                Text("No Documents Yet")
-                                    .font(.title2.bold())
+                                Text("No Documents Yet!")
+                                    .font(.title3.bold())
                                     .foregroundStyle(.gray)
                                 
-                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a scan away!" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
+                                Text(appSubModel.isSubscriptionActive ? "" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
                                     .font(.body)
                                     .multilineTextAlignment(.center) /// <-- Centers long text
                                     .foregroundStyle(.gray)
@@ -98,11 +98,11 @@ struct Home: View {
                                 Image(systemName: "magnifyingglass")
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 60, height: 60)
+                                    .frame(width: 55, height: 55)
                                     .foregroundStyle(.gray)
                                 
                                 Text("No Results Found")
-                                    .font(.title2.bold())
+                                    .font(.title3.bold())
                                     .foregroundStyle(.gray)
                                 
                                 Text("Hmm, no matches for \"\(searchText)\". Let’s try something else!")
@@ -112,12 +112,12 @@ struct Home: View {
                                     .padding(.horizontal, 30)
                                 
                                 Button(action: {
-                                    // Clear search or handle action
+                                    // MARK: Clear search
                                     searchText = ""
                                 }) {
                                     Text("Clear Search")
                                         .font(.headline)
-                                        .foregroundStyle(.purple)
+                                        .foregroundStyle(Color("Default").gradient)
                                 }
                             }
                             .padding(.top, 50)
@@ -161,7 +161,7 @@ struct Home: View {
                         .tint(Color.primary)
                         
                     } label: {
-                        Text("Sort")
+                        Image(systemName: "line.3.horizontal.decrease")
                             .foregroundStyle(Color("Default").gradient)
                     }
                 }
