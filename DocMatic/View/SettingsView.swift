@@ -13,13 +13,14 @@ import TipKit
 struct SettingsView: View {
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     @EnvironmentObject var appSubModel: appSubscriptionModel
     
     @State private var showDebug: Bool = false
     @State private var debugMessage: String = ""
     @State private var isPaywallPresented: Bool = false
-    @State private var isPresentedManageSubscription = false
+    @State private var isPresentedManageSubscription: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -76,13 +77,15 @@ struct SettingsView: View {
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true
                     }
-                    customRow(icon: "dollarsign.circle", firstLabel: "Show Paywall for (Debuging)", secondLabel: "") {
+                    
+                    customRow(icon: "dollarsign", firstLabel: "Show Paywall for (Debuging)", secondLabel: "") {
                         isPaywallPresented.toggle()
                     }
                     .sheet(isPresented: $isPaywallPresented) {
                         SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     }
-                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
+                    
+                    customRow(icon: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         UserDefaults.standard.synchronize()
                         debugMessage = "Success!!"
@@ -91,14 +94,9 @@ struct SettingsView: View {
                     let scanCount = UserDefaults.standard.value(forKey: "scanCount")
                     customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
                     
+                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset Datastore", secondLabel: "", showToggle: true, toggleValue: $resetDatastore)
+                    
                     customRow(icon: "lightbulb.max", firstLabel: "Show Tips For Testing", secondLabel: "", showToggle: true, toggleValue: $showTipsForTesting)
-                        .onChange(of: showTipsForTesting) { oldValue, newValue in
-                            if newValue {
-                                Tips.showAllTipsForTesting()
-                            } else {
-                                try? Tips.resetDatastore()
-                            }
-                        }
                 }
 #endif
             }
@@ -106,7 +104,6 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .fullScreenCover(isPresented: $isPaywallPresented) {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                    .preferredColorScheme(.dark)
             }
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .animation(.easeInOut, value: appScheme)

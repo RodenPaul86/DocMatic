@@ -13,6 +13,8 @@ import RevenueCat
 @main
 struct DocMaticApp: App {
     @StateObject var appSubModel = appSubscriptionModel()
+    @AppStorage("resetDatastore") private var resetDatastore: Bool = false
+    @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     
     init() {
         Purchases.logLevel = .error
@@ -26,8 +28,11 @@ struct DocMaticApp: App {
                     .modelContainer(for: Document.self)
                     .environmentObject(appSubModel)
                     .task {
-                        //try? Tips.resetDatastore() /// <-- This is to reset data store
-                        //Tips.showAllTipsForTesting() /// <-- Shows all tips for testing
+                        if resetDatastore {
+                            try? Tips.resetDatastore() /// <-- This is to reset data store
+                        } else if showTipsForTesting {
+                            Tips.showAllTipsForTesting() /// <-- Shows all tips for testing
+                        }
                         try? Tips.configure([
                             .datastoreLocation(.applicationDefault)
                         ])
