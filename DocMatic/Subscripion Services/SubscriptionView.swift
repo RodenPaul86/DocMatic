@@ -37,7 +37,7 @@ struct SubscriptionView: View {
                 // MARK: Title: DocMatic
                 Text(Bundle.main.appName)
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                 
                 Text("Pro")
                     .font(.caption.italic().bold())

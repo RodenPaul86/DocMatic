@@ -78,13 +78,6 @@ struct SettingsView: View {
                         showDebug = true
                     }
                     
-                    customRow(icon: "dollarsign", firstLabel: "Show Paywall for (Debuging)", secondLabel: "") {
-                        isPaywallPresented.toggle()
-                    }
-                    .sheet(isPresented: $isPaywallPresented) {
-                        SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                    }
-                    
                     customRow(icon: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
                         UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
                         UserDefaults.standard.synchronize()
@@ -104,6 +97,7 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .fullScreenCover(isPresented: $isPaywallPresented) {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    .preferredColorScheme(.dark)
             }
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .animation(.easeInOut, value: appScheme)

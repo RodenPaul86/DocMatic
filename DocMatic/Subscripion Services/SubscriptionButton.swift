@@ -63,7 +63,7 @@ struct SubscriptionButton: View {
         VStack(alignment: .leading) {
             HStack { /// <-- Button title
                 Text(plan.rawValue)
-                    .foregroundColor(.white)
+                    .foregroundColor(.primary)
                     .font(.headline)
                 
                 if plan == .annual, let discount = annualDiscount() {
@@ -114,13 +114,13 @@ struct SubscriptionButton: View {
                     .bold()
                     .strikethrough()
                 Text("\(price) / yr")
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .bold()
             }
             
         case .monthly:
             Text("\(price) / mo")
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .bold()
             
         case .weekly:
@@ -131,13 +131,13 @@ struct SubscriptionButton: View {
                         .bold()
                 }
                 Text("\(price) / wk")
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .bold()
             }
             
         case .lifetime:
             Text("\(price) / once")
-                .foregroundStyle(.white)
+                .foregroundStyle(.primary)
                 .bold()
         }
     }
