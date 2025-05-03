@@ -74,6 +74,9 @@ struct SettingsView: View {
                 }
 #if DEBUG
                 Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
+                    let scanCount = UserDefaults.standard.value(forKey: "scanCount")
+                    customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
+                    
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true
                     }
@@ -83,9 +86,6 @@ struct SettingsView: View {
                         UserDefaults.standard.synchronize()
                         debugMessage = "Success!!"
                     }
-                    
-                    let scanCount = UserDefaults.standard.value(forKey: "scanCount")
-                    customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
                     
                     customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset Datastore", secondLabel: "", showToggle: true, toggleValue: $resetDatastore)
                     
