@@ -49,11 +49,11 @@ extension View {
 /// TipKit Views
 struct Welcome: Tip {
     var title: Text {
-        Text("Scan Your First Document")
+        Text("Quick Tip")
     }
     
     var message: Text? {
-        Text("Just point your camera at a document you want to scan and let DocMatic do the rest—it's quick, easy, and secure!")
+        Text("Scan your first document by tapping the 'Scan' button at the bottom. Align your camera with the page, DocMatic will auto-detect the edges and capture it for you. Just point, snap, and save!")
     }
 }
 
