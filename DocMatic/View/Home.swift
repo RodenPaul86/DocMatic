@@ -17,13 +17,13 @@ enum ScannerError: Error {
     case unknownError
 }
 
-enum SortOrder: String {
-    case newestFirst
-    case oldestFirst
-}
-
 struct Home: View {
-    // MARK: View Properties
+    // MARK: Properties
+    @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    
+    @StateObject private var viewModel = DocumentViewModel()
+    @Query private var allDocuments: [Document]
     @State private var showScannerView: Bool = false
     @State private var scanDocument: VNDocumentCameraScan?
     @State private var searchText: String = "" /// <- Holds the search input
@@ -31,37 +31,17 @@ struct Home: View {
     @State private var askDocumentName: Bool = false
     @State private var isLoading: Bool = false
     @State private var isSettingsOpen: Bool = false
-    @Query private var documents: [Document]
-    
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @State private var isPaywallPresented: Bool = false
     
     // MARK: Environment Values
     @Namespace private var animationID
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     
-    @AppStorage("AppScheme") private var appScheme: AppScheme = .device
-    @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
-    
-    @State private var sortOrder: SortOrder = .newestFirst
-    
-    // MARK: Filtered documents based on search text
-    var filteredDocuments: [Document] {
-        let base = searchText.isEmpty ? documents : documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        
-        switch sortOrder {
-        case .newestFirst:
-            return base.sorted { $0.createdAt > $1.createdAt }
-        case .oldestFirst:
-            return base.sorted { $0.createdAt < $1.createdAt }
-        }
-    }
-    
     let showWelcomTip = Welcome()
-    
-    @EnvironmentObject var appSubModel: appSubscriptionModel
-    @State private var isPaywallPresented: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -72,7 +52,7 @@ struct Home: View {
                 TipView(showWelcomTip)
                     .padding(.horizontal)
                 
-                if filteredDocuments.isEmpty {
+                if viewModel.filteredDocuments.isEmpty {
                     VStack(spacing: 20) {
                         if searchText.isEmpty {
                             VStack(spacing: 16) {
@@ -126,7 +106,7 @@ struct Home: View {
                     
                 } else {
                     LazyVGrid(columns: columns, spacing: 15) {
-                        ForEach(filteredDocuments) { document in
+                        ForEach(viewModel.filteredDocuments) { document in
                             NavigationLink {
                                 DocumentDetailView(document: document)
                                     .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
@@ -146,10 +126,10 @@ struct Home: View {
                     Menu {
                         VStack {
                             Button(action: {
-                                sortOrder = (sortOrder == .newestFirst) ? .oldestFirst : .newestFirst
+                                viewModel.sortOrder = (viewModel.sortOrder == .newestFirst) ? .oldestFirst : .newestFirst
                             }) {
                                 Label(
-                                    sortOrder == .newestFirst ? "Sort by Oldest First" : "Sort by Newest First",
+                                    viewModel.sortOrder == .newestFirst ? "Sort by Oldest First" : "Sort by Newest First",
                                     systemImage: "arrow.up.arrow.down"
                                 )
                             }
@@ -182,6 +162,9 @@ struct Home: View {
                         }
                     }
                 }
+            }
+            .onAppear {
+                viewModel.documents = allDocuments
             }
             .safeAreaInset(edge: .bottom) {
                 CreateButton()
