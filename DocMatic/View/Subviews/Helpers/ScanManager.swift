@@ -12,7 +12,7 @@ import RevenueCat
 class ScanManager: ObservableObject {
     static let shared = ScanManager()
     
-    private let freeScanLimit = 5
+    private let freeScanLimit = 3
     private let scanCountKey = "scanCount"
     
     @Published var scanCount: Int {

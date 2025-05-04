@@ -15,6 +15,7 @@ struct SettingsView: View {
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appSubModel: appSubscriptionModel
     
     @State private var showDebug: Bool = false
@@ -34,9 +35,11 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("Costomization")) {
-                    customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
-                        showPickerView.toggle()
-                    })
+                    if UIDevice.current.userInterfaceIdiom == .phone {
+                        customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
+                            showPickerView.toggle()
+                        })
+                    }
                     
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
                 }
@@ -95,6 +98,16 @@ struct SettingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        Button(action: { dismiss() }) {
+                            Text("Done")
+                                .foregroundStyle(Color("Default").gradient)
+                        }
+                    }
+                }
+            }
             .fullScreenCover(isPresented: $isPaywallPresented) {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     .preferredColorScheme(.dark)

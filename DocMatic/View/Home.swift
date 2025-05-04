@@ -36,12 +36,13 @@ struct Home: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
     
-    @State private var isPresentedManageSubscription = false
-    
     // MARK: Environment Values
     @Namespace private var animationID
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
+    
+    @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     
     @State private var sortOrder: SortOrder = .newestFirst
     
@@ -83,7 +84,7 @@ struct Home: View {
                                 Text("No Documents Yet!")
                                     .font(.title3.bold())
                                 
-                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 5 free scans to get you started! \n Need more? Unlock Pro.")
+                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
                                     .font(.body)
                                     .multilineTextAlignment(.center) /// <-- Centers long text
                             }
@@ -162,9 +163,23 @@ struct Home: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: SettingsView()) {
-                        Image(systemName: "gear")
-                            .foregroundStyle(Color("Default").gradient)
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        HStack {
+                            Button(action: { showPickerView.toggle() }) {
+                                Image(systemName: appScheme == .dark ? "sun.max" : "moon")
+                                    .foregroundStyle(Color("Default").gradient)
+                            }
+                            
+                            Button(action: { isSettingsOpen.toggle() }) {
+                                Image(systemName: "gear")
+                                    .foregroundStyle(Color("Default").gradient)
+                            }
+                        }
+                    } else {
+                        NavigationLink(destination: SettingsView()) {
+                            Image(systemName: "gear")
+                                .foregroundStyle(Color("Default").gradient)
+                        }
                     }
                 }
             }
@@ -194,7 +209,9 @@ struct Home: View {
             SubscriptionView(isPaywallPresented: $isPaywallPresented)
                 .preferredColorScheme(.dark)
         }
-        .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
+        .sheet(isPresented: $isSettingsOpen) {
+            SettingsView()
+        }
     }
     
     // MARK: Custom Scan Document Button

@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum AppReviewRequest {
-    static let threshold: Int = 1
+    static let threshold: Int = 3
     @AppStorage("runSinceLastRequest") static var runSinceLastRequest: Int = 0
     @AppStorage("storedVersion") static var storedVersion: String = ""
     
