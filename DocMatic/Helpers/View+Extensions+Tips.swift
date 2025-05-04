@@ -8,7 +8,7 @@
 import SwiftUI
 import TipKit
 
-/// Useful View Extensions
+// MARK: Useful View Extensions
 extension View {
     @ViewBuilder
     func hSpacing(_ alignment: Alignment) -> some View {
@@ -46,7 +46,7 @@ extension View {
     }
 }
 
-/// TipKit Views
+// MARK: TipKit Views
 struct Welcome: Tip {
     var title: Text {
         Text("Quick Tip")
