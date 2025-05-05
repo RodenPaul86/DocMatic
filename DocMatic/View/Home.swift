@@ -18,28 +18,37 @@ enum ScannerError: Error {
 }
 
 struct Home: View {
-    // MARK: Properties
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
-    
-    @StateObject private var viewModel = DocumentViewModel()
-    @Query private var allDocuments: [Document]
-    @State private var showScannerView: Bool = false
-    @State private var scanDocument: VNDocumentCameraScan?
-    @State private var searchText: String = "" /// <- Holds the search input
-    @State private var documentName: String = "New Document"
-    @State private var askDocumentName: Bool = false
-    @State private var isLoading: Bool = false
-    @State private var isSettingsOpen: Bool = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
-    @State private var isPaywallPresented: Bool = false
+    @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
     
     // MARK: Environment Values
     @Namespace private var animationID
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
+    
+    // MARK: Properties
+    @State private var showScannerView: Bool = false
+    @State private var scanDocument: VNDocumentCameraScan?
+    @State private var searchText = "" /// <- Holds the search input
+    @State private var documentName: String = "New Document"
+    @State private var askDocumentName: Bool = false
+    @State private var isLoading: Bool = false
+    @State private var isSettingsOpen: Bool = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    @State private var isPresentedManageSubscription = false
+    @State private var isPaywallPresented: Bool = false
+    
+    // MARK: Filtered documents based on search text
+    var filteredDocuments: [Document] {
+        if searchText.isEmpty {
+            return documents
+        } else {
+            return documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
     
     let showWelcomTip = Welcome()
     
@@ -52,7 +61,7 @@ struct Home: View {
                 TipView(showWelcomTip)
                     .padding(.horizontal)
                 
-                if viewModel.filteredDocuments.isEmpty {
+                if filteredDocuments.isEmpty {
                     VStack(spacing: 20) {
                         if searchText.isEmpty {
                             VStack(spacing: 16) {
@@ -106,7 +115,7 @@ struct Home: View {
                     
                 } else {
                     LazyVGrid(columns: columns, spacing: 15) {
-                        ForEach(viewModel.filteredDocuments) { document in
+                        ForEach(filteredDocuments) { document in
                             NavigationLink {
                                 DocumentDetailView(document: document)
                                     .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
@@ -122,26 +131,6 @@ struct Home: View {
             .navigationTitle("My Documents")
             .searchable(text: $searchText, prompt: "Search")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Menu {
-                        VStack {
-                            Button(action: {
-                                viewModel.sortOrder = (viewModel.sortOrder == .newestFirst) ? .oldestFirst : .newestFirst
-                            }) {
-                                Label(
-                                    viewModel.sortOrder == .newestFirst ? "Sort by Oldest First" : "Sort by Newest First",
-                                    systemImage: "arrow.up.arrow.down"
-                                )
-                            }
-                        }
-                        .tint(Color.primary)
-                        
-                    } label: {
-                        Image(systemName: "line.3.horizontal.decrease")
-                            .foregroundStyle(Color("Default").gradient)
-                    }
-                }
-                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if UIDevice.current.userInterfaceIdiom == .pad {
                         HStack {
@@ -162,9 +151,6 @@ struct Home: View {
                         }
                     }
                 }
-            }
-            .onAppear {
-                viewModel.documents = allDocuments
             }
             .safeAreaInset(edge: .bottom) {
                 CreateButton()
