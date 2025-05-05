@@ -66,13 +66,13 @@ struct UpdateCard: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color(.systemGray5))
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
 }
 
-// Data Model
+// MARK: Data Model
 struct Update: Identifiable {
     let id = UUID()
     let title: String
@@ -82,7 +82,7 @@ struct Update: Identifiable {
     let imageName: String? // Optional for updates without images
 }
 
-// Preview
+// MARK: Preview
 #Preview {
     whatsNewView()
 }
