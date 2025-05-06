@@ -67,7 +67,7 @@ struct SettingsView: View {
                         }
                     }
                     
-                    customRow(icon: "app.badge", firstLabel: "What's New", secondLabel: "", destination: AnyView(whatsNewView()))
+                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
                 }
                 
                 Section(header: Text("Legal")) {

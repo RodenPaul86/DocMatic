@@ -14,7 +14,7 @@ struct aboutView: View {
             List {
                 Section("") {
                     customRow(icon: "app", firstLabel: "Application", secondLabel: Bundle.main.appName)
-                    customRow(icon: "curlybraces", firstLabel: "Language", secondLabel: "Swift / SwiftUI")
+                    customRow(icon: "curlybraces", firstLabel: "Language", secondLabel: "Swift/SwiftUI")
                     customRow(icon: "square.on.square.dashed", firstLabel: "Version", secondLabel: Bundle.main.appVersion)
                     customRow(icon: "hammer", firstLabel: "Build", secondLabel: Bundle.main.appBuild)
                 }
