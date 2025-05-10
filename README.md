@@ -94,11 +94,11 @@ As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases 
 <div align="left">
     <h3><b>iPadOS:</b></h3>
     <div align="left">
-    <img src="Images/Screenshots/IMG_ipadAir_01.png" alt="First Image" width="300" />
+    <img src="Images/Screenshots/IMG_ipadAir_01.png" alt="First Image" width="240" />
     </a>
-    <img src="Images/Screenshots/IMG_ipadAir_02.png" alt="Second Image" width="300" />
+    <img src="Images/Screenshots/IMG_ipadAir_02.png" alt="Second Image" width="240" />
     </a>
-    <img src="Images/Screenshots/IMG_ipadAir_03.png" alt="Third Image" width="300" />
+    <img src="Images/Screenshots/IMG_ipadAir_03.png" alt="Third Image" width="240" />
     </a>
     <br/>    
         
