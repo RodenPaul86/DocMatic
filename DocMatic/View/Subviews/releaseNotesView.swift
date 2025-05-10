@@ -15,13 +15,15 @@ struct releaseNotesView: View {
                   description: "",
                   imageName: "",
                   features: [
-                    "14 new alternate app icons.",
-                    "Added iPadOS Support."
+                    "12 new app icons.",
+                    "DocMatic now has a full-screen, otimized iPad app.",
+                    "Redesigned settings UI.",
+                    "Long press gestures for quick access to frequently used features."
                   ],
                   bugFixes: [
-                    "Color adjusted main app icon.",
-                    "Redesigned settings UI.",
-                    "Addressed a bug related to locking documents."
+                    "Adjusted the color of the default app icon.",
+                    "Addressed a bug related to document thumbnails.",
+                    "Squashed other bugs."
                   ]),
         
         appUpdate(title: "Oops. Fixed It.",
@@ -133,7 +135,7 @@ struct UpdateCard: View {
             }
         }
         .padding()
-        .background(Color(.systemGray5))
+        .background(Color("BGTile"))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
     }

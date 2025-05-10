@@ -67,6 +67,8 @@ struct SettingsView: View {
                         }
                     }
                     
+                    customRow(icon: "square.and.arrow.up", firstLabel: "Share with Freinds", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
+                    
                     customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
                 }
                 
@@ -133,50 +135,63 @@ struct customRow: View {
     var url: String? = nil           /// <-- Optional URL
     var showToggle: Bool = false
     var toggleValue: Binding<Bool>? = nil /// <-- Optional toggle switch
+    var shareURL: URL? = nil             /// <-- Optional share link
     
     @State private var isNavigating = false
+    @State private var isSharing = false
     
     var body: some View {
-        if let urlString = url {
-            NavigationLink {
-                webView(url: urlString)
-                    .edgesIgnoringSafeArea(.all)
-                    .navigationTitle(firstLabel)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            if let link = URL(string: urlString) {
-                                Link(destination: link) {
-                                    Image(systemName: "safari")
+        Group {
+            if let urlString = url {
+                NavigationLink {
+                    webView(url: urlString)
+                        .edgesIgnoringSafeArea(.all)
+                        .navigationTitle(firstLabel)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                if let link = URL(string: urlString) {
+                                    Link(destination: link) {
+                                        Image(systemName: "safari")
+                                    }
                                 }
                             }
                         }
-                    }
-            } label: {
-                rowContent(showChevron: false)
-            }
-            .buttonStyle(.plain)
-        } else if let destination = destination {
-            NavigationLink {
-                destination
-            } label: {
-                rowContent(showChevron: false)
-            }
-            .buttonStyle(.plain) /// <-- Keeps it looking like a row
-        } else if showToggle {
-            rowContent(showChevron: false)
-        } else {
-            rowContent(showChevron: action != nil)
-                .onTapGesture {
-                    action?()
+                } label: {
+                    rowContent(showChevron: false)
                 }
+                .buttonStyle(.plain)
+            } else if let destination = destination {
+                NavigationLink {
+                    destination
+                } label: {
+                    rowContent(showChevron: false)
+                }
+                .buttonStyle(.plain)
+            } else if showToggle {
+                rowContent(showChevron: false)
+            } else {
+                rowContent(showChevron: action != nil || shareURL != nil)
+                    .onTapGesture {
+                        if shareURL != nil {
+                            isSharing = true
+                        } else {
+                            action?()
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $isSharing) {
+            if let shareURL = shareURL {
+                ActivityView(activityItems: [shareURL])
+            }
         }
     }
     
     private func rowContent(showChevron: Bool) -> some View {
         HStack {
             Image(systemName: icon)
-                .font(.title3)
+                .font(.system(size: 18)) /// <-- Fixed size, unaffected by user settings
                 .foregroundColor(.white)
                 .frame(width: 32, height: 32)
                 .background(Color("Default").gradient)
@@ -198,15 +213,26 @@ struct customRow: View {
                     .foregroundColor(Color.init(uiColor: .systemGray3))
             } else {
                 Text(secondLabel)
-                    .foregroundStyle((action == nil && destination == nil && url == nil) ? .gray : .primary)
+                    .foregroundStyle((action == nil && destination == nil && url == nil && shareURL == nil) ? .gray : .primary)
             }
         }
         .contentShape(Rectangle())
     }
     
     private func isWebsite(_ urlString: String) -> Bool {
-        return urlString.hasPrefix("http") /// <-- Simple check for URLs
+        return urlString.hasPrefix("http")
     }
+}
+
+struct ActivityView: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    let applicationActivities: [UIActivity]? = nil
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 // MARK: WebView
