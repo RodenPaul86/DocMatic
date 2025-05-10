@@ -53,7 +53,7 @@ struct Welcome: Tip {
     }
     
     var message: Text? {
-        Text("Tap the ‘Scan’ button to capture your first document. Simply point your camera, and DocMatic will automatically detect the edges and scan it for you.")
+        Text("DocMatic will automatically detect the edges of the document and scan it for you.")
     }
 }
 
