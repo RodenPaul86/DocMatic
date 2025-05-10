@@ -1,7 +1,7 @@
 <h1 align="center">
     <img src="Images/github1024.png" alt="icon" width="150" style="border-radius: 25px;">
     <br />
-    <b>DocMatic - Document Scanner</b>
+    <b>DocMatic: Document Scanner</b>
 </h1>
 
 <div align="center">
