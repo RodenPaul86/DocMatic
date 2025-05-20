@@ -106,7 +106,7 @@ As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.15.1")
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.21.1")
 ]
 ```
 
