@@ -24,7 +24,7 @@ struct feedbackView: View {
         NavigationStack {
             List {
                 // Topic Row
-                Section("") {
+                Section {
                     HStack {
                         Text("Topic")
                             .font(.headline)
