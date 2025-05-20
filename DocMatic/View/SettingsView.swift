@@ -78,7 +78,7 @@ struct SettingsView: View {
                     customRow(icon: "link", firstLabel: "EULA", secondLabel: "", url: "https://docmatic.app/EULA.html")
                 }
 #if DEBUG
-                Section(header: Text("Development Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
+                Section(header: Text("Debuging Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
                     let scanCount = UserDefaults.standard.value(forKey: "scanCount")
                     customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
                     
