@@ -75,6 +75,20 @@ struct DocumentDetailView: View {
                                             lastOffset = offset
                                         } : nil /// <- Disable dragging if zoomed out
                                 )
+                                .simultaneousGesture(
+                                    TapGesture(count: 1)
+                                        .onEnded {
+                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                                if zoom > 1.0 {
+                                                    zoom = 1.0
+                                                    offset = .zero
+                                                    lastOffset = .zero
+                                                } else {
+                                                    zoom = 2.5
+                                                }
+                                            }
+                                        }
+                                )
                                 .animation(.easeInOut, value: zoom) /// <-  Smooth zooming animation
                         }
                     }
