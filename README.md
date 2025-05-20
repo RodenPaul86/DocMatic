@@ -1,7 +1,7 @@
 <h1 align="center">
-    <img src="Images/icon1024.png" alt="icon" width="150" style="border-radius: 25px;">
+    <img src="Images/github1024.png" alt="icon" width="150" style="border-radius: 25px;">
     <br />
-    <b>DocMatic - Document Scanner</b>
+    <b>DocMatic: Document Scanner</b>
 </h1>
 
 <div align="center">
@@ -43,7 +43,7 @@
     <a href="https://apps.apple.com/us/app/docmatic-document-scanner/id6740615012">
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
-    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.0.1">
+    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.0">
         <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
 </div>
 
@@ -83,13 +83,24 @@ As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases 
 <div align="left">
     <h3><b>iOS:</b></h3>
     <div align="left">
-    <img src="Images/Screenshots/IMG_4732.PNG" alt="First Image" width="240" />
+    <img src="Images/Screenshots/IMG_iphone16_01.png" alt="First Image" width="240" />
     </a>
-    <img src="Images/Screenshots/IMG_4733.PNG" alt="First Image" width="240" />
+    <img src="Images/Screenshots/IMG_iphone16_02.png" alt="Second Image" width="240" />
     </a>
-    <img src="Images/Screenshots/IMG_4734.PNG" alt="First Image" width="240" />
+    <img src="Images/Screenshots/IMG_iphone16_03.png" alt="Third Image" width="240" />
     </a>
     <br/>
+
+<div align="left">
+    <h3><b>iPadOS:</b></h3>
+    <div align="left">
+    <img src="Images/Screenshots/IMG_ipadAir_01.png" alt="First Image" width="240" />
+    </a>
+    <img src="Images/Screenshots/IMG_ipadAir_02.png" alt="Second Image" width="240" />
+    </a>
+    <img src="Images/Screenshots/IMG_ipadAir_03.png" alt="Third Image" width="240" />
+    </a>
+    <br/>    
         
 ## Dependencies
 
