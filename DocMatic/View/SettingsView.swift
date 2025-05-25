@@ -15,13 +15,14 @@ struct SettingsView: View {
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appSubModel: appSubscriptionModel
+    @Environment(\.dismiss) private var dismiss
     
     @State private var showDebug: Bool = false
     @State private var debugMessage: String = ""
     @State private var isPaywallPresented: Bool = false
     @State private var isPresentedManageSubscription: Bool = false
+    @State private var showStoreView = false
     
     var body: some View {
         NavigationStack {
@@ -53,23 +54,29 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("Info")) {
-                    customRow(icon: "info", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
+                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
+                    
+                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
                     
                     if appSubModel.isSubscriptionActive {
                         customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
                             isPresentedManageSubscription = true
                         }
                     }
-                    
+                     
                     if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6740615012") {
                         customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
                             UIApplication.shared.open(url)
                         }
+                        
+                        customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/UzzQuFBX")
                     }
                     
-                    customRow(icon: "square.and.arrow.up", firstLabel: "Share with Freinds", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
+                    customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
                     
-                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
+                    customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
+                        showStoreView.toggle()
+                    }
                 }
                 
                 Section(header: Text("Legal")) {
@@ -114,6 +121,9 @@ struct SettingsView: View {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
                     .preferredColorScheme(.dark)
             }
+            .background(
+                StoreProductPresenter(appStoreID: 693041126, isPresented: $showStoreView)
+            )
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .animation(.easeInOut, value: appScheme)
             .debugRevenueCatOverlay(isPresented: $showDebug)
