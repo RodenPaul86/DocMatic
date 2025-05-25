@@ -26,16 +26,6 @@ struct releaseNotesView: View {
                     "Squashed other bugs."
                   ]),
         
-        appUpdate(title: "Oops. Fixed It.",
-                  version: "1.0.1",
-                  date: "March 2025",
-                  description: "",
-                  imageName: "",
-                  features: nil,
-                  bugFixes: [
-                    "This update includes stability improvements and bug fixes."
-                  ]),
-        
         appUpdate(title: "DocMatic is Here!",
                   version: "1.0.0",
                   date: "February 2025",

@@ -59,6 +59,20 @@ struct helpFAQView: View {
         FAQItem(question: "Is my data secure in DocMatic?",
                 answer: "Your scanned documents are stored securely on your device. You can also save them to the 'Files' app."),
         
+        FAQItem(
+            question: "How do I join the DocMatic Beta (TestFlight)?",
+            answer: """
+        To join the beta and try new features early:
+
+        1. Tap the "Join TestFlight (Beta)" button in settings.
+        2. In-app "web viewer" will open, then tap the "Safari" button in the right corner.
+        3. After Safari opens and take you to DocMatic’s TestFlight page.
+        4. Tap “Install” to join.
+
+        Make sure you have the TestFlight app installed from the App Store before joining.
+        """
+        ),
+        
         FAQItem(question: "How do I request new features?",
                 answer: "We’d love to hear from you! Reach out via the “Contact Support” button in Settings or email us at support@docmatic.app.")
     ]
@@ -77,7 +91,7 @@ struct helpFAQView: View {
                 .listStyle(InsetGroupedListStyle())
                 .safeAreaPadding(.bottom, 60)
             }
-            .navigationTitle("FAQS")
+            .navigationTitle("FAQ")
         }
     }
 }

@@ -35,17 +35,24 @@ struct feedbackView: View {
                             ForEach(topics, id: \.self) { topic in
                                 Button(action: {
                                     selectedTopic = topic
+                                    HapticManager.shared.notify(.impact(.light))
                                 }) {
-                                    Text(topic)
+                                    HStack {
+                                        Text(topic)
+                                        if selectedTopic == topic {
+                                            Spacer()
+                                            Image(systemName: "checkmark")
+                                                .tint(.primary)
+                                        }
+                                    }
                                 }
                             }
                         } label: {
                             HStack {
                                 Text(selectedTopic)
-                                    .foregroundColor(.gray)
-                                Image(systemName: "chevron.right") /// <-- Chevron next to text
-                                    .foregroundColor(.gray)
+                                Image(systemName: "chevron.up.chevron.down") /// <-- Chevron next to text
                             }
+                            .foregroundStyle(.gray)
                         }
                     }
                     
