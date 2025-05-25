@@ -43,7 +43,7 @@
     <a href="https://apps.apple.com/us/app/docmatic-document-scanner/id6740615012">
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
-    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.0">
+    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.1">
         <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
 </div>
 
@@ -106,7 +106,7 @@ As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.15.1")
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.21.1")
 ]
 ```
 
