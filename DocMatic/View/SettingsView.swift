@@ -126,7 +126,7 @@ struct SettingsView: View {
             )
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
             .animation(.easeInOut, value: appScheme)
-            .debugRevenueCatOverlay(isPresented: $showDebug)
+            //.debugRevenueCatOverlay(isPresented: $showDebug)
         }
     }
 }
