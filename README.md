@@ -140,6 +140,6 @@ This GitHub repository contains the open-source version of the app, intended for
 
 The version available on the App Store may include additional features, assets, or services that are not part of this repository.
 
-**Do not redistribute this app on the App Store or other platforms using this codebase without written permission.**
+**Redistribution of this app—modified or unmodified—to any app store or software marketplace (including but not limited to the Apple App Store, Google Play Store, or Microsoft Store) is strictly prohibited without prior written permission.**
 
 Sensitive materials such as API keys, proprietary assets, and commercial features have been removed or excluded from this repository.
