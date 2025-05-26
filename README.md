@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="Images/github1024.png" alt="icon" width="150" style="border-radius: 25px;">
+    <img src="Images/github1024.png" alt="Icon" width="150" style="border-radius: 25px"/>
     <br />
     <b>DocMatic: Document Scanner</b>
 </h1>
@@ -54,8 +54,11 @@ There are many document-scanning apps available, but only a few that truly get i
 
 DocMatic is designed to be a fast, intuitive, and privacy-focused document scanner that meets users’ expectations without unnecessary complexity.
 
-As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases my expertise in iOS development, combining powerful features with a seamless user experience.
+As part of my [portfolio projects](https://paulrodenjr.org/#projects). DocMatic showcases my expertise in iOS development, combining powerful features with a seamless user experience.
 </p>
+
+paulrodenjr.org/#projects
+
 
 ## Features
 
