@@ -65,9 +65,9 @@ struct helpFAQView: View {
         To join the beta and try new features early:
 
         1. Tap the "Join TestFlight (Beta)" button in settings.
-        2. In-app "web viewer" will open, then tap the "Safari" button in the right corner.
+        2. The in-app "web viewer" will open, then tap the "Join" button in the right corner.
         3. After Safari opens and take you to DocMatic’s TestFlight page.
-        4. Tap “Install” to join.
+        4. Tap “Install” to start beta testing.
 
         Make sure you have the TestFlight app installed from the App Store before joining.
         """
