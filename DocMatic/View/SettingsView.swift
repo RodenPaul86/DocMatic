@@ -36,12 +36,13 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("Costomization")) {
+                    /*
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
                             showPickerView.toggle()
                         })
                     }
-                    
+                    */
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
                 }
                 
@@ -115,6 +116,11 @@ struct SettingsView: View {
                                 .foregroundStyle(Color("Default").gradient)
                         }
                     }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    Color.clear.frame(height: 60) /// <-- Space for the tab bar
                 }
             }
             .fullScreenCover(isPresented: $isPaywallPresented) {

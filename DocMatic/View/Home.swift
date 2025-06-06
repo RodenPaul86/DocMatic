@@ -126,12 +126,12 @@ struct Home: View {
                                     .foregroundStyle(Color("Default").gradient)
                             }
                         }
-                    } else {
-                        NavigationLink(destination: SettingsView()) {
-                            Image(systemName: "gear")
-                                .foregroundStyle(Color("Default").gradient)
-                        }
                     }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    Color.clear.frame(height: 20) /// <-- Space for the tab bar
                 }
             }
         }
