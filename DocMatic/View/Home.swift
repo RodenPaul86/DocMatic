@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 import TipKit
-import RevenueCat
 
 struct Home: View {
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
