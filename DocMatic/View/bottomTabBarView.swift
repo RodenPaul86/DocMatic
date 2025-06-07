@@ -18,7 +18,7 @@ struct bottomTabBarView: View {
     
     var body: some View {
         ZStack {
-            // Background Blur
+            // MARK: Background Blur
             UnevenRoundedRectangle(topLeadingRadius: 42,
                                    bottomLeadingRadius: 42,
                                    bottomTrailingRadius: 42,
@@ -27,7 +27,7 @@ struct bottomTabBarView: View {
             .fill(.ultraThinMaterial)
             .mask {
                 ZStack {
-                    // Full shape
+                    // MARK: Full shape
                     UnevenRoundedRectangle(topLeadingRadius: 42,
                                            bottomLeadingRadius: 42,
                                            bottomTrailingRadius: 42,
@@ -35,7 +35,7 @@ struct bottomTabBarView: View {
                                            style: .continuous)
                     .foregroundColor(.white)
                     
-                    // Circle hole
+                    // MARK: Circle hole
                     Circle()
                         .frame(width: 70, height: 70)
                         .offset(y: -30)
@@ -44,7 +44,7 @@ struct bottomTabBarView: View {
                 .compositingGroup()
             }
             
-            // Tab bar items and floating button
+            // MARK: Tab bar items and floating button
             HStack {
                 TabBarButton(systemImageName: "square.grid.2x2", title: "Summary", isSelected: selectedTab == 0) {
                     selectedTab = 0
@@ -59,7 +59,7 @@ struct bottomTabBarView: View {
             }
             .padding(.horizontal)
             
-            // Floating camera button
+            // MARK: Floating camera button
             Button {
                 if appSubModel.isSubscriptionActive {
                     showScannerView = true
@@ -99,12 +99,14 @@ struct bottomTabBarView: View {
         .frame(height: 80)
     }
 }
-/*
+
 #Preview(traits: .sizeThatFitsLayout) {
-    bottomTabBarView(selectedTab: .constant(0), isCameraViewShowing: .constant(false))
-        .padding(40)
+    bottomTabBarView(selectedTab: .constant(0),
+                     isCameraViewShowing: .constant(false),
+                     showScannerView: .constant(false),
+                     isPaywallPresented: .constant(false))
+    .padding(40)
 }
- */
 
 struct TabBarButton: View {
     var systemImageName: String
