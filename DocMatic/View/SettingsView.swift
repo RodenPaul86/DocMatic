@@ -36,22 +36,17 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("Costomization")) {
-                    /*
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
                             showPickerView.toggle()
                         })
                     }
-                    */
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
                 }
                 
                 Section(header: Text("Support")) {
                     customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
                     customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
-                    /*
-                     customRow(icon: "lock.shield", iconBG_Color: Color("Default"), firstLabel: "Privacy & Permissions", secondLabel: "", destination: AnyView(privacyPermissions()))
-                     */
                 }
                 
                 Section(header: Text("Info")) {
@@ -64,7 +59,7 @@ struct SettingsView: View {
                             isPresentedManageSubscription = true
                         }
                     }
-                     
+                    
                     if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6740615012") {
                         customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
                             UIApplication.shared.open(url)
