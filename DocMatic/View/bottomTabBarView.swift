@@ -78,19 +78,19 @@ struct bottomTabBarView: View {
                     )
                     .overlay { /// <-- Red badge in the corner
                         if !appSubModel.isSubscriptionActive {
-                            if scanManager.scansLeft > 0 {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.red)
-                                    
-                                    Text("\(scanManager.scansLeft)")
-                                        .foregroundColor(.white)
-                                }
-                                .frame(width: 25, height: 25)
-                                .offset(x: 20, y: -20)
-                                .transition(.scale.combined(with: .opacity))
-                                .animation(.easeInOut(duration: 0.2), value: ScanManager.shared.scansLeft)
+                            ZStack {
+                                Circle()
+                                    .fill(Color.red)
+                                
+                                Text("\(scanManager.scansLeft)")
+                                    .font(.system(size: 16))
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.white)
                             }
+                            .frame(width: 25, height: 25)
+                            .offset(x: 20, y: -20)
+                            .transition(.scale.combined(with: .opacity))
+                            .animation(.easeInOut(duration: 0.4), value: ScanManager.shared.scansLeft)
                         }
                     }
             }
