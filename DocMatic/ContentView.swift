@@ -30,10 +30,12 @@ struct ContentView: View {
     @State private var selectedTab: Int = 0
     @State private var isCameraViewShowing: Bool = false
     
+    @State private var showToolbar: Bool = true
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab(value: 0) {
-                Home()
+                Home(showToolbar: $showToolbar)
             }
             
             Tab(value: 1) {
@@ -42,35 +44,48 @@ struct ContentView: View {
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         .overlay(alignment: .bottom) {
-            bottomTabBarView(selectedTab: $selectedTab,
-                             isCameraViewShowing: $isCameraViewShowing,
-                             showScannerView: $showScannerView,
-                             isPaywallPresented: $isPaywallPresented)
+            Group {
+                if showToolbar {
+                    bottomTabBarView(selectedTab: $selectedTab,
+                                     isCameraViewShowing: $isCameraViewShowing,
+                                     showScannerView: $showScannerView,
+                                     isPaywallPresented: $isPaywallPresented)
+                    .transition(
+                        .asymmetric(
+                            insertion: .move(edge: .bottom).combined(with: .opacity),
+                            removal: .move(edge: .bottom).combined(with: .opacity)
+                        )
+                    )
+                    
+                }
+            }
             .padding(.horizontal)
             .padding(.bottom, 20)
-        }.ignoresSafeArea()
-            .fullScreenCover(isPresented: $showScannerView) {
-                ScannerView { error in
-                    handleScannerError(error)
-                } didCancel: {
-                    showScannerView = false
-                } didFinish: { scan in
-                    scanDocument = scan
-                    showScannerView = false
-                    askDocumentName = true
-                }
-                .ignoresSafeArea()
+            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showToolbar)
+        }
+        .ignoresSafeArea()
+        .fullScreenCover(isPresented: $showScannerView) {
+            ScannerView { error in
+                handleScannerError(error)
+            } didCancel: {
+                showScannerView = false
+            } didFinish: { scan in
+                scanDocument = scan
+                showScannerView = false
+                askDocumentName = true
             }
-            .alert("Document Name", isPresented: $askDocumentName) {
-                TextField("New Document", text: $documentName)
-                Button("Save") { createDocument() }
-                    .disabled(documentName.isEmpty)
-            }
-            .loadingScreen(status: $isLoading)
-            .fullScreenCover(isPresented: $isPaywallPresented) {
-                SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                    .preferredColorScheme(.dark)
-            }
+            .ignoresSafeArea()
+        }
+        .alert("Document Name", isPresented: $askDocumentName) {
+            TextField("New Document", text: $documentName)
+            Button("Save") { createDocument() }
+                .disabled(documentName.isEmpty)
+        }
+        .loadingScreen(status: $isLoading)
+        .fullScreenCover(isPresented: $isPaywallPresented) {
+            SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                .preferredColorScheme(.dark)
+        }
     }
     
     // MARK: Helper Methods

@@ -13,6 +13,8 @@ import TipKit
 struct DocumentDetailView: View {
     var document: Document
     
+    @Binding var showToolbar: Bool
+    
     // MARK: View Properties
     @State private var isLoading: Bool = false
     @State private var showFileMover: Bool = false
@@ -114,6 +116,8 @@ struct DocumentDetailView: View {
                 }
             }
             .onAppear {
+                showToolbar = false
+                
                 guard document.isLocked else {
                     isUnlocked = true
                     return
@@ -121,6 +125,9 @@ struct DocumentDetailView: View {
                 
                 let context = LAContext()
                 isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+            }
+            .onDisappear {
+                showToolbar = true
             }
             .onChange(of: scene) { oldValue, newValue in
                 if newValue != .active && document.isLocked {

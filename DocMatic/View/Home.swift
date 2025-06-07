@@ -23,6 +23,8 @@ struct Home: View {
     @State private var searchText = "" /// <- Holds the search input
     @State private var isSettingsOpen: Bool = false
     
+    @Binding var showToolbar: Bool
+    
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
         if searchText.isEmpty {
@@ -99,7 +101,7 @@ struct Home: View {
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach(filteredDocuments) { document in
                             NavigationLink {
-                                DocumentDetailView(document: document)
+                                DocumentDetailView(document: document, showToolbar: $showToolbar)
                                     .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
                             } label: {
                                 DocumentCardView(document: document, animationID: animationID)
