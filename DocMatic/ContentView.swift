@@ -14,6 +14,10 @@ enum ScannerError: Error {
     case unknownError
 }
 
+enum Tab: Int {
+    case home, settings, scanner
+}
+
 struct ContentView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var showScannerView: Bool = false
@@ -27,12 +31,53 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     
-    @State private var selectedTab: Int = 0
+    @State private var selectedTab: Tab = .home
     @State private var isCameraViewShowing: Bool = false
     
-    @State private var showToolbar: Bool = true
+    @State private var showTabBar: Bool = true
     
     var body: some View {
+        ZStack(alignment: .bottom) {
+            Group {
+                switch selectedTab {
+                case .home:
+                    Home(showTabBar: $showTabBar)
+                case .settings:
+                    SettingsView()
+                default:
+                    Home(showTabBar: .constant(true))
+                }
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .transition(.opacity)
+            
+            // Your custom tab bar view
+            Group {
+                if showTabBar {
+                    bottomTabBarView(selectedTab: $selectedTab,
+                                     isCameraViewShowing: $isCameraViewShowing,
+                                     showScannerView: $showScannerView,
+                                     isPaywallPresented: $isPaywallPresented)
+                    .transition(
+                        .asymmetric(
+                            insertion: .move(edge: .bottom).combined(with: .opacity),
+                            removal: .move(edge: .bottom).combined(with: .opacity)
+                        )
+                    )
+                }
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 22)
+            .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
+            .offset(y: showTabBar ? 0 : 200) // slide it down when hidden
+            .opacity(showTabBar ? 1 : 0)     // fade it out when hidden
+            
+        }
+        .ignoresSafeArea()
+        
+        /*
         TabView(selection: $selectedTab) {
             Tab(value: 0) {
                 Home(showToolbar: $showToolbar)
@@ -42,7 +87,7 @@ struct ContentView: View {
                 SettingsView()
             }
         }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .tabViewStyle(.automatic)
         .overlay(alignment: .bottom) {
             Group {
                 if showToolbar {
@@ -56,7 +101,6 @@ struct ContentView: View {
                             removal: .move(edge: .bottom).combined(with: .opacity)
                         )
                     )
-                    
                 }
             }
             .padding(.horizontal)
@@ -64,6 +108,7 @@ struct ContentView: View {
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showToolbar)
         }
         .ignoresSafeArea()
+         */
         .fullScreenCover(isPresented: $showScannerView) {
             ScannerView { error in
                 handleScannerError(error)

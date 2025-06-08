@@ -23,7 +23,7 @@ struct Home: View {
     @State private var searchText = "" /// <- Holds the search input
     @State private var isSettingsOpen: Bool = false
     
-    @Binding var showToolbar: Bool
+    @Binding var showTabBar: Bool
     
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
@@ -84,8 +84,7 @@ struct Home: View {
                                     .padding(.horizontal, 30)
                                 
                                 Button(action: {
-                                    // MARK: Clear search
-                                    searchText = ""
+                                    searchText = "" /// <-- Clear the search bar
                                 }) {
                                     Text("Clear Search")
                                         .font(.headline)
@@ -101,8 +100,10 @@ struct Home: View {
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach(filteredDocuments) { document in
                             NavigationLink {
-                                DocumentDetailView(document: document, showToolbar: $showToolbar)
+                                DocumentDetailView(document: document, showTabBar: $showTabBar)
                                     .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
+                                
+                                
                             } label: {
                                 DocumentCardView(document: document, animationID: animationID)
                                     .foregroundStyle(Color.primary)
@@ -116,13 +117,14 @@ struct Home: View {
             .searchable(text: $searchText, prompt: "Search")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if UIDevice.current.userInterfaceIdiom == .pad {
-                        HStack {
-                            Button(action: { showPickerView.toggle() }) {
-                                Image(systemName: appScheme == .dark ? "sun.max" : "moon")
-                                    .foregroundStyle(Color("Default").gradient)
-                            }
-                            
+                    HStack {
+                        /*
+                        Button(action: { showPickerView.toggle() }) {
+                            Image(systemName: appScheme == .dark ? "sun.max" : "moon")
+                                .foregroundStyle(Color("Default").gradient)
+                        }
+                         */
+                        if UIDevice.current.userInterfaceIdiom == .pad {
                             Button(action: { isSettingsOpen.toggle() }) {
                                 Image(systemName: "gear")
                                     .foregroundStyle(Color("Default").gradient)

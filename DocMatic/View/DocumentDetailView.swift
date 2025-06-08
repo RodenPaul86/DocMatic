@@ -12,8 +12,7 @@ import TipKit
 
 struct DocumentDetailView: View {
     var document: Document
-    
-    @Binding var showToolbar: Bool
+    @Binding var showTabBar: Bool
     
     // MARK: View Properties
     @State private var isLoading: Bool = false
@@ -116,7 +115,9 @@ struct DocumentDetailView: View {
                 }
             }
             .onAppear {
-                showToolbar = false
+                withAnimation {
+                    showTabBar = false
+                }
                 
                 guard document.isLocked else {
                     isUnlocked = true
@@ -127,7 +128,9 @@ struct DocumentDetailView: View {
                 isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
             }
             .onDisappear {
-                showToolbar = true
+                withAnimation {
+                    showTabBar = true
+                }
             }
             .onChange(of: scene) { oldValue, newValue in
                 if newValue != .active && document.isLocked {

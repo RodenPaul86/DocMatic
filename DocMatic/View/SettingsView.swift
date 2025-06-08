@@ -126,7 +126,6 @@ struct SettingsView: View {
                 StoreProductPresenter(appStoreID: 693041126, isPresented: $showStoreView)
             )
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
-            .animation(.easeInOut, value: appScheme)
             .debugRevenueCatOverlay(isPresented: $showDebug)
         }
     }
