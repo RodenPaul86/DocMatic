@@ -69,7 +69,7 @@ struct ContentView: View {
             }
             .padding(.horizontal)
             .padding(.bottom, 22)
-            .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
+            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
             .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
             .offset(y: showTabBar ? 0 : 200) // slide it down when hidden
             .opacity(showTabBar ? 1 : 0)     // fade it out when hidden
