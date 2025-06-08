@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct bottomTabBarView: View {
-    @Binding var selectedTab: Int
+    @Binding var selectedTab: Tab
     @Binding var isCameraViewShowing: Bool
     @Binding var showScannerView: Bool
     @Binding var isPaywallPresented: Bool
@@ -25,17 +25,30 @@ struct bottomTabBarView: View {
                                    topTrailingRadius: 42,
                                    style: .continuous)
             .fill(.ultraThinMaterial)
+            .background(
+                UnevenRoundedRectangle(topLeadingRadius: 42,
+                                       bottomLeadingRadius: 42,
+                                       bottomTrailingRadius: 42,
+                                       topTrailingRadius: 42,
+                                       style: .continuous)
+                .fill(Color.white.opacity(0.2))
+            )
+            .overlay(
+                UnevenRoundedRectangle(topLeadingRadius: 42,
+                                       bottomLeadingRadius: 42,
+                                       bottomTrailingRadius: 42,
+                                       topTrailingRadius: 42,
+                                       style: .continuous)
+                .stroke(.white.opacity(0.4), lineWidth: 1)
+            )
             .mask {
                 ZStack {
-                    // MARK: Full shape
                     UnevenRoundedRectangle(topLeadingRadius: 42,
                                            bottomLeadingRadius: 42,
                                            bottomTrailingRadius: 42,
                                            topTrailingRadius: 42,
                                            style: .continuous)
-                    .foregroundColor(.white)
                     
-                    // MARK: Circle hole
                     Circle()
                         .frame(width: 70, height: 70)
                         .offset(y: -30)
@@ -46,15 +59,15 @@ struct bottomTabBarView: View {
             
             // MARK: Tab bar items and floating button
             HStack {
-                TabBarButton(systemImageName: "square.grid.2x2", title: "Summary", isSelected: selectedTab == 0) {
-                    selectedTab = 0
+                TabBarButton(systemImageName: "square.grid.2x2", title: "Summary", isSelected: selectedTab == .home) {
+                    selectedTab = .home
                 }
                 
                 Spacer()
                     .frame(width: 140)
                 
-                TabBarButton(systemImageName: "gear", title: "Settings", isSelected: selectedTab == 1) {
-                    selectedTab = 1
+                TabBarButton(systemImageName: "gear", title: "Settings", isSelected: selectedTab == .settings) {
+                    selectedTab = .settings
                 }
             }
             .padding(.horizontal)
@@ -74,7 +87,15 @@ struct bottomTabBarView: View {
                     .font(.system(size: 55))
                     .background(
                         Circle()
-                            .fill(.ultraThinMaterial) /// <-- or Color.white.opacity(0.8)
+                            .fill(.ultraThinMaterial)
+                            .background(
+                                Circle()
+                                    .fill(Color.white.opacity(0.2))
+                            )
+                            .overlay(
+                                Circle()
+                                    .stroke(.white.opacity(0.4), lineWidth: 1)
+                            )
                     )
                     .overlay { /// <-- Red badge in the corner
                         if !appSubModel.isSubscriptionActive {
@@ -101,7 +122,7 @@ struct bottomTabBarView: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    bottomTabBarView(selectedTab: .constant(0),
+    bottomTabBarView(selectedTab: .constant(.home),
                      isCameraViewShowing: .constant(false),
                      showScannerView: .constant(false),
                      isPaywallPresented: .constant(false))
