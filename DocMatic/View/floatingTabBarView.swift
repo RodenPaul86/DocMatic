@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-struct bottomTabBarView: View {
+struct floatingTabBarView: View {
     @Binding var selectedTab: Tab
-    @Binding var isCameraViewShowing: Bool
-    @Binding var showScannerView: Bool
-    @Binding var isPaywallPresented: Bool
     @EnvironmentObject var appSubModel: appSubscriptionModel
-    
     @ObservedObject private var scanManager = ScanManager.shared
+    
+    var action: () -> Void
     
     var body: some View {
         ZStack {
@@ -73,16 +71,7 @@ struct bottomTabBarView: View {
             .padding(.horizontal)
             
             // MARK: Floating camera button
-            Button {
-                if appSubModel.isSubscriptionActive {
-                    showScannerView = true
-                } else if ScanManager.shared.scansLeft > 0 {
-                    showScannerView = true
-                } else {
-                    isPaywallPresented = true
-                }
-                HapticManager.shared.notify(.impact(.light))
-            } label: {
+            Button(action: action) {
                 Image(systemName: "plus.circle.dashed")
                     .font(.system(size: 55))
                     .background(
@@ -122,10 +111,7 @@ struct bottomTabBarView: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    bottomTabBarView(selectedTab: .constant(.home),
-                     isCameraViewShowing: .constant(false),
-                     showScannerView: .constant(false),
-                     isPaywallPresented: .constant(false))
+    floatingTabBarView(selectedTab: .constant(.home), action: {})
     .padding(40)
 }
 

@@ -32,8 +32,6 @@ struct ContentView: View {
     @Environment(\.requestReview) var requestReview
     
     @State private var selectedTab: Tab = .home
-    @State private var isCameraViewShowing: Bool = false
-    
     @State private var showTabBar: Bool = true
     
     var body: some View {
@@ -52,63 +50,57 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .transition(.opacity)
             
-            // Your custom tab bar view
-            Group {
-                if showTabBar {
-                    bottomTabBarView(selectedTab: $selectedTab,
-                                     isCameraViewShowing: $isCameraViewShowing,
-                                     showScannerView: $showScannerView,
-                                     isPaywallPresented: $isPaywallPresented)
-                    .transition(
-                        .asymmetric(
-                            insertion: .move(edge: .bottom).combined(with: .opacity),
-                            removal: .move(edge: .bottom).combined(with: .opacity)
+            // MARK: Your custom tab bar view
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                Group {
+                    if showTabBar {
+                        floatingTabBarView(selectedTab: $selectedTab, action: {
+                            if appSubModel.isSubscriptionActive {
+                                showScannerView = true
+                            } else if ScanManager.shared.scansLeft > 0 {
+                                showScannerView = true
+                            } else {
+                                isPaywallPresented = true
+                            }
+                            hapticManager.shared.notify(.impact(.light))
+                        })
+                        .transition(
+                            .asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .move(edge: .bottom).combined(with: .opacity)
+                            )
                         )
-                    )
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 22)
+                .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
+                .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
+                .offset(y: showTabBar ? 0 : 200) /// <-- slide it down when hidden
+                .opacity(showTabBar ? 1 : 0)    /// <-- fade it out when hidden
+            } else if UIDevice.current.userInterfaceIdiom == .pad {
+                HStack {
+                    Spacer()
+                    
+                    Group {
+                        floatingButtonView(action: {
+                            if appSubModel.isSubscriptionActive {
+                                showScannerView = true
+                            } else if ScanManager.shared.scansLeft > 0 {
+                                showScannerView = true
+                            } else {
+                                isPaywallPresented = true
+                            }
+                            hapticManager.shared.notify(.impact(.light))
+                        })
+                    }
+                    .padding(.trailing, 30)
+                    .padding(.bottom, 30)
+                    .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
                 }
             }
-            .padding(.horizontal)
-            .padding(.bottom, 22)
-            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
-            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
-            .offset(y: showTabBar ? 0 : 200) // slide it down when hidden
-            .opacity(showTabBar ? 1 : 0)     // fade it out when hidden
-            
         }
         .ignoresSafeArea()
-        
-        /*
-        TabView(selection: $selectedTab) {
-            Tab(value: 0) {
-                Home(showToolbar: $showToolbar)
-            }
-            
-            Tab(value: 1) {
-                SettingsView()
-            }
-        }
-        .tabViewStyle(.automatic)
-        .overlay(alignment: .bottom) {
-            Group {
-                if showToolbar {
-                    bottomTabBarView(selectedTab: $selectedTab,
-                                     isCameraViewShowing: $isCameraViewShowing,
-                                     showScannerView: $showScannerView,
-                                     isPaywallPresented: $isPaywallPresented)
-                    .transition(
-                        .asymmetric(
-                            insertion: .move(edge: .bottom).combined(with: .opacity),
-                            removal: .move(edge: .bottom).combined(with: .opacity)
-                        )
-                    )
-                }
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 20)
-            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showToolbar)
-        }
-        .ignoresSafeArea()
-         */
         .fullScreenCover(isPresented: $showScannerView) {
             ScannerView { error in
                 handleScannerError(error)
@@ -190,12 +182,12 @@ struct ContentView: View {
             errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
         }
         
-        // Present an alert or some form of UI feedback
+        // MARK: Present an alert or some form of UI feedback
         showAlert(with: errorMessage)
     }
     
     func showAlert(with message: String) {
-        // Add your alert presentation logic, e.g., using SwiftUI's `Alert`
+        // MARK: Add your alert presentation logic, e.g., using SwiftUI's `Alert`
         alertMessage = message
         showAlert = true
     }
