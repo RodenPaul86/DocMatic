@@ -105,7 +105,7 @@ struct FAQRow: View {
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     item.isExpanded.toggle()
-                    HapticManager.shared.notify(.impact(.light))
+                    hapticManager.shared.notify(.impact(.light))
                 }
             }) {
                 HStack {

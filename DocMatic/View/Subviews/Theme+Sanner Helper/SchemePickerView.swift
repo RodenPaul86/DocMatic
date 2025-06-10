@@ -227,7 +227,7 @@ struct SchemePickerView: View {
                 appScheme = preview.first?.text == AppScheme.dark.rawValue ? .dark : .light
             }
             updateScheme()
-            HapticManager.shared.notify(.impact(.light))
+            hapticManager.shared.notify(.impact(.light))
         }
     }
     

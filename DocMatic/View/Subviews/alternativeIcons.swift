@@ -191,7 +191,7 @@ struct AppIconRow: View {
             } else {
                 isPaywallPresented = true
             }
-            HapticManager.shared.notify(.impact(.light))
+            hapticManager.shared.notify(.impact(.light))
         }
     }
 }

@@ -118,13 +118,11 @@ struct Home: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack {
-                        /*
-                        Button(action: { showPickerView.toggle() }) {
-                            Image(systemName: appScheme == .dark ? "sun.max" : "moon")
-                                .foregroundStyle(Color("Default").gradient)
-                        }
-                         */
                         if UIDevice.current.userInterfaceIdiom == .pad {
+                            Button(action: { showPickerView.toggle() }) {
+                                Image(systemName: appScheme == .dark ? "sun.max" : "moon")
+                                    .foregroundStyle(Color("Default").gradient)
+                            }
                             Button(action: { isSettingsOpen.toggle() }) {
                                 Image(systemName: "gear")
                                     .foregroundStyle(Color("Default").gradient)

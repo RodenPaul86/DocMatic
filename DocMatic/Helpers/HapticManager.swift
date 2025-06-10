@@ -13,8 +13,8 @@ enum HapticType {
     case selection
 }
 
-class HapticManager {
-    static let shared = HapticManager()
+class hapticManager {
+    static let shared = hapticManager()
     
     private init() {}
     

@@ -35,7 +35,7 @@ struct feedbackView: View {
                             ForEach(topics, id: \.self) { topic in
                                 Button(action: {
                                     selectedTopic = topic
-                                    HapticManager.shared.notify(.impact(.light))
+                                    hapticManager.shared.notify(.impact(.light))
                                 }) {
                                     HStack {
                                         Text(topic)
