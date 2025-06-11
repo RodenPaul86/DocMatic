@@ -25,6 +25,10 @@ struct SchemeHostView<Content: View>: View {
     
     init(@ViewBuilder content: @escaping () -> Content) {
         self.content = content()
+        
+        if let window = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow {
+            window.overrideUserInterfaceStyle = appScheme == .dark ? .dark : appScheme == .light ? .light : .unspecified
+        }
     }
     
     /// View Properties
@@ -62,14 +66,9 @@ struct SchemeHostView<Content: View>: View {
                     overlayWindow = window
                 }
             }
-            .onChange(of: appScheme) { oldValue, newValue in
-                if let window = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow {
-                    window.overrideUserInterfaceStyle = newValue == .dark ? .dark : newValue == .light ? .light : .unspecified
-                }
-            }
     }
     
-    // MARK: Generating Scheme Previews and then pushing the sheet view
+    /// Generating Scheme Previews and then pushing the sheet view
     private func generateSchemePreviews() {
         Task {
             if let window = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow, schemePreviews.isEmpty {
