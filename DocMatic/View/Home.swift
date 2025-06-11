@@ -27,11 +27,8 @@ struct Home: View {
     
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
-        if searchText.isEmpty {
-            return documents
-        } else {
-            return documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
+        guard !searchText.isEmpty else { return documents }
+        return documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }
     
     let showWelcomTip = Welcome()
