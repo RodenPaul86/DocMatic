@@ -133,7 +133,7 @@ struct Home: View {
             }
             .safeAreaInset(edge: .bottom) {
                 if UIDevice.current.userInterfaceIdiom == .phone {
-                    Color.clear.frame(height: 20) /// <-- Space for the tab bar
+                    Color.clear.frame(height: 40) /// <-- Space for the tab bar
                 }
             }
         }
