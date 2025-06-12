@@ -39,7 +39,7 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    Home(showTabBar: $showTabBar)
+                    NewHome(showTabBar: $showTabBar)
                 case .settings:
                     SettingsView()
                 default:
@@ -70,7 +70,7 @@ struct ContentView: View {
                             )
                         )
                         .padding(.horizontal)
-                        .padding(.bottom, 18)
+                        .padding(.bottom, -15)
                         .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
                         .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
                         .offset(y: showTabBar ? 0 : 200) /// <-- slide it down when hidden
@@ -99,7 +99,6 @@ struct ContentView: View {
                 }
             }
         }
-        .ignoresSafeArea()
         .fullScreenCover(isPresented: $showScannerView) {
             ScannerView { error in
                 handleScannerError(error)

@@ -115,10 +115,6 @@ struct DocumentDetailView: View {
                 }
             }
             .onAppear {
-                withAnimation {
-                    showTabBar = false
-                }
-                
                 guard document.isLocked else {
                     isUnlocked = true
                     return
@@ -126,11 +122,6 @@ struct DocumentDetailView: View {
                 
                 let context = LAContext()
                 isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-            }
-            .onDisappear {
-                withAnimation {
-                    showTabBar = true
-                }
             }
             .onChange(of: scene) { oldValue, newValue in
                 if newValue != .active && document.isLocked {
