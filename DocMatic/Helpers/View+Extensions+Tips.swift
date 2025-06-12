@@ -49,11 +49,11 @@ extension View {
 // MARK: TipKit Views
 struct Welcome: Tip {
     var title: Text {
-        Text("Quick Tip")
+        Text("Welcome")
     }
     
     var message: Text? {
-        Text("DocMatic will automatically detect the edges of the document and scan it for you.")
+        Text("Your pocket scanner just got smarter. Scan, organize, and secure your documents in seconds—right from your device. You’ll get 3 free scans to try things out. Need more? Go Pro anytime for unlimited access. Tap the + button below to get started!")
     }
 }
 

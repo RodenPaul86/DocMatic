@@ -20,6 +20,8 @@ struct NewHome: View {
     @Namespace private var animationID
     @Binding var showTabBar: Bool
     
+    let showWelcomTip = Welcome()
+    
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
         guard !searchText.isEmpty else { return documents }
@@ -32,6 +34,9 @@ struct NewHome: View {
                 let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
                 
                 LazyVGrid(columns: columns, spacing: 15) {
+                    TipView(showWelcomTip)
+                        .frame(maxHeight: .infinity)
+                    
                     ForEach(filteredDocuments) { document in
                         NavigationLink {
                             DocumentDetailView(document: document, showTabBar: $showTabBar)
