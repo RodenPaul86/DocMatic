@@ -27,39 +27,36 @@ struct NewHome: View {
     }
     
     var body: some View {
-        ScrollView(.vertical) {
-            let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
-            
-            LazyVGrid(columns: columns, spacing: 15) {
-                ForEach(filteredDocuments) { document in
-                    Button(action: {
-                        isFocused = false
-                        selectedDocument = document
-                        hapticManager.shared.notify(.impact(.light))
-                    }) {
-                        DocumentCardView(document: document, animationID: animationID)
-                            .foregroundStyle(Color.primary)
+        NavigationStack {
+            ScrollView(.vertical) {
+                let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
+                
+                LazyVGrid(columns: columns, spacing: 15) {
+                    ForEach(filteredDocuments) { document in
+                        NavigationLink {
+                            DocumentDetailView(document: document, showTabBar: $showTabBar)
+                                .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
+                        } label: {
+                            DocumentCardView(document: document, animationID: animationID)
+                                .foregroundStyle(Color.primary)
+                        }
                     }
                 }
+                .padding(15)
+                .offset(y: isFocused ? 0 : progress * 75)
+                .padding(.bottom, 75)
+                .safeAreaInset(edge: .top, spacing: 15) {
+                    resizableHeader()
+                }
+                .scrollTargetLayout()
             }
-            .padding(15)
-            .offset(y: isFocused ? 0 : progress * 75)
-            .padding(.bottom, 75)
-            .safeAreaInset(edge: .top, spacing: 15) {
-                resizableHeader()
+            .scrollTargetBehavior(customScrollTarget())
+            .animation(.snappy(duration: 0.3, extraBounce: 0), value: isFocused)
+            .onScrollGeometryChange(for: CGFloat.self) {
+                $0.contentOffset.y + $0.contentInsets.top
+            } action: { oldValue, newValue in
+                progress = max(min(-newValue / 75, 1), 0)
             }
-            .scrollTargetLayout()
-        }
-        .scrollTargetBehavior(customScrollTarget())
-        .animation(.snappy(duration: 0.3, extraBounce: 0), value: isFocused)
-        .onScrollGeometryChange(for: CGFloat.self) {
-            $0.contentOffset.y + $0.contentInsets.top
-        } action: { oldValue, newValue in
-            progress = max(min(-newValue / 75, 1), 0)
-        }
-        .fullScreenCover(item: $selectedDocument) { document in
-            DocumentDetailView(document: document, showTabBar: $showTabBar)
-                .foregroundStyle(Color.primary)
         }
     }
     
