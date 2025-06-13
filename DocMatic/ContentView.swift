@@ -43,7 +43,7 @@ struct ContentView: View {
                 case .settings:
                     SettingsView()
                 default:
-                    Home(showTabBar: .constant(true))
+                    HomeView(showTabBar: .constant(true))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
