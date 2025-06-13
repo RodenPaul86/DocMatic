@@ -1,0 +1,268 @@
+//
+//  NewHome.swift
+//  DocMatic
+//
+//  Created by Paul  on 6/11/25.
+//
+
+import SwiftUI
+import SwiftData
+import TipKit
+import Speech
+import AVFoundation
+
+struct HomeView: View {
+    // MARK: View Properties
+    @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    
+    @State private var selectedDocument: Document? = nil
+    @State private var searchText: String = ""
+    @StateObject private var speechRecognizer = SpeechRecognizer()
+    @State private var progress: CGFloat = 0
+    @State private var isSettingsOpen: Bool = false
+    
+    @FocusState private var isFocused: Bool
+    @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
+    @Namespace private var animationID
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @Binding var showTabBar: Bool
+    
+    let showWelcomTip = Welcome()
+    
+    // MARK: Filtered documents based on search text
+    var filteredDocuments: [Document] {
+        guard !searchText.isEmpty else { return documents }
+        return documents.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+    }
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                ScrollView(.vertical) {
+                    let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
+                    
+                    LazyVGrid(columns: columns, spacing: 15) {
+                        TipView(showWelcomTip)
+                            .frame(maxHeight: .infinity)
+                        
+                        ForEach(filteredDocuments) { document in
+                            NavigationLink {
+                                DocumentDetailView(document: document, showTabBar: $showTabBar)
+                                    .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
+                            } label: {
+                                DocumentCardView(document: document, animationID: animationID)
+                                    .foregroundStyle(Color.primary)
+                            }
+                        }
+                    }
+                    .padding(15)
+                    .offset(y: isFocused ? 0 : progress * 75)
+                    .padding(.bottom, 75)
+                    .safeAreaInset(edge: .top, spacing: 15) {
+                        resizableHeader()
+                    }
+                    .scrollTargetLayout()
+                }
+                .scrollTargetBehavior(customScrollTarget())
+                .animation(.snappy(duration: 0.3, extraBounce: 0), value: isFocused)
+                .onScrollGeometryChange(for: CGFloat.self) {
+                    $0.contentOffset.y + $0.contentInsets.top
+                } action: { oldValue, newValue in
+                    progress = max(min(-newValue / 75, 1), 0)
+                }
+                
+                if filteredDocuments.isEmpty {
+                    VStack {
+                        if searchText.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "document")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 55, height: 55)
+                                
+                                Text("No Documents Yet!")
+                                    .font(.title3.bold())
+                                
+                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
+                                    .font(.body)
+                            }
+                            .padding(.top, 50)
+                            .frame(maxWidth: .infinity) /// <-- Ensures centering horizontally
+                            .foregroundStyle(.gray.opacity(0.5))
+                        } else {
+                            VStack(spacing: 16) {
+                                Image(systemName: "magnifyingglass")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 55, height: 55)
+                                    .foregroundStyle(.gray)
+                                
+                                Text("No Results Found")
+                                    .font(.title3.bold())
+                                    .foregroundStyle(.gray)
+                                
+                                Text("Hmm, no matches for \"\(searchText)\". Let’s try something else!")
+                                    .font(.body)
+                                    .multilineTextAlignment(.center)
+                                    .foregroundStyle(.gray)
+                                    .padding(.horizontal, 30)
+                                
+                                Button(action: {
+                                    searchText = "" /// <-- Clear the search bar
+                                }) {
+                                    Text("Clear Search")
+                                        .font(.headline)
+                                        .foregroundStyle(Color("Default").gradient)
+                                }
+                            }
+                        }
+                    }
+                    .multilineTextAlignment(.center)
+                    .padding()
+                }
+            }
+        }
+        .sheet(isPresented: $isSettingsOpen) {
+            SettingsView()
+        }
+    }
+    
+    // MARK: Custom Header view
+    @ViewBuilder
+    func resizableHeader() -> some View {
+        let progress = isFocused ? 1 : progress
+        
+        VStack(spacing: 0) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Welcome Back!")
+                        .font(.callout)
+                        .foregroundStyle(.gray)
+                    
+                    Text("Guest")
+                        .font(.title.bold())
+                }
+                
+                Spacer(minLength: 0)
+                
+                // MARK: Profile Picture
+                Button(action: {}) {
+                    Image(systemName: "person.circle")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 40, height: 40)
+                        .clipShape(.circle)
+                }
+                
+                // MARK: App Scheme and Settings for iPad
+                if UIDevice.current.userInterfaceIdiom == .pad {
+                    Button(action: { showPickerView.toggle() }) {
+                        Image(systemName: appScheme == .dark ? "sun.max.circle" : "moon.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 40, height: 40)
+                            .clipShape(.circle)
+                    }
+                    Button(action: { isSettingsOpen.toggle() }) {
+                        Image(systemName: "gear.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 40, height: 40)
+                            .clipShape(.circle)
+                    }
+                }
+            }
+            .frame(height: 60 - (60 * progress), alignment: .bottom)
+            .padding(.horizontal, 15)
+            .padding(.top, 15)
+            .padding(.bottom, 15 - (15 * progress))
+            .opacity(1 - progress)
+            .offset(y: -10 * progress)
+            
+            // MARK: Floating Search Bar
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.gray)
+                
+                TextField(speechRecognizer.isListening ? "Listening..." : "Search Documents", text: $searchText)
+                    .focused($isFocused)
+                    .onChange(of: isFocused) { oldValue, newValue in
+                        withAnimation {
+                            showTabBar = !newValue
+                        }
+                    }
+                
+                // MARK: Microphone Button
+                Button(action: {
+                    if speechRecognizer.isListening {
+                        speechRecognizer.stopTranscribing()
+                    } else {
+                        speechRecognizer.startTranscribing { result in
+                            searchText = result
+                        }
+                    }
+                }) {
+                    Image(systemName: !speechRecognizer.isAuthorized ? "microphone.slash.fill" :
+                            (speechRecognizer.isListening ? "waveform" : "microphone.fill"))
+                    .foregroundStyle(!speechRecognizer.isAuthorized ? .gray :
+                                        (speechRecognizer.isListening ? .red : .gray))
+                }
+                .disabled(!speechRecognizer.isAuthorized)
+                .opacity(isFocused ? 0 : 1)
+                .animation(.easeInOut(duration: 0.2), value: speechRecognizer.isListening)
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 15)
+            .background {
+                RoundedRectangle(cornerRadius: isFocused ? 0 : 30)
+                    .fill(.background
+                        .shadow(.drop(color: .black.opacity(0.08), radius: 5, x: 5, y: 5))
+                        .shadow(.drop(color: .black.opacity(0.05), radius: 5, x: -5, y: -5))
+                    )
+                    .padding(.top, isFocused ? -100 : 0)
+            }
+            .padding(.horizontal, isFocused ? 0 : 15)
+            .padding(.bottom, 10)
+            .padding(.top, 5)
+        }
+        .onAppear {
+            speechRecognizer.requestPermission()
+        }
+        .background {
+            progressiveBlurView()
+                .blur(radius: isFocused ? 0 : 10)
+                .padding(.horizontal, -15)
+                .padding(.bottom, -10)
+                .padding(.top, -100)
+        }
+        .visualEffect { content, proxy in
+            content
+                .offset(y: offsetY(proxy))
+        }
+    }
+    
+    nonisolated private
+    func offsetY(_ proxy: GeometryProxy) -> CGFloat {
+        let minY = proxy.frame(in: .scrollView(axis: .vertical)).minY
+        return minY > 0 ? (isFocused ? -minY : 0) : -minY
+    }
+}
+
+struct customScrollTarget: ScrollTargetBehavior {
+    func updateTarget(_ target: inout ScrollTarget, context: TargetContext) {
+        let endPoint = target.rect.minY
+        
+        if endPoint < 75 {
+            if endPoint > 40 {
+                target.rect.origin = .init(x: 0, y: 75)
+            } else {
+                target.rect.origin = .zero
+            }
+        }
+    }
+}
+
+#Preview {
+    HomeView(showTabBar: .constant(false))
+}

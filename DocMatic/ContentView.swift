@@ -39,7 +39,7 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case .home:
-                    NewHome(showTabBar: $showTabBar)
+                    HomeView(showTabBar: $showTabBar)
                 case .settings:
                     SettingsView()
                 default:
