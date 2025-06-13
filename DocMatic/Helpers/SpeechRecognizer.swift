@@ -11,6 +11,7 @@ import AVFoundation
 
 class SpeechRecognizer: NSObject, ObservableObject, SFSpeechRecognizerDelegate {
     @Published var isListening: Bool = false
+    @Published var isAuthorized: Bool = false
     private let recognizer = SFSpeechRecognizer()
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
@@ -20,16 +21,15 @@ class SpeechRecognizer: NSObject, ObservableObject, SFSpeechRecognizerDelegate {
 
     func requestPermission() {
         SFSpeechRecognizer.requestAuthorization { authStatus in
-            switch authStatus {
-            case .authorized:
-                print("Speech recognition authorized")
-            default:
-                print("Speech recognition not authorized")
+            DispatchQueue.main.async {
+                self.isAuthorized = (authStatus == .authorized)
             }
         }
         
         AVAudioApplication.requestRecordPermission { granted in
-            print(granted ? "Mic access granted" : "Mic access denied")
+            DispatchQueue.main.async {
+                self.isAuthorized = self.isAuthorized && granted
+            }
         }
     }
 

@@ -119,20 +119,20 @@ struct NewHome: View {
                 Button(action: {
                     if speechRecognizer.isListening {
                         speechRecognizer.stopTranscribing()
-                        hapticManager.shared.notify(.impact(.light))
                     } else {
                         speechRecognizer.startTranscribing { result in
                             searchText = result
                         }
-                        hapticManager.shared.notify(.impact(.light))
                     }
                 }) {
-                    Image(systemName: speechRecognizer.isListening ? "waveform" : "microphone.fill")
-                        .foregroundStyle(speechRecognizer.isListening ? .red : .gray)
-                        .animation(.easeInOut(duration: 0.25), value: speechRecognizer.isListening)
+                    Image(systemName: !speechRecognizer.isAuthorized ? "microphone.slash.fill" :
+                            (speechRecognizer.isListening ? "waveform" : "microphone.fill"))
+                    .foregroundStyle(!speechRecognizer.isAuthorized ? .gray :
+                                        (speechRecognizer.isListening ? .red : .gray))
                 }
+                .disabled(!speechRecognizer.isAuthorized)
                 .opacity(isFocused ? 0 : 1)
-                .animation(.easeInOut(duration: 0.2), value: isFocused)
+                .animation(.easeInOut(duration: 0.2), value: speechRecognizer.isListening)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 15)
