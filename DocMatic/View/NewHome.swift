@@ -8,11 +8,14 @@
 import SwiftUI
 import SwiftData
 import TipKit
+import Speech
+import AVFoundation
 
 struct NewHome: View {
     // MARK: View Properties
     @State private var selectedDocument: Document? = nil
     @State private var searchText: String = ""
+    @StateObject private var speechRecognizer = SpeechRecognizer()
     @State private var progress: CGFloat = 0
     
     @FocusState private var isFocused: Bool
@@ -104,7 +107,7 @@ struct NewHome: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.gray)
                 
-                TextField("Search Documents", text: $searchText)
+                TextField(speechRecognizer.isListening ? "Listening..." : "Search Documents", text: $searchText)
                     .focused($isFocused)
                     .onChange(of: isFocused) { oldValue, newValue in
                         withAnimation {
@@ -113,10 +116,23 @@ struct NewHome: View {
                     }
                 
                 // MARK: Microphone Button
-                Button(action: {}) {
-                    Image(systemName: "microphone.fill")
-                        .foregroundStyle(.gray)
+                Button(action: {
+                    if speechRecognizer.isListening {
+                        speechRecognizer.stopTranscribing()
+                        hapticManager.shared.notify(.impact(.light))
+                    } else {
+                        speechRecognizer.startTranscribing { result in
+                            searchText = result
+                        }
+                        hapticManager.shared.notify(.impact(.light))
+                    }
+                }) {
+                    Image(systemName: speechRecognizer.isListening ? "waveform" : "microphone.fill")
+                        .foregroundStyle(speechRecognizer.isListening ? .red : .gray)
+                        .animation(.easeInOut(duration: 0.25), value: speechRecognizer.isListening)
                 }
+                .opacity(isFocused ? 0 : 1)
+                .animation(.easeInOut(duration: 0.2), value: isFocused)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 15)
@@ -131,6 +147,9 @@ struct NewHome: View {
             .padding(.horizontal, isFocused ? 0 : 15)
             .padding(.bottom, 10)
             .padding(.top, 5)
+        }
+        .onAppear {
+            speechRecognizer.requestPermission()
         }
         .background {
             progressiveBlurView()

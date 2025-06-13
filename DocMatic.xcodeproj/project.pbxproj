@@ -180,6 +180,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "DocMatic requires access to your camera to scan documents. This access is essential for the app’s functionality, not for any other purpose.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "DocMatic requires access to Face ID to securely unlock your saved documents. Face ID is only used for unlocking and not for any other purpose.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need microphone access to listen to your voice";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need access to recognize your voice for search";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -225,6 +227,8 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSCameraUsageDescription = "DocMatic requires access to your camera to scan documents. This access is essential for the app’s functionality, not for any other purpose.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "DocMatic requires access to Face ID to securely unlock your saved documents. Face ID is only used for unlocking and not for any other purpose.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need microphone access to listen to your voice";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need access to recognize your voice for search";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
