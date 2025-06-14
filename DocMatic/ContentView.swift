@@ -71,7 +71,6 @@ struct ContentView: View {
                         )
                         .padding(.horizontal)
                         .padding(.bottom, -15)
-                        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
                         .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
                         .offset(y: showTabBar ? 0 : 200) /// <-- slide it down when hidden
                         .opacity(showTabBar ? 1 : 0)    /// <-- fade it out when hidden
@@ -93,8 +92,7 @@ struct ContentView: View {
                             hapticManager.shared.notify(.impact(.light))
                         })
                     }
-                    .padding(.trailing, 30)
-                    .padding(.bottom, 30)
+                    .padding([.bottom, .trailing], 30)
                     .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
                 }
             }
