@@ -198,8 +198,11 @@ struct HomeView: View {
                     }
                     
                     Button(action: {
+                        hapticManager.shared.notify(.impact(.medium))
+                        
                         if speechRecognizer.isListening {
                             speechRecognizer.stopTranscribing()
+                            searchText = ""
                         } else {
                             speechRecognizer.startTranscribing { result in
                                 searchText = result
@@ -208,6 +211,7 @@ struct HomeView: View {
                     }) {
                         Image(systemName: !speechRecognizer.isAuthorized ? "microphone.slash.fill" :
                                 (speechRecognizer.isListening ? "waveform" : "microphone.fill"))
+                        .symbolEffect(.variableColor.iterative, options: .repeat(.continuous))
                         .foregroundStyle(!speechRecognizer.isAuthorized ? .gray :
                                             (speechRecognizer.isListening ? .red : .gray))
                     }
