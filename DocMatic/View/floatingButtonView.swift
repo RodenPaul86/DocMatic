@@ -19,18 +19,13 @@ struct floatingButtonView: View {
             Button(action: action) {
                 Image(systemName: "plus.circle.dashed")
                     .font(.system(size: 55))
-                    .background(
+                    .background {
                         Circle()
-                            .fill(.ultraThinMaterial)
-                            .background(
-                                Circle()
-                                    .fill(Color.white.opacity(0.2))
+                            .fill(.ultraThinMaterial
+                                .shadow(.drop(color: .black.opacity(0.08), radius: 5, x: 5, y: 5))
+                                .shadow(.drop(color: .black.opacity(0.05), radius: 5, x: -5, y: -5))
                             )
-                            .overlay(
-                                Circle()
-                                    .stroke(.white.opacity(0.4), lineWidth: 1)
-                            )
-                    )
+                    }
                     .overlay { /// <-- Red badge in the corner
                         if !appSubModel.isSubscriptionActive {
                             ZStack {
