@@ -113,6 +113,7 @@ struct SubscriptionButton: View {
                     .foregroundStyle(Color("Default").gradient)
                     .bold()
                     .strikethrough()
+                
                 Text("\(price) / yr")
                     .foregroundStyle(.primary)
                     .bold()
@@ -136,9 +137,15 @@ struct SubscriptionButton: View {
             }
             
         case .lifetime:
-            Text("\(price) / once")
-                .foregroundStyle(.primary)
-                .bold()
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Unlimited Access")
+                    .foregroundStyle(Color("Default").gradient)
+                    .bold()
+                
+                Text("\(price) / once")
+                    .foregroundStyle(.primary)
+                    .bold()
+            }
         }
     }
     
