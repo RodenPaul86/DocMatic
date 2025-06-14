@@ -28,8 +28,6 @@ struct HomeView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Binding var showTabBar: Bool
     
-    let showWelcomTip = Welcome()
-    
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
         guard !searchText.isEmpty else { return documents }
@@ -78,6 +76,7 @@ struct HomeView: View {
                                 .font(.body)
                                 .multilineTextAlignment(.center)
                                 .foregroundStyle(.gray.opacity(0.5))
+                                .padding(.horizontal)
                         }
                         .multilineTextAlignment(.center)
                         .padding()
@@ -88,9 +87,6 @@ struct HomeView: View {
                     let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
                     
                     LazyVGrid(columns: columns, spacing: 15) {
-                        TipView(showWelcomTip)
-                            .frame(maxHeight: .infinity)
-                        
                         ForEach(filteredDocuments) { document in
                             NavigationLink {
                                 DocumentDetailView(document: document, showTabBar: $showTabBar)
@@ -251,25 +247,6 @@ struct HomeView: View {
                         .animation(.easeInOut(duration: 0.2), value: speechRecognizer.isListening)
                     }
                 }
-                
-                
-                
-                
-                
-                
-                
-                // MARK: Clear Button
-                if !searchText.isEmpty && !speechRecognizer.isListening {
-                    Button(action: {
-                        searchText = ""
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundStyle(.gray)
-                    }
-                    .transition(.opacity)
-                }
-                
-                
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 15)
