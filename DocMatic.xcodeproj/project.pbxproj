@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270D2D4A659300E8D13A /* RevenueCat */; };
 		3A9D27102D4A659300E8D13A /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270F2D4A659300E8D13A /* RevenueCatUI */; };
+		3ABE6EBE2DFD9ECE0042B6C8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3ABE6EBD2DFD9ECE0042B6C8 /* Lottie */; };
 		3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AD12EA62D57E06E00A3699E /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 				3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */,
 				3A9D27102D4A659300E8D13A /* RevenueCatUI in Frameworks */,
 				3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */,
+				3ABE6EBE2DFD9ECE0042B6C8 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,6 +101,7 @@
 			packageProductDependencies = (
 				3A9D270D2D4A659300E8D13A /* RevenueCat */,
 				3A9D270F2D4A659300E8D13A /* RevenueCatUI */,
+				3ABE6EBD2DFD9ECE0042B6C8 /* Lottie */,
 			);
 			productName = DocMatic;
 			productReference = 3AA0011E2D39CBFC0087A850 /* DocMatic.app */;
@@ -130,6 +133,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3A9D270C2D4A659300E8D13A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+				3ABE6EBC2DFD9ECE0042B6C8 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3AA0011F2D39CBFC0087A850 /* Products */;
@@ -402,6 +406,14 @@
 				minimumVersion = 5.15.1;
 			};
 		};
+		3ABE6EBC2DFD9ECE0042B6C8 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -414,6 +426,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3A9D270C2D4A659300E8D13A /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
 			productName = RevenueCatUI;
+		};
+		3ABE6EBD2DFD9ECE0042B6C8 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3ABE6EBC2DFD9ECE0042B6C8 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
