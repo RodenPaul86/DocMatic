@@ -39,6 +39,51 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ZStack {
+                if filteredDocuments.isEmpty {
+                    if searchText.isEmpty {
+                        VStack(spacing: 10) {
+                            lottieView(name: "FallingDocs")
+                                .frame(width: 120, height: 120)
+                                .clipped()
+                            
+                            Text("No Documents Yet!")
+                                .font(.title3.bold())
+                                .foregroundStyle(.gray)
+                            
+                            Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
+                                .font(.body)
+                                .foregroundStyle(.gray.opacity(0.5))
+                            
+                            if UIDevice.current.userInterfaceIdiom == .phone {
+                                lottieView(name: "ArrowDown")
+                                    .frame(width: 100, height: 100)
+                                    .clipped()
+                            }
+                        }
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        
+                    } else {
+                        VStack(spacing: 16) {
+                            lottieView(name: "MagnifyResult")
+                                .frame(width: 120, height: 120)
+                                .clipped()
+                                .padding(0)
+                            
+                            Text("No Results!")
+                                .font(.title3.bold())
+                                .foregroundStyle(.gray)
+                            
+                            Text("Hmm, no matches for \"\(searchText)\". Let’s try something else!")
+                                .font(.body)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.gray.opacity(0.5))
+                        }
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    }
+                }
+                
                 ScrollView(.vertical) {
                     let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
                     
@@ -70,56 +115,6 @@ struct HomeView: View {
                     $0.contentOffset.y + $0.contentInsets.top
                 } action: { oldValue, newValue in
                     progress = max(min(-newValue / 75, 1), 0)
-                }
-                
-                if filteredDocuments.isEmpty {
-                    VStack {
-                        if searchText.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "document")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 55, height: 55)
-                                
-                                Text("No Documents Yet!")
-                                    .font(.title3.bold())
-                                
-                                Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
-                                    .font(.body)
-                            }
-                            .padding(.top, 50)
-                            .frame(maxWidth: .infinity) /// <-- Ensures centering horizontally
-                            .foregroundStyle(.gray.opacity(0.5))
-                        } else {
-                            VStack(spacing: 16) {
-                                Image(systemName: "magnifyingglass")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 55, height: 55)
-                                    .foregroundStyle(.gray)
-                                
-                                Text("No Results Found")
-                                    .font(.title3.bold())
-                                    .foregroundStyle(.gray)
-                                
-                                Text("Hmm, no matches for \"\(searchText)\". Let’s try something else!")
-                                    .font(.body)
-                                    .multilineTextAlignment(.center)
-                                    .foregroundStyle(.gray)
-                                    .padding(.horizontal, 30)
-                                
-                                Button(action: {
-                                    searchText = "" /// <-- Clear the search bar
-                                }) {
-                                    Text("Clear Search")
-                                        .font(.headline)
-                                        .foregroundStyle(Color("Default").gradient)
-                                }
-                            }
-                        }
-                    }
-                    .multilineTextAlignment(.center)
-                    .padding()
                 }
             }
         }
@@ -193,24 +188,88 @@ struct HomeView: View {
                         }
                     }
                 
-                // MARK: Microphone Button
-                Button(action: {
-                    if speechRecognizer.isListening {
-                        speechRecognizer.stopTranscribing()
-                    } else {
-                        speechRecognizer.startTranscribing { result in
-                            searchText = result
+                // MARK: Right Side Controls
+                if speechRecognizer.isListening {
+                    // Show mic + clear when listening
+                    if !searchText.isEmpty {
+                        Button(action: {
+                            searchText = ""
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.gray)
                         }
+                        .transition(.opacity)
                     }
-                }) {
-                    Image(systemName: !speechRecognizer.isAuthorized ? "microphone.slash.fill" :
-                            (speechRecognizer.isListening ? "waveform" : "microphone.fill"))
-                    .foregroundStyle(!speechRecognizer.isAuthorized ? .gray :
-                                        (speechRecognizer.isListening ? .red : .gray))
+                    
+                    Button(action: {
+                        if speechRecognizer.isListening {
+                            speechRecognizer.stopTranscribing()
+                        } else {
+                            speechRecognizer.startTranscribing { result in
+                                searchText = result
+                            }
+                        }
+                    }) {
+                        Image(systemName: !speechRecognizer.isAuthorized ? "microphone.slash.fill" :
+                                (speechRecognizer.isListening ? "waveform" : "microphone.fill"))
+                        .foregroundStyle(!speechRecognizer.isAuthorized ? .gray :
+                                            (speechRecognizer.isListening ? .red : .gray))
+                    }
+                    .disabled(!speechRecognizer.isAuthorized)
+                    .opacity(isFocused ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.2), value: speechRecognizer.isListening)
+                    
+                } else {
+                    if isFocused && !searchText.isEmpty {
+                        // Show clear in place of mic
+                        Button(action: {
+                            searchText = ""
+                        }) {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.gray)
+                        }
+                        .transition(.opacity)
+                        
+                    } else {
+                        // MARK: Microphone Button
+                        Button(action: {
+                            if speechRecognizer.isListening {
+                                speechRecognizer.stopTranscribing()
+                            } else {
+                                speechRecognizer.startTranscribing { result in
+                                    searchText = result
+                                }
+                            }
+                        }) {
+                            Image(systemName: !speechRecognizer.isAuthorized ? "microphone.slash.fill" :
+                                    (speechRecognizer.isListening ? "waveform" : "microphone.fill"))
+                            .foregroundStyle(!speechRecognizer.isAuthorized ? .gray :
+                                                (speechRecognizer.isListening ? .red : .gray))
+                        }
+                        .disabled(!speechRecognizer.isAuthorized)
+                        .opacity(isFocused ? 0 : 1)
+                        .animation(.easeInOut(duration: 0.2), value: speechRecognizer.isListening)
+                    }
                 }
-                .disabled(!speechRecognizer.isAuthorized)
-                .opacity(isFocused ? 0 : 1)
-                .animation(.easeInOut(duration: 0.2), value: speechRecognizer.isListening)
+                
+                
+                
+                
+                
+                
+                
+                // MARK: Clear Button
+                if !searchText.isEmpty && !speechRecognizer.isListening {
+                    Button(action: {
+                        searchText = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.gray)
+                    }
+                    .transition(.opacity)
+                }
+                
+                
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 15)
