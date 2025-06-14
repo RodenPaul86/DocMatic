@@ -16,46 +16,15 @@ struct floatingTabBarView: View {
     
     var body: some View {
         ZStack {
-            // MARK: Background Blur
-            UnevenRoundedRectangle(topLeadingRadius: 42,
-                                   bottomLeadingRadius: 42,
-                                   bottomTrailingRadius: 42,
-                                   topTrailingRadius: 42,
-                                   style: .continuous)
-            .fill(.ultraThinMaterial)
-            .background(
-                UnevenRoundedRectangle(topLeadingRadius: 42,
-                                       bottomLeadingRadius: 42,
-                                       bottomTrailingRadius: 42,
-                                       topTrailingRadius: 42,
-                                       style: .continuous)
-                .fill(Color.white.opacity(0.2))
-            )
-            .overlay(
-                UnevenRoundedRectangle(topLeadingRadius: 42,
-                                       bottomLeadingRadius: 42,
-                                       bottomTrailingRadius: 42,
-                                       topTrailingRadius: 42,
-                                       style: .continuous)
-                .stroke(.white.opacity(0.4), lineWidth: 1)
-            )
-            .mask {
-                ZStack {
-                    UnevenRoundedRectangle(topLeadingRadius: 42,
-                                           bottomLeadingRadius: 42,
-                                           bottomTrailingRadius: 42,
-                                           topTrailingRadius: 42,
-                                           style: .continuous)
-                    
-                    Circle()
-                        .frame(width: 70, height: 70)
-                        .offset(y: -30)
-                        .blendMode(.destinationOut)
-                }
-                .compositingGroup()
-            }
+            // MARK: Background RoundedRectangle with shadows (to match search bar)
+            RoundedRectangle(cornerRadius: 42, style: .continuous)
+                .fill(.ultraThinMaterial
+                    .shadow(.drop(color: .black.opacity(0.08), radius: 5, x: 5, y: 5))
+                    .shadow(.drop(color: .black.opacity(0.05), radius: 5, x: -5, y: -5))
+                )
+                .frame(maxWidth: .infinity)
             
-            // MARK: Tab bar items and floating button
+            // MARK: Tab bar items
             HStack {
                 TabBarButton(systemImageName: "square.grid.2x2", title: "Summary", isSelected: selectedTab == .home) {
                     selectedTab = .home
@@ -70,7 +39,7 @@ struct floatingTabBarView: View {
             }
             .padding(.horizontal)
             
-            // MARK: Floating camera button
+            // MARK: Floating Camera Button
             Button(action: action) {
                 Image(systemName: "plus.circle.dashed")
                     .font(.system(size: 55))
@@ -86,7 +55,7 @@ struct floatingTabBarView: View {
                                     .stroke(.white.opacity(0.4), lineWidth: 1)
                             )
                     )
-                    .overlay { /// <-- Red badge in the corner
+                    .overlay {
                         if !appSubModel.isSubscriptionActive {
                             ZStack {
                                 Circle()
@@ -100,7 +69,7 @@ struct floatingTabBarView: View {
                             .frame(width: 25, height: 25)
                             .offset(x: 20, y: -20)
                             .transition(.scale.combined(with: .opacity))
-                            .animation(.easeInOut(duration: 0.4), value: ScanManager.shared.scansLeft)
+                            .animation(.easeInOut(duration: 0.4), value: scanManager.scansLeft)
                         }
                     }
             }
@@ -108,11 +77,6 @@ struct floatingTabBarView: View {
         }
         .frame(height: 80)
     }
-}
-
-#Preview(traits: .sizeThatFitsLayout) {
-    floatingTabBarView(selectedTab: .constant(.home), action: {})
-    .padding(40)
 }
 
 struct TabBarButton: View {
