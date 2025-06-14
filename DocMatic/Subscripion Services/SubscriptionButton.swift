@@ -138,7 +138,7 @@ struct SubscriptionButton: View {
             
         case .lifetime:
             VStack(alignment: .leading, spacing: 4) {
-                Text("Unlimited Access")
+                Text("No Renewal")
                     .foregroundStyle(Color("Default").gradient)
                     .bold()
                 
