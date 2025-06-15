@@ -141,10 +141,10 @@ struct ContentView: View {
                     ? UIColor.white.withAlphaComponent(0.15)
                     : UIColor.black.withAlphaComponent(0.15)
                     
-                    if let logoImage = UIImage(named: "appLogo") {
-                        finalImage = await addTiledWatermarkWithLogo(to: originalImage, text: "DocMatic", logo: logoImage, color: watermarkColor)
+                    if let logoImage = UIImage(named: "") { /// <-- TODO: create a logo that works with the watermark
+                        finalImage = await addTiledWatermarkWithLogo(to: originalImage, text: Bundle.main.appName, logo: logoImage, color: watermarkColor)
                     } else {
-                        finalImage = originalImage // Fallback in case logo is missing
+                        finalImage = await addTiledWatermark(to: originalImage, text: Bundle.main.appName, color: watermarkColor)
                     }
                 }
                 
@@ -232,23 +232,79 @@ struct ContentView: View {
         let spacingX = watermarkWidth * 2
         let spacingY = watermarkHeight * 2
         
-        for y in stride(from: 0.0, to: size.height, by: spacingY) {
+        for (rowIndex, y) in stride(from: 0.0, to: size.height, by: spacingY).enumerated() {
+            let xOffset = (rowIndex % 2 == 0) ? 0.0 : spacingX / 2
             for x in stride(from: 0.0, to: size.width, by: spacingX) {
-                let origin = CGPoint(x: x, y: y)
-                let transform = CGAffineTransform(translationX: origin.x, y: origin.y)
-                    .rotated(by: -.pi / 6) // 30° rotation
-                context?.concatenate(transform)
+                let adjustedX = x + xOffset
+                let origin = CGPoint(x: adjustedX, y: y)
                 
-                // Draw logo
-                let logoOrigin = CGPoint(x: 0, y: 0)
-                let logoRect = CGRect(origin: logoOrigin, size: logoSize)
+                // Save current context state
+                context?.saveGState()
+                
+                // Move the origin and apply rotation
+                context?.translateBy(x: origin.x, y: origin.y)
+                context?.rotate(by: .pi / 4) // 45 degrees in radians
+                
+                // Draw logo at (0, 0) in rotated space
+                let logoRect = CGRect(origin: .zero, size: logoSize)
                 logo.draw(in: logoRect, blendMode: .normal, alpha: color.cgColor.alpha)
                 
                 // Draw text next to logo
                 let textOrigin = CGPoint(x: logoSize.width + spacing, y: 0)
                 (text as NSString).draw(at: textOrigin, withAttributes: attributes)
                 
-                context?.concatenate(transform.inverted())
+                // Restore context
+                context?.restoreGState()
+            }
+        }
+        
+        context?.restoreGState()
+        
+        let watermarkedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return watermarkedImage ?? image
+    }
+    
+    func addTiledWatermark(to image: UIImage, text: String = "DocMatic", color: UIColor) -> UIImage {
+        let scale = image.scale
+        let size = image.size
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        image.draw(in: CGRect(origin: .zero, size: size))
+        
+        let context = UIGraphicsGetCurrentContext()
+        context?.saveGState()
+        
+        let fontSize = size.width * 0.05
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: fontSize),
+            .foregroundColor: color
+        ]
+        
+        let textSize = (text as NSString).size(withAttributes: attributes)
+        
+        let spacingX = textSize.width * 2
+        let spacingY = textSize.height * 2
+        
+        for (rowIndex, y) in stride(from: 0.0, to: size.height, by: spacingY).enumerated() {
+            let xOffset = (rowIndex % 2 == 0) ? 0.0 : spacingX / 2
+            for x in stride(from: 0.0, to: size.width, by: spacingX) {
+                let adjustedX = x + xOffset
+                let origin = CGPoint(x: adjustedX, y: y)
+                
+                // Save current context state
+                context?.saveGState()
+                
+                // Move the origin and apply rotation
+                context?.translateBy(x: origin.x, y: origin.y)
+                context?.rotate(by: .pi / 4) // 45 degrees
+                
+                // Draw just the text
+                (text as NSString).draw(at: .zero, withAttributes: attributes)
+                
+                // Restore context
+                context?.restoreGState()
             }
         }
         
