@@ -81,16 +81,14 @@ struct SubscriptionView: View {
                     .shadow(radius: 5) // Optional shadow for better visibility
                 }
             } else {
-                // MARK: Subscription Options
-                VStack(spacing: 15) {
-                    // MARK: Feature List
-                    ScrollView(.vertical, showsIndicators: false) {
-                        PricingView()
-                            .padding(.top)
-                    }
-                    
-                    Spacer()
-                    
+                // MARK: Feature List
+                ScrollView(.vertical, showsIndicators: false) {
+                    PricingView()
+                        .padding([.top, .horizontal])
+                }
+                
+                // MARK: Subscription Options and Subscribe button
+                VStack {
                     // Annual & Monthly Buttons
                     HStack(spacing: 15) {
                         SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
@@ -113,28 +111,9 @@ struct SubscriptionView: View {
                             .cornerRadius(14)
                     }
                     .padding(.top)
-                    /*
-                     HStack {
-                     Button(action: {
-                     // Handle Policy action
-                     }) {
-                     Text("Privacy Policy")
-                     }
-                     
-                     Text("-")
-                     
-                     Button(action: {
-                     // Handle Terms action
-                     }) {
-                     Text("Terms of Service")
-                     }
-                     }
-                     .font(.caption)
-                     .foregroundStyle(.gray)
-                     */
                 }
                 .padding(.horizontal)
-                .padding(.vertical)
+                .padding(.bottom, 30)
             }
         }
         .alert(isPresented: $showAlert) {

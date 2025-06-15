@@ -10,6 +10,7 @@ import SwiftUI
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
         ("Document Scans", "3", .infinity, true),
+        ("Remove Watermarks", nil, .checkmark, false),
         ("Alternate App Icons", nil, .checkmark, false),
         ("Remove Annoying Paywalls", nil, .checkmark, false),
         ("Support Indie Developers", nil, .checkmark, false)
@@ -71,7 +72,7 @@ struct PricingView: View {
             
             Divider()
             
-            Text("Subscribe for $24.99/year. Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. Manage or cancel anytime in your iTunes settings.")
+            Text("All Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. Manage or cancel anytime in your iTunes settings or in app.")
                 .font(.caption)
                 .foregroundStyle(.gray)
         }
