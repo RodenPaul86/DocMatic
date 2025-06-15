@@ -83,7 +83,7 @@ struct HomeView: View {
                     }
                 }
                 
-                ScrollView(.vertical) {
+                ScrollView(.vertical, showsIndicators: false) {
                     let columns = [GridItem(.adaptive(minimum: 150, maximum: 300))] /// <-- Adaptive grid with dynamic number of columns
                     
                     LazyVGrid(columns: columns, spacing: 15) {
