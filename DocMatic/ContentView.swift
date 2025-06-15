@@ -130,8 +130,26 @@ struct ContentView: View {
             var pages: [DocumentPage] = []
             
             for pageIndex in 0..<scanDocument.pageCount {
-                let pageImage = scanDocument.imageOfPage(at: pageIndex)
-                guard let pageData = pageImage.jpegData(compressionQuality: 0.65) else { return }
+                let originalImage = scanDocument.imageOfPage(at: pageIndex)
+                
+                let finalImage: UIImage
+                if await appSubModel.isSubscriptionActive {
+                    finalImage = originalImage
+                } else {
+                    let isDark = await isDarkBackground(in: originalImage)
+                    let watermarkColor: UIColor = isDark
+                    ? UIColor.white.withAlphaComponent(0.15)
+                    : UIColor.black.withAlphaComponent(0.15)
+                    
+                    if let logoImage = UIImage(named: "appLogo") {
+                        finalImage = await addTiledWatermarkWithLogo(to: originalImage, text: "DocMatic", logo: logoImage, color: watermarkColor)
+                    } else {
+                        finalImage = originalImage // Fallback in case logo is missing
+                    }
+                }
+                
+                guard let pageData = finalImage.jpegData(compressionQuality: 0.65) else { return }
+                
                 let documentPage = DocumentPage(document: document, pageIndex: pageIndex, pageData: pageData)
                 pages.append(documentPage)
             }
@@ -186,5 +204,95 @@ struct ContentView: View {
         // MARK: Add your alert presentation logic, e.g., using SwiftUI's `Alert`
         alertMessage = message
         showAlert = true
+    }
+    
+    func addTiledWatermarkWithLogo(to image: UIImage, text: String = "DocMatic", logo: UIImage, color: UIColor) -> UIImage {
+        let scale = image.scale
+        let size = image.size
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        image.draw(in: CGRect(origin: .zero, size: size))
+        
+        let context = UIGraphicsGetCurrentContext()
+        context?.saveGState()
+        
+        let fontSize = size.width * 0.035
+        let spacing: CGFloat = 10
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: fontSize),
+            .foregroundColor: color
+        ]
+        
+        let textSize = (text as NSString).size(withAttributes: attributes)
+        let logoSize = CGSize(width: fontSize, height: fontSize)
+        
+        let watermarkWidth = logoSize.width + spacing + textSize.width
+        let watermarkHeight = max(logoSize.height, textSize.height)
+        
+        let spacingX = watermarkWidth * 2
+        let spacingY = watermarkHeight * 2
+        
+        for y in stride(from: 0.0, to: size.height, by: spacingY) {
+            for x in stride(from: 0.0, to: size.width, by: spacingX) {
+                let origin = CGPoint(x: x, y: y)
+                let transform = CGAffineTransform(translationX: origin.x, y: origin.y)
+                    .rotated(by: -.pi / 6) // 30° rotation
+                context?.concatenate(transform)
+                
+                // Draw logo
+                let logoOrigin = CGPoint(x: 0, y: 0)
+                let logoRect = CGRect(origin: logoOrigin, size: logoSize)
+                logo.draw(in: logoRect, blendMode: .normal, alpha: color.cgColor.alpha)
+                
+                // Draw text next to logo
+                let textOrigin = CGPoint(x: logoSize.width + spacing, y: 0)
+                (text as NSString).draw(at: textOrigin, withAttributes: attributes)
+                
+                context?.concatenate(transform.inverted())
+            }
+        }
+        
+        context?.restoreGState()
+        
+        let watermarkedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return watermarkedImage ?? image
+    }
+    
+    func isDarkBackground(in image: UIImage) -> Bool {
+        guard let cgImage = image.cgImage else { return false }
+
+        let width = cgImage.width
+        let height = cgImage.height
+        let center = CGRect(x: width / 4, y: height / 4, width: width / 2, height: height / 2)
+
+        guard let cropped = cgImage.cropping(to: center) else { return false }
+
+        let context = CIContext()
+        let inputImage = CIImage(cgImage: cropped)
+        let extent = inputImage.extent
+        let avgFilter = CIFilter(name: "CIAreaAverage", parameters: [
+            kCIInputImageKey: inputImage,
+            kCIInputExtentKey: CIVector(cgRect: extent)
+        ])!
+
+        guard let outputImage = avgFilter.outputImage else { return false }
+
+        var bitmap = [UInt8](repeating: 0, count: 4)
+        context.render(outputImage,
+                       toBitmap: &bitmap,
+                       rowBytes: 4,
+                       bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+                       format: .RGBA8,
+                       colorSpace: CGColorSpaceCreateDeviceRGB())
+
+        let r = CGFloat(bitmap[0]) / 255.0
+        let g = CGFloat(bitmap[1]) / 255.0
+        let b = CGFloat(bitmap[2]) / 255.0
+
+        // Use luminance formula
+        let luminance = 0.299 * r + 0.587 * g + 0.114 * b
+        return luminance < 0.5 // true = dark background
     }
 }

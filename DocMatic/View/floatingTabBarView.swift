@@ -17,12 +17,24 @@ struct floatingTabBarView: View {
     var body: some View {
         ZStack {
             // MARK: Background RoundedRectangle with shadows (to match search bar)
+            
+            RoundedTabBarWithCutout()
+                .fill(.ultraThinMaterial
+                    .shadow(.drop(color: .black.opacity(0.08), radius: 5, x: 5, y: 5))
+                    .shadow(.drop(color: .black.opacity(0.05), radius: 5, x: -5, y: -5))
+                )
+                .frame(height: 90) // Adjust height if needed
+                .frame(maxWidth: .infinity)
+            
+            
+            /*
             RoundedRectangle(cornerRadius: 42, style: .continuous)
                 .fill(.ultraThinMaterial
                     .shadow(.drop(color: .black.opacity(0.08), radius: 5, x: 5, y: 5))
                     .shadow(.drop(color: .black.opacity(0.05), radius: 5, x: -5, y: -5))
                 )
                 .frame(maxWidth: .infinity)
+             */
             
             // MARK: Tab bar items
             HStack {
@@ -68,9 +80,29 @@ struct floatingTabBarView: View {
                         }
                     }
             }
-            .offset(y: -30)
+            .offset(y: -45)
         }
         .frame(height: 80)
+    }
+    
+    struct RoundedTabBarWithCutout: Shape {
+        var cutoutRadius: CGFloat = 35
+        var cornerRadius: CGFloat = 42
+        
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            
+            // Full rounded rectangle
+            path.addRoundedRect(in: rect, cornerSize: CGSize(width: cornerRadius, height: cornerRadius))
+            
+            // Center cutout
+            let cutoutCenter = CGPoint(x: rect.midX, y: 0) // At top of bar
+            let cutout = Path { p in
+                p.addArc(center: cutoutCenter, radius: cutoutRadius, startAngle: .zero, endAngle: .degrees(360), clockwise: false)
+            }
+            
+            return path.subtracting(cutout)
+        }
     }
 }
 
