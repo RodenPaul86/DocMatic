@@ -9,6 +9,19 @@ import SwiftUI
 
 struct releaseNotesView: View {
     let updates: [appUpdate] = [
+        appUpdate(title: "",
+                  version: "2.0.0",
+                  date: "July 2025",
+                  description: "",
+                  imageName: "",
+                  features: [
+                    "UI/UX Improvements.",
+                    "User Profile (Optional).",
+                    "Home/Lock screen widgets"],
+                  bugFixes: [
+                    "General proformance upgrades and bug fixes."
+                  ]),
+        
         appUpdate(title: "The Polishing Update",
                   version: "1.1.0",
                   date: "May 2025",
