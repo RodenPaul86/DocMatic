@@ -104,7 +104,7 @@ struct DocumentCardView: View {
                 try? context.save()
                 WidgetCenter.shared.reloadAllTimelines()
             } label: {
-                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock.fill")
+                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
                     .tint(.primary)
             }
             

@@ -9,6 +9,7 @@ import SwiftUI
 import PDFKit
 import LocalAuthentication
 import TipKit
+import WidgetKit
 
 struct DocumentDetailView: View {
     var document: Document
@@ -205,8 +206,9 @@ struct DocumentDetailView: View {
                             if document.isLocked {
                                 dismiss()
                             }
+                            WidgetCenter.shared.reloadAllTimelines()
                         }) {
-                            Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.fill" : "lock.open.fill")
+                            Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
                                 .tint(.primary)
                         }
                         
@@ -233,6 +235,7 @@ struct DocumentDetailView: View {
                                 ScanManager.shared.decrementScanCount()
                                 context.delete(document)
                                 try? context.save()
+                                WidgetCenter.shared.reloadAllTimelines()
                             }
                         }
                         Button("Cancel", role: .cancel) {}
@@ -427,6 +430,7 @@ struct DocumentDetailView: View {
         document.name = newFileName
         do {
             try context.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             print("Failed to rename the file: \(error)")
         }
