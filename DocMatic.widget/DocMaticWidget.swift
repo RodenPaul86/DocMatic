@@ -24,8 +24,11 @@ struct Provider: TimelineProvider {
     @MainActor
     func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
         let docs = getScannedDocumentSnapshots()
+        var entries: [SimpleEntry] = []
         let entry = SimpleEntry(date: .now, scannedDocs: docs, family: context.family)
-        let timeline = Timeline(entries: [entry], policy: .after(.now.advanced(by: 60 * 5)))
+        entries.append(entry)
+        
+        let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
     
@@ -46,7 +49,8 @@ struct Provider: TimelineProvider {
             DocumentSnapshot(
                 id: $0.uniqueViewID,
                 name: $0.name,
-                createdAt: $0.createdAt
+                createdAt: $0.createdAt,
+                isLocked: $0.isLocked
             )
         }
     }
@@ -58,10 +62,11 @@ struct SimpleEntry: TimelineEntry {
     let family: WidgetFamily
 }
 
-struct DocumentSnapshot: Identifiable, Hashable {
+struct DocumentSnapshot: Identifiable {
     let id: String
     let name: String
     let createdAt: Date
+    let isLocked: Bool
 }
 
 struct DocMatic_widgetEntryView: View {
@@ -85,7 +90,8 @@ struct DocMatic_widgetEntryView: View {
                     .font(.headline.bold())
                 Spacer()
                 Image(systemName: "viewfinder.circle.fill")
-                    .font(.largeTitle)
+                    .foregroundStyle(Color("Default"))
+                    .font(.title)
                     .clipShape(Circle())
             }
 
@@ -117,9 +123,13 @@ struct DocumentCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(doc.name)
                     .font(.caption.bold())
-                    .lineLimit(2)
+                    .lineLimit(1)
+                
+                Text(doc.createdAt.formatted(.dateTime.month(.defaultDigits).day().year(.twoDigits)))
+                    .font(.caption)
+                    .foregroundStyle(.gray)
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding(10)
         .background(
@@ -129,8 +139,9 @@ struct DocumentCard: View {
     }
     
     var icon: Image {
-        // Replace with actual logic based on file type
-        if doc.name.lowercased().hasSuffix(".pdf") {
+        if doc.isLocked {
+            return Image(systemName: "lock.doc")
+        } else if doc.name.lowercased().hasSuffix(".pdf") {
             return Image(systemName: "doc.richtext")
         } else if doc.name.lowercased().hasSuffix(".txt") {
             return Image(systemName: "doc.text")
@@ -147,32 +158,32 @@ struct DocMaticWidget: Widget {
     
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                DocMatic_widgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
-            } else {
-                DocMatic_widgetEntryView(entry: entry)
-                    .padding()
-                    .background()
-            }
+            DocMatic_widgetEntryView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
+                .modelContainer(for: Document.self)
         }
         .configurationDisplayName("Recent Documents")
-        .description("Quick access to your recent scanned documents.")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .description("Quick access to your recently scanned documents.")
+        .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
 
-#Preview(as: .systemMedium) {
+#Preview(as: .systemLarge) {
     DocMaticWidget()
 } timeline: {
     SimpleEntry(
         date: .now,
         scannedDocs: [
-            DocumentSnapshot(id: "1", name: "Simple PDF", createdAt: Date(timeIntervalSinceNow: -86400)),
-            DocumentSnapshot(id: "2", name: "Simple TXT", createdAt: Date(timeIntervalSinceNow: -172800)),
-            DocumentSnapshot(id: "3", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200)),
-            DocumentSnapshot(id: "4", name: "Checklist", createdAt: Date(timeIntervalSinceNow: -345600))
+            /*
+            DocumentSnapshot(id: "1", name: "Simple.pdf", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: false),
+            DocumentSnapshot(id: "2", name: "Simple.txt", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
+            DocumentSnapshot(id: "3", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false),
+            DocumentSnapshot(id: "4", name: "Checklist", createdAt: Date(timeIntervalSinceNow: -345600), isLocked: false),
+            DocumentSnapshot(id: "5", name: "Simple Doc", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: true),
+            DocumentSnapshot(id: "6", name: "Simple Doc 2", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
+            DocumentSnapshot(id: "7", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false)
+             */
         ],
-        family: .systemMedium
+        family: .systemLarge
     )
 }
