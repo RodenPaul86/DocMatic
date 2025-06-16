@@ -7,18 +7,64 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A96593B2DFF13AE00A5AB6E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A96593A2DFF13AE00A5AB6E /* WidgetKit.framework */; };
+		3A96593D2DFF13AE00A5AB6E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A96593C2DFF13AE00A5AB6E /* SwiftUI.framework */; };
+		3A9659482DFF13B000A5AB6E /* DocMatic.widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3A9659392DFF13AE00A5AB6E /* DocMatic.widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270D2D4A659300E8D13A /* RevenueCat */; };
 		3A9D27102D4A659300E8D13A /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270F2D4A659300E8D13A /* RevenueCatUI */; };
 		3ABE6EBE2DFD9ECE0042B6C8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3ABE6EBD2DFD9ECE0042B6C8 /* Lottie */; };
 		3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AD12EA62D57E06E00A3699E /* StoreKit.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3A9659462DFF13B000A5AB6E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3AA001162D39CBFC0087A850 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A9659382DFF13AE00A5AB6E;
+			remoteInfo = DocMatic.widgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3A9659492DFF13B000A5AB6E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3A9659482DFF13B000A5AB6E /* DocMatic.widgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3A9659392DFF13AE00A5AB6E /* DocMatic.widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DocMatic.widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A96593A2DFF13AE00A5AB6E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		3A96593C2DFF13AE00A5AB6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		3A96594E2DFF155D00A5AB6E /* DocMatic.widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DocMatic.widgetExtension.entitlements; sourceTree = "<group>"; };
 		3AA0011E2D39CBFC0087A850 /* DocMatic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocMatic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AD12EA62D57E06E00A3699E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		3A96594D2DFF13B000A5AB6E /* Exceptions for "DocMatic.widget" folder in "DocMatic.widgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */;
+		};
+		3A9659502DFF158E00A5AB6E /* Exceptions for "DocMatic" folder in "DocMatic.widgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/Document.swift,
+				Model/DocumentPage.swift,
+			);
+			target = 3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */;
+		};
 		3AA0012E2D39CBFE0087A850 /* Exceptions for "DocMatic" folder in "DocMatic" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -29,10 +75,19 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		3A96593E2DFF13AE00A5AB6E /* DocMatic.widget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				3A96594D2DFF13B000A5AB6E /* Exceptions for "DocMatic.widget" folder in "DocMatic.widgetExtension" target */,
+			);
+			path = DocMatic.widget;
+			sourceTree = "<group>";
+		};
 		3AA001202D39CBFC0087A850 /* DocMatic */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				3AA0012E2D39CBFE0087A850 /* Exceptions for "DocMatic" folder in "DocMatic" target */,
+				3A9659502DFF158E00A5AB6E /* Exceptions for "DocMatic" folder in "DocMatic.widgetExtension" target */,
 			);
 			path = DocMatic;
 			sourceTree = "<group>";
@@ -40,6 +95,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3A9659362DFF13AE00A5AB6E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3A96593D2DFF13AE00A5AB6E /* SwiftUI.framework in Frameworks */,
+				3A96593B2DFF13AE00A5AB6E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3AA0011B2D39CBFC0087A850 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -57,7 +121,9 @@
 		3AA001152D39CBFC0087A850 = {
 			isa = PBXGroup;
 			children = (
+				3A96594E2DFF155D00A5AB6E /* DocMatic.widgetExtension.entitlements */,
 				3AA001202D39CBFC0087A850 /* DocMatic */,
+				3A96593E2DFF13AE00A5AB6E /* DocMatic.widget */,
 				3AD12EA52D57E06E00A3699E /* Frameworks */,
 				3AA0011F2D39CBFC0087A850 /* Products */,
 			);
@@ -67,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				3AA0011E2D39CBFC0087A850 /* DocMatic.app */,
+				3A9659392DFF13AE00A5AB6E /* DocMatic.widgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,6 +142,8 @@
 			isa = PBXGroup;
 			children = (
 				3AD12EA62D57E06E00A3699E /* StoreKit.framework */,
+				3A96593A2DFF13AE00A5AB6E /* WidgetKit.framework */,
+				3A96593C2DFF13AE00A5AB6E /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -82,6 +151,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3A96594C2DFF13B000A5AB6E /* Build configuration list for PBXNativeTarget "DocMatic.widgetExtension" */;
+			buildPhases = (
+				3A9659352DFF13AE00A5AB6E /* Sources */,
+				3A9659362DFF13AE00A5AB6E /* Frameworks */,
+				3A9659372DFF13AE00A5AB6E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				3A96593E2DFF13AE00A5AB6E /* DocMatic.widget */,
+			);
+			name = DocMatic.widgetExtension;
+			packageProductDependencies = (
+			);
+			productName = DocMatic.widgetExtension;
+			productReference = 3A9659392DFF13AE00A5AB6E /* DocMatic.widgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		3AA0011D2D39CBFC0087A850 /* DocMatic */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3AA0012F2D39CBFE0087A850 /* Build configuration list for PBXNativeTarget "DocMatic" */;
@@ -89,10 +180,12 @@
 				3AA0011A2D39CBFC0087A850 /* Sources */,
 				3AA0011B2D39CBFC0087A850 /* Frameworks */,
 				3AA0011C2D39CBFC0087A850 /* Resources */,
+				3A9659492DFF13B000A5AB6E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3A9659472DFF13B000A5AB6E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				3AA001202D39CBFC0087A850 /* DocMatic */,
@@ -114,9 +207,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					3A9659382DFF13AE00A5AB6E = {
+						CreatedOnToolsVersion = 16.4;
+					};
 					3AA0011D2D39CBFC0087A850 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -141,11 +237,19 @@
 			projectRoot = "";
 			targets = (
 				3AA0011D2D39CBFC0087A850 /* DocMatic */,
+				3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3A9659372DFF13AE00A5AB6E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3AA0011C2D39CBFC0087A850 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -156,6 +260,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3A9659352DFF13AE00A5AB6E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3AA0011A2D39CBFC0087A850 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -165,7 +276,76 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3A9659472DFF13B000A5AB6E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */;
+			targetProxy = 3A9659462DFF13B000A5AB6E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		3A96594A2DFF13B000A5AB6E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DocMatic.widgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WM7RG95JZ8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DocMatic.widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DocMatic.widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.studio4design.DocMatic.DocMatic-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3A96594B2DFF13B000A5AB6E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = DocMatic.widgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WM7RG95JZ8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DocMatic.widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = DocMatic.widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.studio4design.DocMatic.DocMatic-widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		3AA001302D39CBFE0087A850 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -377,6 +557,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3A96594C2DFF13B000A5AB6E /* Build configuration list for PBXNativeTarget "DocMatic.widgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3A96594A2DFF13B000A5AB6E /* Debug */,
+				3A96594B2DFF13B000A5AB6E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3AA001192D39CBFC0087A850 /* Build configuration list for PBXProject "DocMatic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
