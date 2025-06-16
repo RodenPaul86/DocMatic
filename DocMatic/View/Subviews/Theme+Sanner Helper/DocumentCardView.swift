@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct DocumentCardView: View {
     var document: Document
@@ -101,6 +102,7 @@ struct DocumentCardView: View {
                 document.isLocked.toggle()
                 isUnlocked = !document.isLocked
                 try? context.save()
+                WidgetCenter.shared.reloadAllTimelines()
             } label: {
                 Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock.fill")
                     .tint(.primary)
@@ -120,6 +122,7 @@ struct DocumentCardView: View {
                     ScanManager.shared.decrementScanCount()
                     context.delete(document)
                     try? context.save()
+                    WidgetCenter.shared.reloadAllTimelines()
                 }
             }
             Button("Cancel", role: .cancel) {}
@@ -157,6 +160,7 @@ struct DocumentCardView: View {
         document.name = newFileName
         do {
             try context.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             print("Failed to rename the file: \(error)")
         }

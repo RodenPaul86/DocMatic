@@ -7,6 +7,7 @@
 
 import SwiftUI
 import VisionKit
+import WidgetKit
 
 enum ScannerError: Error {
     case cameraAccessDenied
@@ -160,6 +161,7 @@ struct ContentView: View {
                 
                 context.insert(document)
                 try? context.save()
+                WidgetCenter.shared.reloadAllTimelines()
                 
                 self.scanDocument = nil
                 isLoading = false
