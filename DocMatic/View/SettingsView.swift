@@ -35,7 +35,7 @@ struct SettingsView: View {
                     .listRowInsets(EdgeInsets())
                 }
                 
-                Section(header: Text("Costomization")) {
+                Section(header: Text("Customization")) {
                     if UIDevice.current.userInterfaceIdiom == .phone {
                         customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
                             showPickerView.toggle()
