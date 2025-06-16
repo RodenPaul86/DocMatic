@@ -77,35 +77,72 @@ struct DocMatic_widgetEntryView: View {
         case .systemSmall: return 1
         case .systemMedium: return 2
         case .systemLarge: return 8
+        case .systemExtraLarge: return 12
         default: return 1
         }
     }
-
-    let columns = [GridItem(.flexible()), GridItem(.flexible())]
+    
+    
+    
+    
+    let singleColumn = [GridItem(.flexible())]
+    let twoColumns = [GridItem(.flexible()), GridItem(.flexible())]
+    let threeColumns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    
+    
+    
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(entry.family == .systemSmall ? "Recent Docs" : "Recents Documents")
-                    .font(.headline.bold())
-                Spacer()
-                Image(systemName: "viewfinder.circle.fill")
-                    .foregroundStyle(Color("Default"))
-                    .font(.title)
-                    .clipShape(Circle())
-            }
-
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(entry.scannedDocs.prefix(maxDocumentsToShow)) { doc in
-                    DocumentCard(doc: doc)
+        ZStack {
+            if entry.scannedDocs.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: entry.family == .systemMedium ? "" : "doc.text")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .foregroundStyle(.gray.opacity(0.6))
+                    
+                    Text("No Documents Yet!")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    
+                    Text("Scan your first document to get started.")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
                 }
+                .padding()
             }
-
-            Spacer(minLength: 0)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(entry.family == .systemSmall ? "Recent Docs" : "Recent Documents")
+                        .font(.headline.bold())
+                    Spacer()
+                    Image(systemName: "viewfinder.circle.fill")
+                        .foregroundStyle(Color("Default"))
+                        .font(.title)
+                        .clipShape(Circle())
+                }
+                
+                if !entry.scannedDocs.isEmpty {
+                    LazyVGrid(
+                        columns: entry.family == .systemExtraLarge
+                        ? threeColumns
+                        : (entry.family == .systemMedium || entry.family == .systemLarge
+                           ? twoColumns
+                           : singleColumn),
+                        spacing: 10
+                    ) {
+                        ForEach(entry.scannedDocs.prefix(maxDocumentsToShow)) { doc in
+                            DocumentCard(doc: doc)
+                        }
+                    }
+                }
+                Spacer(minLength: 0)
+            }
         }
-        .containerBackground(for: .widget) {
-            Color.clear
-        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 }
 
@@ -164,17 +201,16 @@ struct DocMaticWidget: Widget {
         }
         .configurationDisplayName("Recent Documents")
         .description("Quick access to your recently scanned documents.")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .supportedFamilies([.systemSmall,.systemMedium, .systemLarge, .systemExtraLarge])
     }
 }
 
-#Preview(as: .systemLarge) {
+#Preview(as: .systemSmall) {
     DocMaticWidget()
 } timeline: {
     SimpleEntry(
         date: .now,
         scannedDocs: [
-            /*
             DocumentSnapshot(id: "1", name: "Simple.pdf", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: false),
             DocumentSnapshot(id: "2", name: "Simple.txt", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
             DocumentSnapshot(id: "3", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false),
@@ -182,8 +218,7 @@ struct DocMaticWidget: Widget {
             DocumentSnapshot(id: "5", name: "Simple Doc", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: true),
             DocumentSnapshot(id: "6", name: "Simple Doc 2", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
             DocumentSnapshot(id: "7", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false)
-             */
         ],
-        family: .systemLarge
+        family: .systemSmall
     )
 }
