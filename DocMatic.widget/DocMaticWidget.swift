@@ -82,16 +82,10 @@ struct DocMatic_widgetEntryView: View {
         }
     }
     
-    
-    
-    
     let singleColumn = [GridItem(.flexible())]
     let twoColumns = [GridItem(.flexible()), GridItem(.flexible())]
     let threeColumns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     
-    
-    
-
     var body: some View {
         ZStack {
             if entry.scannedDocs.isEmpty {
