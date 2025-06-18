@@ -50,7 +50,7 @@ struct YourWidgetEntryView : View {
             HStack {
                 Image(systemName: "document.viewfinder")
                     .font(.system(size: 50))
-                    .foregroundStyle(Color("Default").gradient)
+                    .foregroundStyle(Color("AccentColor").gradient)
                     .widgetAccentable()
                 
                 Spacer()

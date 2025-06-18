@@ -116,7 +116,7 @@ struct DocumentEntryView: View {
                     Spacer()
                     Image(systemName: "viewfinder.circle.fill")
                         .font(.largeTitle)
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color("AccentColor").gradient)
                         .widgetAccentable()
                         .clipShape(Circle())
                 }
