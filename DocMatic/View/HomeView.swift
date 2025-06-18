@@ -110,8 +110,8 @@ struct HomeView: View {
                 .onScrollGeometryChange(for: CGFloat.self) {
                     $0.contentOffset.y + $0.contentInsets.top
                 } action: { oldValue, newValue in
-                    print("Scroll Offset:", newValue)
-                    progress = max(min(newValue / 75, 1), 0)
+                    //print("Scroll Offset:", newValue)
+                    progress = max(min(-newValue / 75, 1), 0)
                 }
             }
         }
