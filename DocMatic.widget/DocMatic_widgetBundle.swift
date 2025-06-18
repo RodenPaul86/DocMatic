@@ -12,7 +12,7 @@ import SwiftUI
 struct DocMatic_widgetBundle: WidgetBundle {
     @WidgetBundleBuilder
     var body: some Widget {
-        ScanButtonWidget()
-        DocumentViewWidget()
+        ScanDocWidget()
+        DocViewerWidget()
     }
 }
