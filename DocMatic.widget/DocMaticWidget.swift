@@ -71,7 +71,7 @@ struct DocumentSnapshot: Identifiable {
 
 struct DocMatic_widgetEntryView: View {
     var entry: SimpleEntry
-
+    
     var maxDocumentsToShow: Int {
         switch entry.family {
         case .systemSmall: return 1
@@ -133,10 +133,8 @@ struct DocMatic_widgetEntryView: View {
                         }
                     }
                 }
-                Spacer(minLength: 0)
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 }
 
@@ -154,11 +152,7 @@ struct DocumentCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(doc.name)
                     .font(.caption.bold())
-                    .lineLimit(1)
-                
-                Text(doc.createdAt.formatted(.dateTime.month(.defaultDigits).day().year(.twoDigits)))
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+                    .lineLimit(2)
             }
             Spacer(minLength: 0)
         }
@@ -199,20 +193,20 @@ struct DocMaticWidget: Widget {
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemLarge) {
     DocMaticWidget()
 } timeline: {
     SimpleEntry(
         date: .now,
         scannedDocs: [
-            DocumentSnapshot(id: "1", name: "Simple.pdf", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: false),
-            DocumentSnapshot(id: "2", name: "Simple.txt", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
-            DocumentSnapshot(id: "3", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false),
+            DocumentSnapshot(id: "1", name: "Simple", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: false),
+            DocumentSnapshot(id: "2", name: "Simple 2", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
+            DocumentSnapshot(id: "3", name: "Image", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false),
             DocumentSnapshot(id: "4", name: "Checklist", createdAt: Date(timeIntervalSinceNow: -345600), isLocked: false),
             DocumentSnapshot(id: "5", name: "Simple Doc", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: true),
             DocumentSnapshot(id: "6", name: "Simple Doc 2", createdAt: Date(timeIntervalSinceNow: -172800), isLocked: false),
             DocumentSnapshot(id: "7", name: "Image Note", createdAt: Date(timeIntervalSinceNow: -259200), isLocked: false)
         ],
-        family: .systemSmall
+        family: .systemLarge
     )
 }
