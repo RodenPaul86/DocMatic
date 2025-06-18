@@ -51,6 +51,8 @@ struct YourWidgetEntryView : View {
                 Image(systemName: "document.viewfinder")
                     .font(.system(size: 50))
                     .foregroundStyle(Color("Default").gradient)
+                    .widgetAccentable()
+                
                 Spacer()
             }
             
@@ -58,22 +60,27 @@ struct YourWidgetEntryView : View {
             
             Text("Scan a new")
                 .fontWeight(.bold)
+                .widgetAccentable()
+            
             Text("Document")
                 .fontWeight(.bold)
+                .widgetAccentable()
         }
         .padding(15)
     }
 }
 
 // MARK: Entry point for the widget
-struct ScanButtonWidget: Widget {
-    let kind: String = "app.DocMatic.ScanButton_Widget"
+struct ScanDocWidget: Widget {
+    let kind: String = "app.DocMatic.Scan_Widget"
 
     // MARK: Configures the widget
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ScanDocProvider()) { entry in
-            YourWidgetEntryView(entry: entry)
-                .containerBackground(for: .widget) {}
+            Link(destination: URL(string: "docmatic://scan")!) {
+                YourWidgetEntryView(entry: entry)
+                    .containerBackground(.clear, for: .widget)
+            }
         }
         .configurationDisplayName("Quick Scan")
         .description("Scan a document from your home screen.")
@@ -84,7 +91,7 @@ struct ScanButtonWidget: Widget {
 
 // MARK: SwiftUI previews for different widget sizes
 #Preview(as: .systemSmall) {
-    ScanButtonWidget()
+    ScanDocWidget()
 } timeline: {
     ScanDocEntry(date: .now)
 }

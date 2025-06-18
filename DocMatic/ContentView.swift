@@ -36,14 +36,11 @@ struct ContentView: View {
     @State private var showTabBar: Bool = true
     
     var body: some View {
-        HomeView(showTabBar: $showTabBar)
-        
-        /*
         ZStack(alignment: .bottom) {
             Group {
                 switch selectedTab {
                 case .home:
-                    
+                    HomeView(showTabBar: $showTabBar)
                 case .settings:
                     SettingsView()
                 default:
@@ -113,6 +110,17 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
         }
+        .onOpenURL { url in
+            if url.scheme == "docmatic", url.host == "scan" {
+                if appSubModel.isSubscriptionActive {
+                    showScannerView = true
+                } else if ScanManager.shared.scansLeft > 0 {
+                    showScannerView = true
+                } else {
+                    isPaywallPresented = true
+                }
+            }
+        }
         .alert("Document Name", isPresented: $askDocumentName) {
             TextField("New Document", text: $documentName)
             Button("Save") { createDocument() }
@@ -123,7 +131,6 @@ struct ContentView: View {
             SubscriptionView(isPaywallPresented: $isPaywallPresented)
                 .preferredColorScheme(.dark)
         }
-         */
     }
     
     // MARK: Helper Methods
