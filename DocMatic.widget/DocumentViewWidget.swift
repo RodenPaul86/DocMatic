@@ -9,23 +9,23 @@ import WidgetKit
 import SwiftUI
 import SwiftData
 
-struct Provider: TimelineProvider {
+struct DocumentProvider: TimelineProvider {
     @MainActor
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), scannedDocs: [], family: context.family)
+    func placeholder(in context: Context) -> DocumentEntry {
+        DocumentEntry(date: Date(), scannedDocs: [], family: context.family)
     }
     
     @MainActor
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+    func getSnapshot(in context: Context, completion: @escaping (DocumentEntry) -> ()) {
         let docs = getScannedDocumentSnapshots()
-        completion(SimpleEntry(date: Date(), scannedDocs: docs, family: context.family))
+        completion(DocumentEntry(date: Date(), scannedDocs: docs, family: context.family))
     }
     
     @MainActor
-    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
+    func getTimeline(in context: Context, completion: @escaping (Timeline<DocumentEntry>) -> ()) {
         let docs = getScannedDocumentSnapshots()
-        var entries: [SimpleEntry] = []
-        let entry = SimpleEntry(date: .now, scannedDocs: docs, family: context.family)
+        var entries: [DocumentEntry] = []
+        let entry = DocumentEntry(date: .now, scannedDocs: docs, family: context.family)
         entries.append(entry)
         
         let timeline = Timeline(entries: entries, policy: .atEnd)
@@ -56,7 +56,7 @@ struct Provider: TimelineProvider {
     }
 }
 
-struct SimpleEntry: TimelineEntry {
+struct DocumentEntry: TimelineEntry {
     let date: Date
     let scannedDocs: [DocumentSnapshot]
     let family: WidgetFamily
@@ -69,8 +69,8 @@ struct DocumentSnapshot: Identifiable {
     let isLocked: Bool
 }
 
-struct DocMatic_widgetEntryView: View {
-    var entry: SimpleEntry
+struct DocumentEntryView: View {
+    var entry: DocumentEntry
     
     var maxDocumentsToShow: Int {
         switch entry.family {
@@ -108,16 +108,17 @@ struct DocMatic_widgetEntryView: View {
                 .padding()
             }
             
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 15) {
                 HStack {
-                    Text(entry.family == .systemSmall ? "Recent Docs" : "Recent Documents")
+                    Text(entry.family == .systemSmall ? "Recent" : "Recent Documents")
                         .font(.headline.bold())
                     Spacer()
                     Image(systemName: "viewfinder.circle.fill")
-                        .foregroundStyle(Color("Default"))
-                        .font(.title)
+                        .foregroundStyle(Color("Default").gradient)
+                        .font(.largeTitle)
                         .clipShape(Circle())
                 }
+                .padding(.leading, 10)
                 
                 if !entry.scannedDocs.isEmpty {
                     LazyVGrid(
@@ -133,7 +134,10 @@ struct DocMatic_widgetEntryView: View {
                         }
                     }
                 }
+                Spacer()
             }
+            .padding(10)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
@@ -159,7 +163,7 @@ struct DocumentCard: View {
         .padding(10)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color(.systemGray5))
+                .fill(Color(.systemGray6))
         )
     }
     
@@ -178,25 +182,26 @@ struct DocumentCard: View {
     }
 }
 
-struct DocMaticWidget: Widget {
-    let kind: String = "DocMatic_widget"
+struct DocumentViewWidget: Widget {
+    let kind: String = "app.DocMatic.DocViewer_Widget"
     
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            DocMatic_widgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+        StaticConfiguration(kind: kind, provider: DocumentProvider()) { entry in
+            DocumentEntryView(entry: entry)
+                .containerBackground(for: .widget) {}
                 .modelContainer(for: Document.self)
         }
         .configurationDisplayName("Recent Documents")
         .description("Quick access to your recently scanned documents.")
         .supportedFamilies([.systemSmall,.systemMedium, .systemLarge, .systemExtraLarge])
+        .contentMarginsDisabled()
     }
 }
 
 #Preview(as: .systemLarge) {
-    DocMaticWidget()
+    DocumentViewWidget()
 } timeline: {
-    SimpleEntry(
+    DocumentEntry(
         date: .now,
         scannedDocs: [
             DocumentSnapshot(id: "1", name: "Simple", createdAt: Date(timeIntervalSinceNow: -86400), isLocked: false),

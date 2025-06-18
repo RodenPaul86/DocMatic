@@ -100,7 +100,7 @@ struct HomeView: View {
                     .padding(15)
                     .offset(y: isFocused ? 0 : progress * 75)
                     .padding(.bottom, 75)
-                    .safeAreaInset(edge: .top, spacing: 15) {
+                    .safeAreaInset(edge: .top, spacing: 0) {
                         resizableHeader()
                     }
                     .scrollTargetLayout()
@@ -110,7 +110,8 @@ struct HomeView: View {
                 .onScrollGeometryChange(for: CGFloat.self) {
                     $0.contentOffset.y + $0.contentInsets.top
                 } action: { oldValue, newValue in
-                    progress = max(min(-newValue / 75, 1), 0)
+                    print("Scroll Offset:", newValue)
+                    progress = max(min(newValue / 75, 1), 0)
                 }
             }
         }
@@ -122,7 +123,7 @@ struct HomeView: View {
     // MARK: Custom Header view
     @ViewBuilder
     func resizableHeader() -> some View {
-        let progress = isFocused ? 1 : progress
+        let progress = isFocused ? 1.0 : progress
         
         VStack(spacing: 0) {
             HStack {
@@ -155,6 +156,7 @@ struct HomeView: View {
                             .frame(width: 40, height: 40)
                             .clipShape(.circle)
                     }
+                    
                     Button(action: { isSettingsOpen.toggle() }) {
                         Image(systemName: "gear.circle")
                             .resizable()

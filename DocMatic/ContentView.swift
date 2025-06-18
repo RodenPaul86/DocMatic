@@ -36,11 +36,14 @@ struct ContentView: View {
     @State private var showTabBar: Bool = true
     
     var body: some View {
+        HomeView(showTabBar: $showTabBar)
+        
+        /*
         ZStack(alignment: .bottom) {
             Group {
                 switch selectedTab {
                 case .home:
-                    HomeView(showTabBar: $showTabBar)
+                    
                 case .settings:
                     SettingsView()
                 default:
@@ -120,6 +123,7 @@ struct ContentView: View {
             SubscriptionView(isPaywallPresented: $isPaywallPresented)
                 .preferredColorScheme(.dark)
         }
+         */
     }
     
     // MARK: Helper Methods
