@@ -24,6 +24,8 @@ struct HomeView: View {
     @State private var searchText: String = ""
     @StateObject private var speechRecognizer = SpeechRecognizer()
     @State private var progress: CGFloat = 0
+    @State private var isPaywallPresented: Bool = false
+    @State private var isFreeLimitAlert: Bool = false
     @State private var isSettingsOpen: Bool = false
     @State private var isTargeted: Bool = false
     
@@ -128,6 +130,18 @@ struct HomeView: View {
             .onDrop(of: [UTType.pdf.identifier], isTargeted: $isTargeted) { providers in
                 handleDrop(providers: providers)
                 return true
+            }
+            .alert("Upgrade to DocMatic Pro", isPresented: $isFreeLimitAlert) {
+                Button("Upgrade", role: .none) {
+                    isPaywallPresented = true
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("You’ve reached your limit of 3 document scans/imports. But don’t worry, you can unlock unlimited scans with DocMatic Pro!")
+            }
+            .fullScreenCover(isPresented: $isPaywallPresented) {
+                SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                    .preferredColorScheme(.dark)
             }
         }
         .sheet(isPresented: $isSettingsOpen) {
@@ -327,45 +341,49 @@ struct customScrollTarget: ScrollTargetBehavior {
 extension HomeView {
     // MARK: drag and drop helper
     private func handleDrop(providers: [NSItemProvider]) {
-        for provider in providers {
-            provider.loadFileRepresentation(forTypeIdentifier: UTType.pdf.identifier) { tempURL, error in
-                guard let tempURL = tempURL else {
-                    print("Drop failed: \(error?.localizedDescription ?? "Unknown error")")
-                    return
-                }
-                
-                let name = tempURL.deletingPathExtension().lastPathComponent
-                let safeName = uniqueFileName(for: name)
-                let destination = getDocumentsDirectory().appendingPathComponent("\(safeName).pdf")
-                
-                do {
-                    if FileManager.default.fileExists(atPath: destination.path) {
-                        try FileManager.default.removeItem(at: destination)
+        if appSubModel.isSubscriptionActive || ScanManager.shared.scansLeft > 0 {
+            for provider in providers {
+                provider.loadFileRepresentation(forTypeIdentifier: UTType.pdf.identifier) { tempURL, error in
+                    guard let tempURL = tempURL else {
+                        print("Drop failed: \(error?.localizedDescription ?? "Unknown error")")
+                        return
                     }
-                    try FileManager.default.copyItem(at: tempURL, to: destination)
                     
-                    DispatchQueue.main.async {
-                        let newDocument = Document(name: safeName)
-                        
-                        if let pageImages = extractImagesFromPDF(at: destination) {
-                            var pages: [DocumentPage] = []
-                            
-                            for (index, image) in pageImages.enumerated() {
-                                if let data = image.jpegData(compressionQuality: 0.8) {
-                                    let page = DocumentPage(document: newDocument, pageIndex: index, pageData: data)
-                                    pages.append(page)
-                                }
-                            }
-                            newDocument.pages = pages
+                    let name = tempURL.deletingPathExtension().lastPathComponent
+                    let safeName = uniqueFileName(for: name)
+                    let destination = getDocumentsDirectory().appendingPathComponent("\(safeName).pdf")
+                    
+                    do {
+                        if FileManager.default.fileExists(atPath: destination.path) {
+                            try FileManager.default.removeItem(at: destination)
                         }
-                        modelContext.insert(newDocument)
-                        ScanManager.shared.incrementScanCount()
-                        WidgetCenter.shared.reloadAllTimelines()
+                        try FileManager.default.copyItem(at: tempURL, to: destination)
+                        
+                        DispatchQueue.main.async {
+                            let newDocument = Document(name: safeName)
+                            
+                            if let pageImages = extractImagesFromPDF(at: destination) {
+                                var pages: [DocumentPage] = []
+                                
+                                for (index, image) in pageImages.enumerated() {
+                                    if let data = image.jpegData(compressionQuality: 0.8) {
+                                        let page = DocumentPage(document: newDocument, pageIndex: index, pageData: data)
+                                        pages.append(page)
+                                    }
+                                }
+                                newDocument.pages = pages
+                            }
+                            modelContext.insert(newDocument)
+                            ScanManager.shared.incrementScanCount()
+                            WidgetCenter.shared.reloadAllTimelines()
+                        }
+                    } catch {
+                        print("PDF import failed: \(error.localizedDescription)")
                     }
-                } catch {
-                    print("PDF import failed: \(error.localizedDescription)")
                 }
             }
+        } else {
+            isFreeLimitAlert = true
         }
     }
     
