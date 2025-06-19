@@ -21,40 +21,43 @@ class ScanManager: ObservableObject {
         }
     }
     
-    // Initialize with a custom `init()` method to check UserDefaults for the scan count.
+    // MARK: Initialize with a custom `init()` method to check UserDefaults for the scan count.
     init() {
-        if UserDefaults.standard.integer(forKey: scanCountKey) == 0 {
-            scanCount = 0  // Set the initial value if no value is stored
+        let defaults = UserDefaults(suiteName: "group.com.studio4design.DocMatic")
+        
+        if let scanCountString = defaults?.string(forKey: scanCountKey),
+           let scanCountInt = Int(scanCountString) {
+            scanCount = scanCountInt
         } else {
-            scanCount = UserDefaults.standard.integer(forKey: scanCountKey)
+            scanCount = 0  /// <-- Set the initial value if no value is stored or conversion fails
         }
     }
     
-    /// Returns the number of scans left before requiring a premium purchase.
+    // MARK: Returns the number of scans left before requiring a premium purchase.
     var scansLeft: Int {
         return max(freeScanLimit - scanCount, 0)
     }
     
-    /// Increments the scan count when a scan is performed.
+    // MARK: Increments the scan count when a scan is performed.
     func incrementScanCount() {
-        print("Current Scan Count Before Increment: \(scanCount)") // Debugging line
+        print("Current Scan Count Before Increment: \(scanCount)") /// <-- Debugging line
         scanCount += 1
-        print("Incremented Scan Count: \(scanCount)") // Debugging line
+        print("Incremented Scan Count: \(scanCount)") /// <-- Debugging line
     }
     
-    /// Decrements the scan count when a scan is deleted.
+    // MARK: Decrements the scan count when a scan is deleted.
     func decrementScanCount() {
-        print("Current Scan Count Before Decrement: \(scanCount)") // Debugging line
+        print("Current Scan Count Before Decrement: \(scanCount)") /// <-- Debugging line
         if scanCount > 0 {
             scanCount -= 1
-            print("Decremented Scan Count: \(scanCount)") // Debugging line
+            print("Decremented Scan Count: \(scanCount)") /// <-- Debugging line
         } else {
-            print("Scan count is already 0, cannot decrement.") // Debugging line
+            print("Scan count is already 0, cannot decrement.") /// <-- Debugging line
         }
         resetScansIfNeeded()
     }
     
-    /// Resets scan count when all scans are deleted.
+    // MARK: Resets scan count when all scans are deleted.
     func resetScansIfNeeded() {
         if scanCount == 0 {
             UserDefaults.standard.set(0, forKey: scanCountKey)
