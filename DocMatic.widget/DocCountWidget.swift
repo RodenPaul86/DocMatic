@@ -72,8 +72,8 @@ struct DocCountWidget: Widget {
             DocCountingView(entry: entry)
                 .containerBackground(.clear, for: .widget)
         }
-        .configurationDisplayName("Quick Scan")
-        .description("Scan a document from your home screen.")
+        .configurationDisplayName("Scan Counter")
+        .description("Keep track of your total scans right from your Lock Screen.")
         .supportedFamilies([.accessoryCircular])
     }
 }
