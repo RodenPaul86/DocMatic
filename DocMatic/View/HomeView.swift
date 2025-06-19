@@ -10,17 +10,21 @@ import SwiftData
 import TipKit
 import Speech
 import AVFoundation
+import UniformTypeIdentifiers
+import PDFKit
 
 struct HomeView: View {
     // MARK: View Properties
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
+    @Environment(\.modelContext) private var modelContext
     
     @State private var selectedDocument: Document? = nil
     @State private var searchText: String = ""
     @StateObject private var speechRecognizer = SpeechRecognizer()
     @State private var progress: CGFloat = 0
     @State private var isSettingsOpen: Bool = false
+    @State private var isTargeted: Bool = false
     
     @FocusState private var isFocused: Bool
     @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
@@ -94,6 +98,12 @@ struct HomeView: View {
                             } label: {
                                 DocumentCardView(document: document, animationID: animationID)
                                     .foregroundStyle(Color.primary)
+                                    .onDrag {
+                                        if let url = documentURL(for: document) {
+                                            return NSItemProvider(contentsOf: url)!
+                                        }
+                                        return NSItemProvider()
+                                    }
                             }
                         }
                     }
@@ -113,6 +123,10 @@ struct HomeView: View {
                     //print("Scroll Offset:", newValue)
                     progress = max(min(-newValue / 75, 1), 0)
                 }
+            }
+            .onDrop(of: [UTType.pdf.identifier], isTargeted: $isTargeted) { providers in
+                handleDrop(providers: providers)
+                return true
             }
         }
         .sheet(isPresented: $isSettingsOpen) {
@@ -307,4 +321,98 @@ struct customScrollTarget: ScrollTargetBehavior {
 
 #Preview {
     HomeView(showTabBar: .constant(false))
+}
+
+extension HomeView {
+    // MARK: drag and drop helper
+    private func handleDrop(providers: [NSItemProvider]) {
+        for provider in providers {
+            provider.loadFileRepresentation(forTypeIdentifier: UTType.pdf.identifier) { tempURL, error in
+                guard let tempURL = tempURL else {
+                    print("Drop failed: \(error?.localizedDescription ?? "Unknown error")")
+                    return
+                }
+                
+                let name = tempURL.deletingPathExtension().lastPathComponent
+                let safeName = uniqueFileName(for: name)
+                let destination = getDocumentsDirectory().appendingPathComponent("\(safeName).pdf")
+                
+                do {
+                    if FileManager.default.fileExists(atPath: destination.path) {
+                        try FileManager.default.removeItem(at: destination)
+                    }
+                    try FileManager.default.copyItem(at: tempURL, to: destination)
+                    
+                    DispatchQueue.main.async {
+                        let newDocument = Document(name: safeName)
+                        
+                        if let pageImages = extractImagesFromPDF(at: destination) {
+                            var pages: [DocumentPage] = []
+                            
+                            for (index, image) in pageImages.enumerated() {
+                                if let data = image.jpegData(compressionQuality: 0.8) {
+                                    let page = DocumentPage(document: newDocument, pageIndex: index, pageData: data)
+                                    pages.append(page)
+                                }
+                            }
+                            
+                            newDocument.pages = pages
+                            ScanManager.shared.incrementScanCount()
+                        }
+                        
+                        modelContext.insert(newDocument)
+                    }
+                } catch {
+                    print("PDF import failed: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // MARK: - PDF to Image Rendering
+    private func extractImagesFromPDF(at url: URL) -> [UIImage]? {
+        guard let pdf = CGPDFDocument(url as CFURL) else { return nil }
+        var images: [UIImage] = []
+        
+        for pageNumber in 1...pdf.numberOfPages {
+            guard let page = pdf.page(at: pageNumber) else { continue }
+            
+            let pageRect = page.getBoxRect(.mediaBox)
+            let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+            
+            let image = renderer.image { ctx in
+                UIColor.white.set()
+                ctx.fill(pageRect)
+                
+                ctx.cgContext.translateBy(x: 0, y: pageRect.height)
+                ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
+                
+                ctx.cgContext.drawPDFPage(page)
+            }
+            
+            images.append(image)
+        }
+        return images
+    }
+    
+    // MARK: - Utilities
+    private func documentURL(for document: Document) -> URL? {
+        let filename = "\(document.name).pdf"
+        let url = getDocumentsDirectory().appendingPathComponent(filename)
+        return FileManager.default.fileExists(atPath: url.path) ? url : nil
+    }
+    
+    private func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    
+    private func uniqueFileName(for name: String) -> String {
+        var finalName = name
+        var counter = 1
+        while FileManager.default.fileExists(atPath: getDocumentsDirectory().appendingPathComponent("\(finalName).pdf").path) {
+            finalName = "\(name)-\(counter)"
+            counter += 1
+        }
+        return finalName
+    }
 }
