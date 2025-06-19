@@ -82,8 +82,10 @@ struct SettingsView: View {
                 }
 #if DEBUG
                 Section(header: Text("Debuging Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
-                    let scanCount = UserDefaults.standard.value(forKey: "scanCount")
-                    customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
+                    let scanCountString = UserDefaults(suiteName: "group.com.studio4design.DocMatic")?.string(forKey: "scanCount") ?? "0"
+                    let scanCount = Int(scanCountString) ?? 0
+                    let documentText = scanCount == 1 ? "Document" : "Documents"
+                    customRow(icon: "scanner", firstLabel: "\(scanCount) \(documentText) Scanned", secondLabel: "")
                     
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
                         showDebug = true

@@ -116,7 +116,7 @@ struct ScanDocWidget: Widget {
         }
         .configurationDisplayName("Quick Scan")
         .description("Scan a document from your lock/home screen.")
-        .supportedFamilies([.accessoryCircular, .systemSmall])
+        .supportedFamilies([.systemSmall, .accessoryCircular])
         .contentMarginsDisabled()
     }
 }
