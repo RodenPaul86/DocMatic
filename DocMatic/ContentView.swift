@@ -112,13 +112,7 @@ struct ContentView: View {
         }
         .onOpenURL { url in
             if url.scheme == "docmatic", url.host == "scan" {
-                if appSubModel.isSubscriptionActive {
-                    showScannerView = true
-                } else if ScanManager.shared.scansLeft > 0 {
-                    showScannerView = true
-                } else {
-                    isPaywallPresented = true
-                }
+                showScannerView = true
             }
         }
         .alert("Document Name", isPresented: $askDocumentName) {
