@@ -15,9 +15,10 @@ struct releaseNotesView: View {
                   description: "",
                   imageName: "",
                   features: [
-                    "UI/UX Improvements.",
+                    "UI/UX Redesign and Improvements.",
                     "User Profile (Optional).",
-                    "Home/Lock screen widgets"],
+                    "Lock & Home screen widgets",
+                    "Drag and Drop PDF functionality"],
                   bugFixes: [
                     "General proformance upgrades and bug fixes."
                   ]),
