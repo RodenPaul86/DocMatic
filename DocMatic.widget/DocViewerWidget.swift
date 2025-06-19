@@ -25,10 +25,14 @@ struct DocumentProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<DocumentEntry>) -> ()) {
         let docs = getScannedDocumentSnapshots()
         var entries: [DocumentEntry] = []
+        
         let entry = DocumentEntry(date: .now, scannedDocs: docs, family: context.family)
         entries.append(entry)
         
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        // MARK: Refresh the widget 60 seconds later
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 1, to: Date()) ?? Date().addingTimeInterval(60)
+        let timeline = Timeline(entries: entries, policy: .after(nextUpdate))
+        
         completion(timeline)
     }
     
