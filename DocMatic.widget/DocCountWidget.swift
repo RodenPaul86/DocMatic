@@ -56,7 +56,7 @@ struct DocCountingView : View {
             Text(entry.sharedText)
                 .font(.title)
             
-            Text("Scans")
+            Text(Int(entry.sharedText) == 1 ? "Scan" : "Scans")
                 .font(.caption)
         }
     }
