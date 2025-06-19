@@ -17,7 +17,7 @@ class ScanManager: ObservableObject {
     
     @Published var scanCount: Int {
         didSet {
-            UserDefaults.standard.set(scanCount, forKey: scanCountKey)
+            UserDefaults(suiteName: "group.com.studio4design.DocMatic")?.set(scanCount, forKey: scanCountKey)
         }
     }
     

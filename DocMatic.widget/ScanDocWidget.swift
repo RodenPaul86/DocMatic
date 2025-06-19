@@ -8,11 +8,6 @@
 import WidgetKit
 import SwiftUI
 
-// MARK: Defines a timeline entry with the data to display
-struct ScanDocEntry: TimelineEntry {
-    let date: Date
-}
-
 // MARK: Provides timeline entries for the widget
 struct ScanDocProvider: TimelineProvider {
     // Provides a placeholder view for the widget when data is loading
@@ -39,6 +34,11 @@ struct ScanDocProvider: TimelineProvider {
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
+}
+
+// MARK: Defines a timeline entry with the data to display
+struct ScanDocEntry: TimelineEntry {
+    let date: Date
 }
 
 // MAEK: The SwiftUI view that displays the widget content
@@ -72,7 +72,7 @@ struct YourWidgetEntryView : View {
 
 // MARK: Entry point for the widget
 struct ScanDocWidget: Widget {
-    let kind: String = "app.DocMatic.Scan_Widget"
+    let kind: String = "app.DocMatic.scanDocWidget"
 
     // MARK: Configures the widget
     var body: some WidgetConfiguration {
