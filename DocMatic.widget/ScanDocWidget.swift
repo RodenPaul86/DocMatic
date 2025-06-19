@@ -14,22 +14,22 @@ struct ScanDocProvider: TimelineProvider {
     func placeholder(in context: Context) -> ScanDocEntry {
         ScanDocEntry(date: Date(), family: context.family)
     }
-
+    
     // Provides a single entry for the widget gallery preview
     func getSnapshot(in context: Context, completion: @escaping (ScanDocEntry) -> ()) {
         let entry = ScanDocEntry(date: Date(), family: context.family)
         completion(entry)
     }
-
+    
     // Provides a timeline of entries for the widget to display over time
     func getTimeline(in context: Context, completion: @escaping (Timeline<ScanDocEntry>) -> Void) { // 1.4.3, 1.4.4
         var entries: [ScanDocEntry] = []
-
+        
         // Generate a timeline with one entry for the current time
         let currentDate = Date()
         let entry = ScanDocEntry(date: currentDate, family: context.family)
         entries.append(entry)
-
+        
         // Define the timeline with a reload policy (e.g., .atEnd)
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
@@ -45,7 +45,7 @@ struct ScanDocEntry: TimelineEntry {
 // MAEK: The SwiftUI view that displays the widget content
 struct YourWidgetEntryView : View {
     var entry: ScanDocEntry
-
+    
     var body: some View {
         switch entry.family {
         case .systemSmall: smallWidget()
@@ -105,7 +105,7 @@ struct circularWidget: View {
 // MARK: Entry point for the widget
 struct ScanDocWidget: Widget {
     let kind: String = "app.DocMatic.scanDocWidget"
-
+    
     // MARK: Configures the widget
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ScanDocProvider()) { entry in
