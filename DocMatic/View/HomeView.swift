@@ -12,6 +12,7 @@ import Speech
 import AVFoundation
 import UniformTypeIdentifiers
 import PDFKit
+import WidgetKit
 
 struct HomeView: View {
     // MARK: View Properties
@@ -52,7 +53,7 @@ struct HomeView: View {
                                 .font(.title3.bold())
                                 .foregroundStyle(.gray)
                             
-                            Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away!" : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
+                            Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away. You can also drag and drop files directly into the app for quick scanning and organization." : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
                                 .font(.body)
                                 .foregroundStyle(.gray.opacity(0.5))
                             
@@ -355,12 +356,11 @@ extension HomeView {
                                     pages.append(page)
                                 }
                             }
-                            
                             newDocument.pages = pages
-                            ScanManager.shared.incrementScanCount()
                         }
-                        
                         modelContext.insert(newDocument)
+                        ScanManager.shared.incrementScanCount()
+                        WidgetCenter.shared.reloadAllTimelines()
                     }
                 } catch {
                     print("PDF import failed: \(error.localizedDescription)")

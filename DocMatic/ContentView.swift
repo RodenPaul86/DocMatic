@@ -163,10 +163,10 @@ struct ContentView: View {
             
             await MainActor.run {
                 ScanManager.shared.incrementScanCount()
+                WidgetCenter.shared.reloadAllTimelines()
                 
                 context.insert(document)
                 try? context.save()
-                WidgetCenter.shared.reloadAllTimelines()
                 
                 self.scanDocument = nil
                 isLoading = false
