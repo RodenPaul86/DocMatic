@@ -7,6 +7,7 @@
 
 import SwiftUI
 import RevenueCat
+import WidgetKit
 
 struct SubscriptionView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
@@ -149,6 +150,7 @@ struct SubscriptionView: View {
                 if isActive {
                     alertMessage = "Thank you! Your subscription has been successfully restored."
                     isPaywallPresented = false
+                    WidgetCenter.shared.reloadAllTimelines()
                 } else {
                     alertMessage = "No active subscription was found to restore."
                 }
@@ -193,6 +195,7 @@ struct SubscriptionView: View {
                     if info?.entitlements.all["premium"]?.isActive == true {
                         appSubModel.isSubscriptionActive = true
                         isPaywallPresented = false
+                        WidgetCenter.shared.reloadAllTimelines()
                     }
                 }
             }
