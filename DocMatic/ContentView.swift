@@ -15,10 +15,6 @@ enum ScannerError: Error {
     case unknownError
 }
 
-enum Tab: Int {
-    case home, settings, scanner
-}
-
 struct ContentView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var showScannerView: Bool = false
@@ -33,16 +29,16 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     
-    @State private var selectedTab: Tab = .home
+    @State private var selectedTab = "Home"
     @State private var showTabBar: Bool = true
     
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
                 switch selectedTab {
-                case .home:
+                case "Home":
                     HomeView(showTabBar: $showTabBar)
-                case .settings:
+                case "Settings":
                     SettingsView()
                 default:
                     HomeView(showTabBar: .constant(true))
@@ -51,65 +47,40 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .transition(.opacity)
             
-            // MARK: Your custom tab bar view
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                Group {
-                    if showTabBar {
-                        floatingTabBarView(selectedTab: $selectedTab, action: {
-                            if appSubModel.isSubscriptionActive {
-                                showScannerView = true
-                            } else if ScanManager.shared.scansLeft > 0 {
-                                showScannerView = true
-                            } else {
-                                isPaywallPresented = true
-                            }
-                            hapticManager.shared.notify(.impact(.light))
-                        })
-                        .transition(
-                            .asymmetric(
-                                insertion: .move(edge: .bottom).combined(with: .opacity),
-                                removal: .move(edge: .bottom).combined(with: .opacity)
-                            )
+            VStack {
+                Spacer()
+                if showTabBar {
+                    GlassTabBar(selectedTab: $selectedTab) {
+                        if appSubModel.isSubscriptionActive {
+                            showScannerView = true
+                        } else if ScanManager.shared.scansLeft > 0 {
+                            showScannerView = true
+                        } else {
+                            isPaywallPresented = true
+                        }
+                        hapticManager.shared.notify(.notification(.success))
+                    }
+                    .padding(.bottom, -10)
+                    .transition(
+                        .asymmetric(
+                            insertion: .move(edge: .bottom).combined(with: .opacity),
+                            removal: .move(edge: .bottom).combined(with: .opacity)
                         )
-                        .padding(.horizontal)
-                        .padding(.bottom, -15)
-                        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: showTabBar)
-                        .offset(y: showTabBar ? 0 : 200) /// <-- slide it down when hidden
-                        .opacity(showTabBar ? 1 : 0)    /// <-- fade it out when hidden
-                    }
-                }
-            } else if UIDevice.current.userInterfaceIdiom == .pad {
-                HStack {
-                    Spacer()
-                    
-                    Group {
-                        floatingButtonView(action: {
-                            if appSubModel.isSubscriptionActive {
-                                showScannerView = true
-                            } else if ScanManager.shared.scansLeft > 0 {
-                                showScannerView = true
-                            } else {
-                                isPaywallPresented = true
-                            }
-                            hapticManager.shared.notify(.impact(.light))
-                        })
-                    }
-                    .padding([.bottom, .trailing], 30)
-                    .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5)
+                    )
                 }
             }
-        }
-        .fullScreenCover(isPresented: $showScannerView) {
-            ScannerView { error in
-                handleScannerError(error)
-            } didCancel: {
-                showScannerView = false
-            } didFinish: { scan in
-                scanDocument = scan
-                showScannerView = false
-                askDocumentName = true
+            .fullScreenCover(isPresented: $showScannerView) {
+                ScannerView { error in
+                    handleScannerError(error)
+                } didCancel: {
+                    showScannerView = false
+                } didFinish: { scan in
+                    scanDocument = scan
+                    showScannerView = false
+                    askDocumentName = true
+                }
+                .ignoresSafeArea()
             }
-            .ignoresSafeArea()
         }
         .onOpenURL { url in
             if url.scheme == "docmatic", url.host == "scan" {
