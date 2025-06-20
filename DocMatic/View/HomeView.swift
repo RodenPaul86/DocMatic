@@ -211,7 +211,7 @@ struct HomeView: View {
                     .focused($isFocused)
                     .onChange(of: isFocused) { oldValue, newValue in
                         withAnimation {
-                            showTabBar = !newValue
+                            showTabBar = newValue
                         }
                     }
                 
