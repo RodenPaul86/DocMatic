@@ -156,8 +156,8 @@ struct DocumentCard: View {
             icon
                 .resizable()
                 .scaledToFit()
-                .frame(width: 30, height: 30)
-                .padding(6)
+                .frame(width: 35, height: 35)
+                .padding(5)
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(doc.name)
@@ -166,7 +166,7 @@ struct DocumentCard: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(10)
+        .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(Color(.systemGray6))
