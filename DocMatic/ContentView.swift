@@ -29,6 +29,7 @@ struct ContentView: View {
     @State private var askDocumentName: Bool = false
     @State private var isLoading: Bool = false
     @State private var documentName: String = "New Document"
+    @State private var isFreeLimitAlert: Bool = false
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     
@@ -117,10 +118,24 @@ struct ContentView: View {
         }
         .alert("Document Name", isPresented: $askDocumentName) {
             TextField("New Document", text: $documentName)
-            Button("Save") { createDocument() }
-                .disabled(documentName.isEmpty)
+            Button("Save") {
+                if appSubModel.isSubscriptionActive || ScanManager.shared.scansLeft > 0 {
+                    createDocument()
+                } else {
+                    isFreeLimitAlert = true
+                }
+            }
+            .disabled(documentName.isEmpty)
         }
         .loadingScreen(status: $isLoading)
+        .alert("Upgrade to DocMatic Pro", isPresented: $isFreeLimitAlert) {
+            Button("Upgrade", role: .none) {
+                isPaywallPresented = true
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Hmm, it appears you’ve reached your limit of 3 document scans. But don’t worry, you can unlock unlimited scans with DocMatic Pro!")
+        }
         .fullScreenCover(isPresented: $isPaywallPresented) {
             SubscriptionView(isPaywallPresented: $isPaywallPresented)
                 .preferredColorScheme(.dark)
