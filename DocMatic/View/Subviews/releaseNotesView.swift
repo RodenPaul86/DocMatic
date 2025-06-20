@@ -61,7 +61,9 @@ DocMatic is designed to streamline your workflow and simplify document managemen
                 }
             }
             .padding()
-            .safeAreaPadding(.bottom, 60)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
+            }
             .navigationTitle("Release Notes")
         }
     }

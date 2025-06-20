@@ -89,7 +89,9 @@ struct helpFAQView: View {
                     }
                 }
                 .listStyle(InsetGroupedListStyle())
-                .safeAreaPadding(.bottom, 60)
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
+                }
             }
             .navigationTitle("FAQ")
         }

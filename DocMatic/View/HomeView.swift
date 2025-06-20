@@ -112,7 +112,7 @@ struct HomeView: View {
                     }
                     .padding(15)
                     .offset(y: isFocused ? 0 : progress * 75)
-                    .padding(.bottom, 75)
+                    .padding(.bottom, 80) /// <-- This is for the TabBar
                     .safeAreaInset(edge: .top, spacing: 0) {
                         resizableHeader()
                     }
