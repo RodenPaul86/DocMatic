@@ -137,7 +137,7 @@ struct HomeView: View {
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
-                Text("You’ve reached your limit of 3 document scans/imports. But don’t worry, you can unlock unlimited scans with DocMatic Pro!")
+                Text("Hmm, it appears you’ve reached your limit of 3 document imports. But don’t worry, you can unlock unlimited imports with DocMatic Pro!")
             }
             .fullScreenCover(isPresented: $isPaywallPresented) {
                 SubscriptionView(isPaywallPresented: $isPaywallPresented)
