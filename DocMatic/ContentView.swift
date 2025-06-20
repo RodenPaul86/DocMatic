@@ -31,13 +31,14 @@ struct ContentView: View {
     
     @State private var selectedTab = "Home"
     @State private var showTabBar: Bool = true
+    @State private var isKeyboardVisible: Bool = false
     
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             Group {
                 switch selectedTab {
                 case "Home":
-                    HomeView(showTabBar: $showTabBar)
+                    HomeView(showTabBar: $isKeyboardVisible)
                 case "Settings":
                     SettingsView()
                 default:
@@ -49,7 +50,8 @@ struct ContentView: View {
             
             VStack {
                 Spacer()
-                if showTabBar {
+                
+                if !isKeyboardVisible {
                     GlassTabBar(selectedTab: $selectedTab) {
                         if appSubModel.isSubscriptionActive {
                             showScannerView = true
@@ -81,6 +83,17 @@ struct ContentView: View {
                 }
                 .ignoresSafeArea()
             }
+        }
+        .onAppear {
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
+                isKeyboardVisible = true
+            }
+            NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
+                isKeyboardVisible = false
+            }
+        }
+        .onDisappear {
+            NotificationCenter.default.removeObserver(self)
         }
         .onOpenURL { url in
             if url.scheme == "docmatic", url.host == "scan" {
