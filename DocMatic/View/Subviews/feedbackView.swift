@@ -19,140 +19,162 @@ struct feedbackView: View {
     @State private var selectedImage: UIImage? = nil
     @State private var selectedItem: PhotosPickerItem? = nil
     @State private var imageData: Data? = nil
+    @State private var isKeyboardVisible = false
     
     var body: some View {
         NavigationStack {
-            List {
-                // Topic Row
-                Section {
-                    HStack {
-                        Text("Topic")
-                            .font(.headline)
-                        
-                        Spacer()
-                        
-                        Menu { /// <-- Menu with Chevron
-                            ForEach(topics, id: \.self) { topic in
-                                Button(action: {
-                                    selectedTopic = topic
-                                    hapticManager.shared.notify(.impact(.light))
-                                }) {
-                                    HStack {
-                                        Text(topic)
-                                        if selectedTopic == topic {
-                                            Spacer()
-                                            Image(systemName: "checkmark")
-                                                .tint(.primary)
+            VStack {
+                List {
+                    // Topic Row
+                    Section {
+                        HStack {
+                            Text("Topic")
+                                .font(.headline)
+                            
+                            Spacer()
+                            
+                            Menu { /// <-- Menu with Chevron
+                                ForEach(topics, id: \.self) { topic in
+                                    Button(action: {
+                                        selectedTopic = topic
+                                        hapticManager.shared.notify(.impact(.light))
+                                    }) {
+                                        HStack {
+                                            Text(topic)
+                                            if selectedTopic == topic {
+                                                Spacer()
+                                                Image(systemName: "checkmark")
+                                                    .tint(.primary)
+                                            }
                                         }
                                     }
                                 }
+                            } label: {
+                                HStack {
+                                    Text(selectedTopic)
+                                    Image(systemName: "chevron.up.chevron.down") /// <-- Chevron next to text
+                                }
+                                .foregroundStyle(.gray)
                             }
-                        } label: {
-                            HStack {
-                                Text(selectedTopic)
-                                Image(systemName: "chevron.up.chevron.down") /// <-- Chevron next to text
+                        }
+                        
+                        // MARK: Expanding TextField
+                        TextField("Enter text here...", text: $textBody, axis: .vertical)
+                            .padding(.vertical, 8)
+                            .frame(minHeight: 120, alignment: .top) /// <-- Ensures expansion
+                    }
+                    
+                    Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
+                        HStack {
+                            // Image Preview
+                            if let image = selectedImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 70, height: 70)
+                                    .cornerRadius(10)
                             }
-                            .foregroundStyle(.gray)
+                            
+                            // Image section
+                            PhotosPicker(selection: $selectedItem, matching: .screenshots) {
+                                Text("Select an image to attach...")
+                            }
+                            .onChange(of: selectedItem) { oldItem, newItem in
+                                loadImage(from: newItem)
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.gray)
                         }
                     }
                     
-                    // MARK: Expanding TextField
-                    TextField("Enter text here...", text: $textBody, axis: .vertical)
-                        .padding(.vertical, 8)
-                        .frame(minHeight: 120, alignment: .top) /// <-- Ensures expansion
-                }
-                
-                Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
-                    HStack {
-                        // Image Preview
-                        if let image = selectedImage {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 70, height: 70)
-                                .cornerRadius(10)
+                    // MARK: Other sections
+                    Section(header: Text("Device Info")) {
+                        HStack {
+                            Text("Device")
+                            
+                            Spacer()
+                            
+                            Text("\(UIDevice.current.modelName)")
+                                .foregroundColor(.gray)
                         }
-                        
-                        // Image section
-                        PhotosPicker(selection: $selectedItem, matching: .screenshots) {
-                            Text("Select an image to attach...")
+                        HStack {
+                            Text("\(UIDevice.current.deviceOS)")
+                            
+                            Spacer()
+                            
+                            Text("\(UIDevice.current.OSVersion)")
+                                .foregroundColor(.gray)
                         }
-                        .onChange(of: selectedItem) { oldItem, newItem in
-                            loadImage(from: newItem)
+                    }
+                    
+                    Section(header: Text("App Info")) {
+                        HStack {
+                            Text("Name")
+                            
+                            Spacer()
+                            
+                            Text(Bundle.main.appName)
+                                .foregroundColor(.gray)
                         }
-                        
-                        Spacer()
-                        
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.gray)
+                        HStack {
+                            Text("Version")
+                            
+                            Spacer()
+                            
+                            Text("\(Bundle.main.appVersion)")
+                                .foregroundColor(.gray)
+                        }
+                        HStack {
+                            Text("Build")
+                            
+                            Spacer()
+                            
+                            Text("\(Bundle.main.appBuild)")
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
-                
-                // MARK: Other sections
-                Section(header: Text("Device Info")) {
-                    HStack {
-                        Text("Device")
-                        
-                        Spacer()
-                        
-                        Text("\(UIDevice.current.modelName)")
-                            .foregroundColor(.gray)
-                    }
-                    HStack {
-                        Text("\(UIDevice.current.deviceOS)")
-                        
-                        Spacer()
-                        
-                        Text("\(UIDevice.current.OSVersion)")
-                            .foregroundColor(.gray)
-                    }
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
                 }
-                
-                Section(header: Text("App Info")) {
-                    HStack {
-                        Text("Name")
-                        
-                        Spacer()
-                        
-                        Text(Bundle.main.appName)
-                            .foregroundColor(.gray)
-                    }
-                    HStack {
-                        Text("Version")
-                        
-                        Spacer()
-                        
-                        Text("\(Bundle.main.appVersion)")
-                            .foregroundColor(.gray)
-                    }
-                    HStack {
-                        Text("Build")
-                        
-                        Spacer()
-                        
-                        Text("\(Bundle.main.appBuild)")
-                            .foregroundColor(.gray)
-                    }
+            }
+            .onAppear {
+                NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
+                    isKeyboardVisible = true
                 }
+                NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
+                    isKeyboardVisible = false
+                }
+            }
+            .onDisappear {
+                NotificationCenter.default.removeObserver(self)
             }
             .navigationBarTitle("Support")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isShowingMailView.toggle()
-                    }) {
-                        Text("Send")
-                    }
-                    .sheet(isPresented: $isShowingMailView) {
-                        MailView(
-                            isShowing: $isShowingMailView,
-                            recipient: "support@docmatic.app",
-                            subject: "DocMatic: \(selectedTopic)",
-                            body: generateEmailBody(),
-                            imageData: imageData
-                        ) {
-                            presentationMode.wrappedValue.dismiss()
+                    if !isKeyboardVisible {
+                        Button(action: { isShowingMailView.toggle() }) {
+                            Text("Send")
+                        }
+                        .disabled(textBody.isEmpty)
+                        .sheet(isPresented: $isShowingMailView) {
+                            MailView(
+                                isShowing: $isShowingMailView,
+                                recipient: "support@docmatic.app",
+                                subject: "DocMatic: \(selectedTopic)",
+                                body: generateEmailBody(),
+                                imageData: imageData
+                            ) {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
+                    } else {
+                        Button(action: { UIApplication.shared.hideKeyboard() }) {
+                            Text("Cancel")
                         }
                     }
                 }
@@ -268,4 +290,10 @@ struct MailView: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
+}
+
+extension UIApplication {
+    func hideKeyboard() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }
