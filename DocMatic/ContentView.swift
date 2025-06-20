@@ -30,7 +30,6 @@ struct ContentView: View {
     @Environment(\.requestReview) var requestReview
     
     @State private var selectedTab = "Home"
-    @State private var showTabBar: Bool = true
     @State private var isKeyboardVisible: Bool = false
     
     var body: some View {
@@ -38,11 +37,11 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case "Home":
-                    HomeView(showTabBar: $isKeyboardVisible)
+                    HomeView(isShowTabBar: $isKeyboardVisible)
                 case "Settings":
                     SettingsView()
                 default:
-                    HomeView(showTabBar: .constant(true))
+                    HomeView(isShowTabBar: .constant(true))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

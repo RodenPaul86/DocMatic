@@ -25,6 +25,7 @@ struct GlassTabBar: View {
                         Button(action: {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                 selectedTab = tab
+                                hapticManager.shared.notify(.impact(.light))
                             }
                         }) {
                             VStack(spacing: 4) {

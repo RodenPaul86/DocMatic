@@ -13,7 +13,7 @@ import WidgetKit
 
 struct DocumentDetailView: View {
     var document: Document
-    @Binding var showTabBar: Bool
+    @Binding var isShowTabBar: Bool
     
     // MARK: View Properties
     @State private var isLoading: Bool = false
@@ -117,7 +117,7 @@ struct DocumentDetailView: View {
             }
             .onAppear {
                 withAnimation {
-                    showTabBar = false
+                    isShowTabBar = true
                 }
                 
                 guard document.isLocked else {
@@ -130,7 +130,7 @@ struct DocumentDetailView: View {
             }
             .onDisappear {
                 withAnimation {
-                    showTabBar = true
+                    isShowTabBar = false
                 }
             }
             .onChange(of: scene) { oldValue, newValue in

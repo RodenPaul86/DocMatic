@@ -33,7 +33,7 @@ struct HomeView: View {
     @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
     @Namespace private var animationID
     @EnvironmentObject var appSubModel: appSubscriptionModel
-    @Binding var showTabBar: Bool
+    @Binding var isShowTabBar: Bool
     
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
@@ -96,7 +96,7 @@ struct HomeView: View {
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach(filteredDocuments) { document in
                             NavigationLink {
-                                DocumentDetailView(document: document, showTabBar: $showTabBar)
+                                DocumentDetailView(document: document, isShowTabBar: $isShowTabBar)
                                     .navigationTransition(.zoom(sourceID: document.uniqueViewID, in: animationID))
                             } label: {
                                 DocumentCardView(document: document, animationID: animationID)
@@ -211,7 +211,7 @@ struct HomeView: View {
                     .focused($isFocused)
                     .onChange(of: isFocused) { oldValue, newValue in
                         withAnimation {
-                            showTabBar = newValue
+                            isShowTabBar = newValue
                         }
                     }
                 
@@ -225,7 +225,6 @@ struct HomeView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.gray)
                         }
-                        .transition(.opacity)
                     }
                     
                     Button(action: {
@@ -335,7 +334,7 @@ struct customScrollTarget: ScrollTargetBehavior {
 }
 
 #Preview {
-    HomeView(showTabBar: .constant(false))
+    HomeView(isShowTabBar: .constant(false))
 }
 
 extension HomeView {
