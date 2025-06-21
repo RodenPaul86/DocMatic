@@ -18,7 +18,7 @@ struct IntroPage: View {
             Button(action: { updateItem(isForward: false) }) {
                 Image(systemName: "chevron.left")
                     .font(.title3.bold())
-                    .foregroundStyle(.green.gradient)
+                    .foregroundStyle(Color("Default").gradient)
                     .contentShape(.rect)
             }
             .padding(15)
@@ -50,7 +50,7 @@ struct IntroPage: View {
                     .contentTransition(.numericText())
                 
                 // MARK: Description
-                Text("Lorem Ipsum is simply dummy text.")
+                Text(selectedItem.description)
                     .font(.caption2)
                     .foregroundStyle(.gray)
                 
@@ -62,7 +62,7 @@ struct IntroPage: View {
                         .contentTransition(.numericText())
                         .frame(width: 250)
                         .padding(.vertical, 12)
-                        .background(.green.gradient, in: .capsule)
+                        .background(Color("Default").gradient, in: .capsule)
                 }
                 .padding(.top, 25)
                 
@@ -82,7 +82,7 @@ struct IntroPage: View {
             .foregroundStyle(.white.shadow(.drop(radius: 10)))
             .blendMode(.overlay)
             .frame(width: 120, height: 120)
-            .background(.green.gradient, in: .rect(cornerRadius: 32))
+            .background(Color("Default").gradient, in: .rect(cornerRadius: 32))
             .background {
                 RoundedRectangle(cornerRadius: 35)
                     .fill(.background)

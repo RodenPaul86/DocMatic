@@ -11,6 +11,7 @@ struct Item: Identifiable {
     var id: String = UUID().uuidString
     var image: String
     var title: String
+    var description: String
     
     // MARK: Locations of each icons
     var scale: CGFloat = 1
@@ -24,13 +25,16 @@ struct Item: Identifiable {
 // MARK: Sample Intro Page Items
 let items: [Item] = [
     .init(
-        image: "figure.walk.circle.fill",
-        title: "Keep an eye on your workout.", scale: 1
+        image: "doc.viewfinder",
+        title: "Scan & Digitize Smarter.",
+        description: "Capture clear, high-quality scans in seconds with your iPhone or iPad. Auto-edge detection, color correction, and multi-page support make scanning effortless.",
+        scale: 1
     ),
     
     .init(
-        image: "figure.run.circle.fill",
-        title: "Maintain your cardio fitness.",
+        image: "lock.shield",
+        title: "Secure Your Docs.",
+        description: "Protect sensitive documents with Face ID or Touch ID. Keep your private information locked behind biometric security.",
         scale: 0.6,
         anchor: .topLeading,
         offset: -70,
@@ -38,8 +42,9 @@ let items: [Item] = [
     ),
     
     .init(
-        image: "figure.badminton.circle.fill",
-        title: "Take a break from work and relax.",
+        image: "tray.full",
+        title: "Storing Scanned Files",
+        description: "Securely store your scanned documents in one place—no more worrying about misplacing important files.",
         scale: 0.5,
         anchor: .bottomLeading,
         offset: -60,
@@ -47,8 +52,9 @@ let items: [Item] = [
     ),
     
     .init(
-        image: "figure.climbing.circle.fill",
-        title: "Turn climbing into a hobby.",
+        image: "square.and.arrow.up.on.square",
+        title: "Export and Share Anywhere",
+        description: "Save to Files, print, or share via AirDrop, email, and more. DocMatic keeps your documents moving smoothly.",
         scale: 0.4,
         anchor: .bottomLeading,
         offset: -50,
@@ -57,8 +63,9 @@ let items: [Item] = [
     ),
     
     .init(
-        image: "figure.cooldown.circle.fill",
-        title: "Cool down after a workout.",
+        image: "party.popper",
+        title: "Ad-Free Experience",
+        description: "Thank you for downloading my app, I hope you enjoy it!",
         scale: 0.35,
         anchor: .bottomLeading,
         offset: -50,
