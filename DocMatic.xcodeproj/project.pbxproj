@@ -62,6 +62,7 @@
 			membershipExceptions = (
 				Model/Document.swift,
 				Model/DocumentPage.swift,
+				Model/Item.swift,
 			);
 			target = 3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */;
 		};
