@@ -16,6 +16,7 @@ import WidgetKit
 
 struct HomeView: View {
     // MARK: View Properties
+    @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @Environment(\.modelContext) private var modelContext
@@ -151,7 +152,7 @@ struct HomeView: View {
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Welcome Back!")
+                    Text(hasSeenIntro ? "Welcome Back!" : "Welcome")
                         .font(.callout)
                         .foregroundStyle(.gray)
                     
