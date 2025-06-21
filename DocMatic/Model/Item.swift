@@ -52,7 +52,7 @@ let items: [Item] = [
     ),
     
     .init(
-        image: "square.and.arrow.up.on.square",
+        image: "square.and.arrow.up",
         title: "Export and Share Anywhere",
         description: "Save to Files, print, or share via AirDrop, email, and more. DocMatic keeps your documents moving smoothly.",
         scale: 0.4,
