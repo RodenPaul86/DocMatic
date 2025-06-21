@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WidgetKit
+import LocalAuthentication
 
 struct DocumentCardView: View {
     var document: Document
@@ -23,7 +24,7 @@ struct DocumentCardView: View {
     // MARK: Deleting Properties
     @State private var deleteAlert: Bool = false
     
-    // MARK: Lock Document
+    // MARK: Lock Document Properties
     @State private var isUnlocked: Bool = false
     
     var body: some View {
@@ -99,10 +100,16 @@ struct DocumentCardView: View {
             }
             
             Button {
-                document.isLocked.toggle()
-                isUnlocked = !document.isLocked
-                try? context.save()
-                WidgetCenter.shared.reloadAllTimelines()
+                if document.isLocked {
+                    // Attempt biometric authentication before unlocking
+                    authenticateUser()
+                } else {
+                    // Lock the document directly
+                    document.isLocked = true
+                    isUnlocked = false
+                    try? context.save()
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
             } label: {
                 Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
                     .tint(.primary)
@@ -113,6 +120,13 @@ struct DocumentCardView: View {
             } label: {
                 Label("Delete", systemImage: "trash")
                     .tint(.red)
+            }
+        }
+        .onChange(of: isUnlocked) { oldValue, newValue in
+            if newValue && document.isLocked {
+                document.isLocked = false
+                try? context.save()
+                WidgetCenter.shared.reloadAllTimelines()
             }
         }
         .confirmationDialog("Permanently delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
@@ -163,6 +177,19 @@ struct DocumentCardView: View {
             WidgetCenter.shared.reloadAllTimelines()
         } catch {
             print("Failed to rename the file: \(error)")
+        }
+    }
+    
+    private func authenticateUser() {
+        let context = LAContext()
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Locked Document") { status, _ in
+                DispatchQueue.main.async {
+                    self.isUnlocked = status
+                }
+            }
+        } else {
+            isUnlocked = false
         }
     }
 }
