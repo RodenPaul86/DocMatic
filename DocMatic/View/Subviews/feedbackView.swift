@@ -174,7 +174,7 @@ struct feedbackView: View {
                         }
                     } else {
                         Button(action: { UIApplication.shared.hideKeyboard() }) {
-                            Text("Cancel")
+                            Text("Done")
                         }
                     }
                 }
