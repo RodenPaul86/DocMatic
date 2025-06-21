@@ -162,7 +162,9 @@ struct DocumentDetailView: View {
                     Menu {
                         // MARK: Share Document
                         Button(action: {
-                            shareDocument()
+                            if let url = generatePDFURL(from: document) {
+                                DocumentActionManager.shared.share(documentURL: url)
+                            }
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Share", systemImage: "square.and.arrow.up")
@@ -171,7 +173,9 @@ struct DocumentDetailView: View {
                         
                         // MARK: Save Document
                         Button(action: {
-                            createAndShareDocument()
+                            if let url = generatePDFURL(from: document) {
+                                DocumentActionManager.shared.saveToFiles(documentURL: url)
+                            }
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Save to Files", systemImage: "folder")
@@ -180,7 +184,10 @@ struct DocumentDetailView: View {
                         
                         // MARK: Print File
                         Button(action: {
-                            printDocument()
+                            //printDocument()
+                            if let url = generatePDFURL(from: document) {
+                                DocumentActionManager.shared.print(documentURL: url)
+                            }
                             allinOne.invalidate(reason: .actionPerformed)
                         }) {
                             Label("Print", systemImage: "printer")
@@ -256,7 +263,6 @@ struct DocumentDetailView: View {
     
     struct ButtonFrameKey: PreferenceKey {
         static var defaultValue: CGRect = .zero
-        
         static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
             value = nextValue()
         }
@@ -358,45 +364,9 @@ struct DocumentDetailView: View {
         }
     }
     
-    private func createAndShareDocument() {
-        // MARK: Converting SwiftData document into a PDF Document
-        guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return }
-        isLoading = true
+    func generatePDFURL(from document: Document) -> URL? {
+        guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return nil }
         
-        Task.detached(priority: .high) { [document] in
-            try? await Task.sleep(for: .seconds(0.2))
-            
-            let pdfDocument = PDFDocument()
-            for index in pages.indices {
-                if let pageImage = UIImage(data: pages[index].pageData),
-                   let pdfPage = PDFPage(image: pageImage) {
-                    pdfDocument.insert(pdfPage, at: index)
-                }
-            }
-            
-            var pdfURL = FileManager.default.temporaryDirectory
-            let fileName = "\(document.name).pdf"
-            pdfURL.append(path: fileName)
-            
-            if pdfDocument.write(to: pdfURL) {
-                await MainActor.run { [pdfURL] in
-                    fileURL = pdfURL
-                    showFileMover = true
-                    isLoading = false
-                }
-            } else {
-                await MainActor.run {
-                    isLoading = false
-                    print("Failed to write PDF document.")
-                }
-            }
-        }
-    }
-    
-    private func printDocument() {
-        guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return }
-        
-        // Create a PDF Document
         let pdfDocument = PDFDocument()
         for (index, page) in pages.enumerated() {
             if let pageImage = UIImage(data: page.pageData),
@@ -405,24 +375,10 @@ struct DocumentDetailView: View {
             }
         }
         
-        // Write PDF to a temporary file
         var tempURL = FileManager.default.temporaryDirectory
         tempURL.append(path: "\(document.name).pdf")
         
-        if pdfDocument.write(to: tempURL) {
-            let printInfo = UIPrintInfo(dictionary: nil)
-            printInfo.outputType = .general
-            printInfo.jobName = document.name
-            
-            let printController = UIPrintInteractionController.shared
-            printController.printInfo = printInfo
-            printController.printingItem = tempURL
-            
-            // Present the print dialog
-            printController.present(animated: true, completionHandler: nil)
-        } else {
-            print("Failed to write PDF for printing.")
-        }
+        return pdfDocument.write(to: tempURL) ? tempURL : nil
     }
     
     private func renameFile() {
@@ -434,59 +390,5 @@ struct DocumentDetailView: View {
         } catch {
             print("Failed to rename the file: \(error)")
         }
-    }
-    
-    private func shareDocument() {
-        guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return }
-        isLoading = true
-        
-        Task.detached(priority: .high) { [document] in
-            try? await Task.sleep(for: .seconds(0.2))
-            
-            let pdfDocument = PDFDocument()
-            for index in pages.indices {
-                if let pageImage = UIImage(data: pages[index].pageData),
-                   let pdfPage = PDFPage(image: pageImage) {
-                    pdfDocument.insert(pdfPage, at: index)
-                }
-            }
-            
-            var pdfURL = FileManager.default.temporaryDirectory
-            let fileName = "\(document.name).pdf"
-            pdfURL.append(path: fileName)
-            
-            if pdfDocument.write(to: pdfURL) {
-                await MainActor.run { [pdfURL] in
-                    isLoading = false
-                    presentShareSheet(for: pdfURL)
-                }
-            } else {
-                await MainActor.run {
-                    isLoading = false
-                    print("Failed to write PDF document.")
-                }
-            }
-        }
-    }
-    
-    private func presentShareSheet(for url: URL) {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first else { return }
-        
-        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        activityViewController.excludedActivityTypes = [.addToReadingList, .assignToContact]
-        
-        // MARK: iPad popover setup
-        if let popoverController = activityViewController.popoverPresentationController {
-            // Set the anchor point for the popover to the "Share" button position
-            popoverController.sourceView = window.rootViewController?.view
-            
-            // Update the sourceRect to use the actual share button's frame
-            popoverController.sourceRect = shareButtonFrame // Use the button's frame to anchor the popover
-            popoverController.permittedArrowDirections = .any
-        }
-        
-        // Present the activity view controller
-        window.rootViewController?.present(activityViewController, animated: true, completion: nil)
     }
 }
