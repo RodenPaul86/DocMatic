@@ -28,6 +28,7 @@ struct ContentView: View {
     @State private var isFreeLimitAlert: Bool = false
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
+    @EnvironmentObject var tabBarVisibility: TabBarVisibility
     
     @State private var selectedTab = "Home"
     @State private var isKeyboardVisible: Bool = false
@@ -37,20 +38,18 @@ struct ContentView: View {
             Group {
                 switch selectedTab {
                 case "Home":
-                    HomeView(isShowTabBar: $isKeyboardVisible)
+                    HomeView()
                 case "Settings":
                     SettingsView()
                 default:
-                    HomeView(isShowTabBar: .constant(true))
+                    HomeView()
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .transition(.opacity)
             
             VStack {
                 Spacer()
                 
-                if !isKeyboardVisible {
+                if tabBarVisibility.isVisible {
                     GlassTabBar(selectedTab: $selectedTab) {
                         if appSubModel.isSubscriptionActive {
                             showScannerView = true
@@ -85,10 +84,10 @@ struct ContentView: View {
         }
         .onAppear {
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
-                isKeyboardVisible = true
+                tabBarVisibility.isVisible = false
             }
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-                isKeyboardVisible = false
+                tabBarVisibility.isVisible = true
             }
         }
         .onDisappear {

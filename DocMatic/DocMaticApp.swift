@@ -17,6 +17,7 @@ struct DocMaticApp: App {
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     
     @Environment(\.scenePhase) private var scenePhase
+    @StateObject var tabBarVisibility = TabBarVisibility()
     @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
     
     @State private var showIntro: Bool = false
@@ -31,6 +32,7 @@ struct DocMaticApp: App {
         WindowGroup {
             SchemeHostView {
                 ContentView()
+                    .environmentObject(tabBarVisibility)
                     .modelContainer(for: Document.self)
                     .environmentObject(appSubModel)
                     .task {
@@ -89,4 +91,8 @@ struct DocMaticApp: App {
             isPaywallPresented = false
         }
     }
+}
+
+class TabBarVisibility: ObservableObject {
+    @Published var isVisible: Bool = true
 }

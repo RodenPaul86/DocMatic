@@ -149,6 +149,7 @@ struct customRow: View {
     var toggleValue: Binding<Bool>? = nil /// <-- Optional toggle switch
     var shareURL: URL? = nil             /// <-- Optional share link
     var showJoinInsteadOfSafari: Bool? = nil
+    @EnvironmentObject var tabBarVisibility: TabBarVisibility
     
     @State private var isNavigating = false
     @State private var isSharing = false
@@ -158,6 +159,16 @@ struct customRow: View {
             if let urlString = url {
                 NavigationLink {
                     webView(url: urlString)
+                        .onAppear {
+                            withAnimation {
+                                tabBarVisibility.isVisible = false
+                            }
+                        }
+                        .onDisappear {
+                            withAnimation {
+                                tabBarVisibility.isVisible = true
+                            }
+                        }
                         .edgesIgnoringSafeArea(.all)
                         .navigationTitle(firstLabel)
                         .navigationBarTitleDisplayMode(.inline)

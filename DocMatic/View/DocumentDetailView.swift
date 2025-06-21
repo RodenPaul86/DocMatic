@@ -13,7 +13,6 @@ import WidgetKit
 
 struct DocumentDetailView: View {
     var document: Document
-    @Binding var isShowTabBar: Bool
     
     // MARK: View Properties
     @State private var isLoading: Bool = false
@@ -46,6 +45,7 @@ struct DocumentDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scene
+    @EnvironmentObject var tabBarVisibility: TabBarVisibility
     
     let allinOne = AllinOne()
     
@@ -117,7 +117,7 @@ struct DocumentDetailView: View {
             }
             .onAppear {
                 withAnimation {
-                    isShowTabBar = true
+                    tabBarVisibility.isVisible = false
                 }
                 
                 guard document.isLocked else {
@@ -130,7 +130,7 @@ struct DocumentDetailView: View {
             }
             .onDisappear {
                 withAnimation {
-                    isShowTabBar = false
+                    tabBarVisibility.isVisible = true
                 }
             }
             .onChange(of: scene) { oldValue, newValue in
