@@ -58,12 +58,6 @@ struct HomeView: View {
                             Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away. You can also drag and drop files directly into the app for quick scanning and organization." : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
                                 .font(.body)
                                 .foregroundStyle(.gray.opacity(0.5))
-                            
-                            if UIDevice.current.userInterfaceIdiom == .phone {
-                                lottieView(name: "ArrowDown")
-                                    .frame(width: 100, height: 100)
-                                    .clipped()
-                            }
                         }
                         .multilineTextAlignment(.center)
                         .padding()

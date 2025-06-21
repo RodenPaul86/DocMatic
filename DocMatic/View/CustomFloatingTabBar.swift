@@ -88,6 +88,14 @@ struct GlassTabBar: View {
                             .animation(.easeInOut(duration: 0.4), value: scanManager.scansLeft)
                         }
                     }
+                    .overlay {
+                        if scanManager.scansLeft >= 3 {
+                            lottieView(name: "ArrowDown")
+                                .frame(width: 100, height: 100)
+                                .clipped()
+                                .offset(y: -100)
+                        }
+                    }
             }
         }
         .padding(.horizontal, 15)
