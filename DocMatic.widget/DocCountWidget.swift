@@ -73,7 +73,7 @@ struct DocCountWidget: Widget {
                 .containerBackground(.clear, for: .widget)
         }
         .configurationDisplayName("Scan Counter")
-        .description("Keep track of your total scans right from your Lock Screen.")
+        .description("Keep track of your total scans right from your lock screen.")
         .supportedFamilies([.accessoryCircular])
     }
 }
