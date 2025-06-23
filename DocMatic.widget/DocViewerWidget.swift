@@ -200,7 +200,7 @@ struct DocViewerWidget: Widget {
         }
         .configurationDisplayName("Recent Documents")
         .description("Quick access to your recently scanned documents.")
-        .supportedFamilies([.systemSmall,.systemMedium, .systemLarge, .systemExtraLarge])
+        .supportedFamilies([.systemLarge, .systemExtraLarge])
         .contentMarginsDisabled()
     }
 }
