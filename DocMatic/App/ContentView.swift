@@ -322,13 +322,13 @@ struct ContentView: View {
     
     func isDarkBackground(in image: UIImage) -> Bool {
         guard let cgImage = image.cgImage else { return false }
-
+        
         let width = cgImage.width
         let height = cgImage.height
         let center = CGRect(x: width / 4, y: height / 4, width: width / 2, height: height / 2)
-
+        
         guard let cropped = cgImage.cropping(to: center) else { return false }
-
+        
         let context = CIContext()
         let inputImage = CIImage(cgImage: cropped)
         let extent = inputImage.extent
@@ -336,9 +336,9 @@ struct ContentView: View {
             kCIInputImageKey: inputImage,
             kCIInputExtentKey: CIVector(cgRect: extent)
         ])!
-
+        
         guard let outputImage = avgFilter.outputImage else { return false }
-
+        
         var bitmap = [UInt8](repeating: 0, count: 4)
         context.render(outputImage,
                        toBitmap: &bitmap,
@@ -346,11 +346,11 @@ struct ContentView: View {
                        bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
                        format: .RGBA8,
                        colorSpace: CGColorSpaceCreateDeviceRGB())
-
+        
         let r = CGFloat(bitmap[0]) / 255.0
         let g = CGFloat(bitmap[1]) / 255.0
         let b = CGFloat(bitmap[2]) / 255.0
-
+        
         // Use luminance formula
         let luminance = 0.299 * r + 0.587 * g + 0.114 * b
         return luminance < 0.5 // true = dark background
