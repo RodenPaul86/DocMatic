@@ -51,6 +51,7 @@ struct IntroPage: View {
                 
                 // MARK: Description
                 Text(selectedItem.description)
+                    .contentTransition(.numericText())
                     .font(.caption2)
                     .foregroundStyle(.gray)
                 
