@@ -27,7 +27,7 @@ struct WidgetSetupView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 
-                Text("Follow these simple steps to add DocMatic widgets to your home screen")
+                Text("Follow these simple steps to add \(Bundle.main.appName) widgets to your home screen")
                     .font(.body)
                     .foregroundColor(.gray)
                     .multilineTextAlignment(.center)
@@ -47,8 +47,8 @@ struct WidgetSetupView: View {
                     
                     StepView(number: 3,
                              icon: "magnifyingglass",
-                             title: "Find DocMatic Widget",
-                             description: "Search for \"DocMatic\" or scroll down to find our app")
+                             title: "Find \(Bundle.main.appName)",
+                             description: "Search for \"\(Bundle.main.appName)\" or scroll down to find our app")
                     
                     StepView(number: 4,
                              icon: "checkmark",
