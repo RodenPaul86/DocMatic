@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct IntroPage: View {
+    @Binding var showIntroView: Bool
     @State private var selectedItem: Item = items.first!
     @State private var introItems: [Item] = items
     @State private var activeIndex: Int = 0
+    
+    var onContinue: () -> Void
     
     var body: some View {
         VStack(spacing: 0) {
@@ -56,7 +59,14 @@ struct IntroPage: View {
                     .foregroundStyle(.gray)
                 
                 // MARK: Next/Continue Button
-                Button(action: { updateItem(isForward: true) }) {
+                Button(action: {
+                    if selectedItem.id == introItems.last?.id {
+                        showIntroView = true
+                        onContinue() /// <-- Trigger Paywall
+                    } else {
+                        updateItem(isForward: true)
+                    }
+                }) {
                     Text(selectedItem.id == introItems.last?.id ? "Continue" : "Next")
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -66,7 +76,6 @@ struct IntroPage: View {
                         .background(Color("Default").gradient, in: .capsule)
                 }
                 .padding(.top, 25)
-                
             }
             .multilineTextAlignment(.center)
             .frame(width: 300)
@@ -149,8 +158,4 @@ struct IntroPage: View {
             }
         }
     }
-}
-
-#Preview {
-    IntroPage()
 }

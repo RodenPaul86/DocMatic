@@ -59,7 +59,7 @@ struct DocMaticApp: App {
                         appSubModel.refreshSubscriptionStatus()
                     }
                     .sheet(isPresented: $showIntro) {
-                        IntroScreen(showIntroView: $hasSeenIntro) {
+                        IntroPage(showIntroView: $hasSeenIntro) {
                             hasSeenIntro = true
                             showIntro = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
