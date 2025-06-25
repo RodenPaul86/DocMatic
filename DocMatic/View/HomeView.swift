@@ -71,11 +71,11 @@ struct HomeView: View {
                                 .clipped()
                                 .padding(0)
                             
-                            Text("No Results!")
+                            Text("No Results for \"\(searchText)\"")
                                 .font(.title3.bold())
                                 .foregroundStyle(.gray)
                             
-                            Text("Hmm, no matches for \"\(searchText)\". Let’s try something else!")
+                            Text("Check the spelling or try a new search.")
                                 .font(.body)
                                 .multilineTextAlignment(.center)
                                 .foregroundStyle(.gray.opacity(0.5))
