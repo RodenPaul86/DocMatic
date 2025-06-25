@@ -98,7 +98,7 @@ struct HomeView: View {
                                 DocumentCardView(document: document, animationID: animationID)
                                     .foregroundStyle(Color.primary)
                                     .onDrag {
-                                        if let url = documentURL(for: document) {
+                                        if !document.isLocked, let url = documentURL(for: document) {
                                             return NSItemProvider(contentsOf: url)!
                                         }
                                         return NSItemProvider()
