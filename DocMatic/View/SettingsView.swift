@@ -15,6 +15,7 @@ struct SettingsView: View {
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.dismiss) private var dismiss
     
@@ -30,7 +31,9 @@ struct SettingsView: View {
                 if !appSubModel.isSubscriptionActive {
                     customPremiumBanner {
                         isPaywallPresented = true
-                        hapticManager.shared.notify(.notification(.success))
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.notification(.success))
+                        }
                     }
                     .listRowInsets(EdgeInsets())
                 }
@@ -42,23 +45,11 @@ struct SettingsView: View {
                         })
                     }
                     customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
+                    customRow(icon: "iphone.gen2.radiowaves.left.and.right", firstLabel: "In-App Haptics", secondLabel: "", showToggle: true, toggleValue: $isHapticsEnabled)
                 }
                 
-                Section(header: Text("Support")) {
-                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
-                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
-                }
-                
-                Section(header: Text("Info")) {
-                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
-                    
+                Section(header: Text("Support Us")) {
                     customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
-                    
-                    if appSubModel.isSubscriptionActive {
-                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
-                            isPresentedManageSubscription = true
-                        }
-                    }
                     
                     if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6740615012") {
                         customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
@@ -66,19 +57,35 @@ struct SettingsView: View {
                         }
                     }
                     
+                    customRow(icon: "point.3.filled.connected.trianglepath.dotted", firstLabel: "Share the App", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
+                    
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
+                    
+                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
+                }
+                
+                Section {
                     customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
                     
-                    customRow(icon: "square.and.arrow.up", firstLabel: "Share with Friends", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
-                    
+                }
+                
+                Section(header: Text("Info")) {
+                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
+                    if appSubModel.isSubscriptionActive {
+                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
+                            isPresentedManageSubscription = true
+                        }
+                    }
+                    customRow(icon: "widget.small", firstLabel: "Install Widget", secondLabel: "", destination: AnyView(WidgetSetupView()))
                     customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
                         showStoreView.toggle()
                     }
                 }
                 
                 Section(header: Text("Legal")) {
-                    customRow(icon: "link", firstLabel: "Privacy Policy", secondLabel: "", url: "https://docmatic.app/privacy.html")
-                    customRow(icon: "link", firstLabel: "Terms of Service", secondLabel: "", url: "https://docmatic.app/terms.html")
-                    customRow(icon: "link", firstLabel: "EULA", secondLabel: "", url: "https://docmatic.app/EULA.html")
+                    customRow(icon: "hand.raised", firstLabel: "Privacy Policy", secondLabel: "", url: "https://docmatic.app/privacy.html")
+                    customRow(icon: "doc.text", firstLabel: "Terms of Service", secondLabel: "", url: "https://docmatic.app/terms.html")
+                    customRow(icon: "append.page", firstLabel: "EULA", secondLabel: "", url: "https://docmatic.app/EULA.html")
                 }
 #if DEBUG
                 Section(header: Text("Debuging Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
@@ -282,6 +289,7 @@ struct customPremiumBanner: View {
     
     let features = [
         "Unlimited Scans",
+        "Remove Watermark",
         "and more"
     ]
     
@@ -295,7 +303,7 @@ struct customPremiumBanner: View {
                     
                     ForEach(features, id: \.self) { feature in
                         Text("- \(feature)")
-                            .font(.subheadline)
+                            .font(.caption)
                             .foregroundStyle(.white)
                             .opacity(0.7)
                     }
