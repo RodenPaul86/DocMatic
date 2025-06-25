@@ -18,6 +18,7 @@ struct HomeView: View {
     // MARK: View Properties
     @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @Environment(\.modelContext) private var modelContext
     
@@ -223,8 +224,9 @@ struct HomeView: View {
                     }
                     
                     Button(action: {
-                        hapticManager.shared.notify(.impact(.medium))
-                        
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.impact(.medium))
+                        }
                         if speechRecognizer.isListening {
                             speechRecognizer.stopTranscribing()
                             searchText = ""

@@ -128,6 +128,7 @@ fileprivate extension ColorScheme {
 struct SchemePickerView: View {
     @Binding fileprivate var previews: [SchemePreview]
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var localSchemeState: AppScheme = .device
     
     var body: some View {
@@ -226,7 +227,9 @@ struct SchemePickerView: View {
                 appScheme = preview.first?.text == AppScheme.dark.rawValue ? .dark : .light
             }
             updateScheme()
-            hapticManager.shared.notify(.impact(.light))
+            if isHapticsEnabled {
+                hapticManager.shared.notify(.impact(.light))
+            }
         }
     }
     

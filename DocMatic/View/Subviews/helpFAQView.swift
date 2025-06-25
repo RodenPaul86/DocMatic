@@ -100,6 +100,7 @@ struct helpFAQView: View {
 
 // MARK: Custom Row
 struct FAQRow: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @Binding var item: FAQItem
     
     var body: some View {
@@ -107,7 +108,9 @@ struct FAQRow: View {
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     item.isExpanded.toggle()
-                    hapticManager.shared.notify(.impact(.light))
+                    if isHapticsEnabled {
+                        hapticManager.shared.notify(.impact(.light))
+                    }
                 }
             }) {
                 HStack {

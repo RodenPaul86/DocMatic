@@ -12,6 +12,8 @@ struct GlassTabBar: View {
     let tabs = ["Home", "Settings"]
     let onPlusTapped: () -> Void
     
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
+    
     @Namespace private var tabAnimation
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @ObservedObject private var scanManager = ScanManager.shared
@@ -25,7 +27,9 @@ struct GlassTabBar: View {
                         Button(action: {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                                 selectedTab = tab
-                                hapticManager.shared.notify(.impact(.light))
+                                if isHapticsEnabled {
+                                    hapticManager.shared.notify(.impact(.light))
+                                }
                             }
                         }) {
                             VStack(spacing: 4) {

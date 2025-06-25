@@ -18,6 +18,7 @@ enum SubscriptionPlan: String {
 }
 
 struct SubscriptionButton: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     let plan: SubscriptionPlan
     @Binding var selectedPlan: SubscriptionPlan
     var offering: Offering?
@@ -94,7 +95,9 @@ struct SubscriptionButton: View {
         )
         .onTapGesture {
             selectedPlan = plan
-            hapticManager.shared.notify(.impact(.light))
+            if isHapticsEnabled {
+                hapticManager.shared.notify(.impact(.light))
+            }
         }
         .onAppear {
             checkTrialEligibilityIfNeeded()

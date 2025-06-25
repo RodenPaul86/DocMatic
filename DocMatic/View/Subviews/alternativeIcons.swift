@@ -151,6 +151,7 @@ struct alternativeIcons: View {
 }
 
 struct AppIconRow: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     let icon: AppIcon
     @Binding var currentAppIcon: AppIcon
     let isSubscriptionActive: Bool
@@ -196,7 +197,9 @@ struct AppIconRow: View {
             } else {
                 isPaywallPresented = true
             }
-            hapticManager.shared.notify(.impact(.light))
+            if isHapticsEnabled {
+                hapticManager.shared.notify(.impact(.light))
+            }
         }
     }
 }

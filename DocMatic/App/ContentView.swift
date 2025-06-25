@@ -16,6 +16,7 @@ enum ScannerError: Error {
 }
 
 struct ContentView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var showScannerView: Bool = false
     @State private var isPaywallPresented: Bool = false
@@ -58,7 +59,9 @@ struct ContentView: View {
                         } else {
                             isPaywallPresented = true
                         }
-                        hapticManager.shared.notify(.notification(.success))
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.notification(.success))
+                        }
                     }
                     .padding(.bottom, -10)
                     .transition(

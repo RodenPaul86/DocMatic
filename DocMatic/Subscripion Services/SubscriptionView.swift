@@ -10,6 +10,7 @@ import RevenueCat
 import WidgetKit
 
 struct SubscriptionView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.presentationMode) var presentationMode
     @Binding var isPaywallPresented: Bool
@@ -100,7 +101,9 @@ struct SubscriptionView: View {
                     // MARK: Subscribe Button (Full Width)
                     Button(action: {
                         purchase(selectedPlan)
-                        hapticManager.shared.notify(.impact(.light))
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.impact(.light))
+                        }
                     }) {
                         Text(hasIntroOffer(for: selectedPlan) ? "Try for Free!" : "Subscribe")
                             .fontWeight(.bold)

@@ -10,6 +10,7 @@ import MessageUI
 import PhotosUI
 
 struct feedbackView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @Environment(\.presentationMode) var presentationMode
     @State private var isShowingMailView = false
     @State private var textBody: String = ""
@@ -37,7 +38,9 @@ struct feedbackView: View {
                                 ForEach(topics, id: \.self) { topic in
                                     Button(action: {
                                         selectedTopic = topic
-                                        hapticManager.shared.notify(.impact(.light))
+                                        if isHapticsEnabled {
+                                            hapticManager.shared.notify(.impact(.light))
+                                        }
                                     }) {
                                         HStack {
                                             Text(topic)
