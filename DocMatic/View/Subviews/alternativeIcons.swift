@@ -184,7 +184,7 @@ struct AppIconRow: View {
                     .font(.title3)
                     .foregroundColor(.red)
             } else {
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "")
                     .font(.title3)
                     .foregroundStyle(isSelected ? Color("Default").gradient : Color(.systemGray6).gradient)
             }
