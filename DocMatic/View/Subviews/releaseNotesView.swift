@@ -9,7 +9,7 @@ import SwiftUI
 
 struct releaseNotesView: View {
     let updates: [appUpdate] = [
-        appUpdate(title: "Foundation of the Future",
+        appUpdate(title: "Foundation for the Future",
                   version: "2.0.0",
                   date: "July 2025",
                   description: "",
@@ -18,7 +18,7 @@ struct releaseNotesView: View {
                     "UI/UX Redesign and Improvements.",
                     "Optional profile login.",
                     "Lock & Home screen widgets",
-                    "Drag and Drop PDF functionality"],
+                    "Drag and Drop PDF's"],
                   bugFixes: [
                     "General proformance upgrades and bug fixes."
                   ]),
