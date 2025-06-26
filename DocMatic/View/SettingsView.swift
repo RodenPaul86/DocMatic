@@ -64,11 +64,6 @@ struct SettingsView: View {
                     customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
                 }
                 
-                Section {
-                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
-                    
-                }
-                
                 Section(header: Text("Info")) {
                     customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
                     if appSubModel.isSubscriptionActive {
@@ -80,6 +75,11 @@ struct SettingsView: View {
                     customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
                         showStoreView.toggle()
                     }
+                }
+                
+                Section(footer: Text("Join our TestFlight program to try early features and help shape future updates of DocMatic. Your feedback makes a difference!")) {
+                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
+                    
                 }
                 
                 Section(header: Text("Legal")) {
