@@ -289,8 +289,7 @@ struct customPremiumBanner: View {
     
     let features = [
         "Unlimited Scans",
-        "Remove Watermark",
-        "and more"
+        "Remove Watermark"
     ]
     
     var body: some View {
