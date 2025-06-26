@@ -9,8 +9,8 @@ import SwiftUI
 
 struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
-        ("Scan Documents", "3", .infinity, true),
-        ("Drag & Drop PDF Files", "3", .infinity, true),
+        ("Document Scans", "3", .infinity, true),
+        ("Drag & Drop PDF's", "3", .infinity, true),
         ("Remove Watermark", nil, .checkmark, false),
         ("Lock/Home Screen Widgets", nil, .checkmark, true),
         ("Alternate App Icons", nil, .checkmark, false),
