@@ -9,14 +9,14 @@ import SwiftUI
 
 struct releaseNotesView: View {
     let updates: [appUpdate] = [
-        appUpdate(title: "",
+        appUpdate(title: "Foundation of the Future",
                   version: "2.0.0",
                   date: "July 2025",
                   description: "",
                   imageName: "",
                   features: [
                     "UI/UX Redesign and Improvements.",
-                    "User Profile (Optional).",
+                    "Optional profile login.",
                     "Lock & Home screen widgets",
                     "Drag and Drop PDF functionality"],
                   bugFixes: [
