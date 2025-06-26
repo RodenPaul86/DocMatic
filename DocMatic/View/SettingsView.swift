@@ -59,7 +59,7 @@ struct SettingsView: View {
                     
                     customRow(icon: "point.3.filled.connected.trianglepath.dotted", firstLabel: "Share the App", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
                     
-                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(helpFAQView()))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(FAQView()))
                     
                     customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
                 }
