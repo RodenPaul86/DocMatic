@@ -16,7 +16,6 @@ import WidgetKit
 
 struct HomeView: View {
     // MARK: View Properties
-    @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
@@ -153,7 +152,7 @@ struct HomeView: View {
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(hasSeenIntro ? "Welcome Back!" : "Welcome")
+                    Text("Welcome Back!")
                         .font(.callout)
                         .foregroundStyle(.gray)
                     
