@@ -181,11 +181,11 @@ struct AppIconRow: View {
             
             if isLocked {
                 Image(systemName: "lock.fill")
-                    .font(.title3)
+                    .font(.title)
                     .foregroundColor(.red)
             } else {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "")
-                    .font(.title3)
+                    .font(.title)
                     .foregroundStyle(isSelected ? Color("Default").gradient : Color(.systemGray6).gradient)
             }
         }
