@@ -77,7 +77,7 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section(footer: Text("Join our TestFlight program to try early features and help shape future updates of DocMatic. Your feedback makes a difference!")) {
+                Section(footer: Text("Help shape future updates of DocMatic. Your feedback makes a difference!")) {
                     customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
                     
                 }
