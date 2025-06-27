@@ -23,6 +23,7 @@ struct adBannerView: View {
                     .tag(index)
                     .clipped()
                     .onTapGesture {
+                        isPaywallPresented = true
                         if isHapticsEnabled {
                             hapticManager.shared.notify(.impact(.light))
                         }
@@ -35,6 +36,10 @@ struct adBannerView: View {
             withAnimation {
                 currentIndex = (currentIndex + 1) % images.count
             }
+        }
+        .fullScreenCover(isPresented: $isPaywallPresented) {
+            SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                .preferredColorScheme(.dark)
         }
     }
 }
