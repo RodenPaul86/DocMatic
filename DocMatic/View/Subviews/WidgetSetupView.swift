@@ -11,7 +11,7 @@ struct WidgetSetupView: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        NavigationStack {
+        ScrollView {
             VStack(spacing: 20) {
                 
                 // MARK: Icon
