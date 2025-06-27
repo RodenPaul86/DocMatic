@@ -20,6 +20,7 @@ struct HomeView: View {
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.requestReview) var requestReview
     
     @State private var selectedDocument: Document? = nil
     @State private var searchText: String = ""
@@ -56,7 +57,7 @@ struct HomeView: View {
                                 .font(.title3.bold())
                                 .foregroundStyle(.gray)
                             
-                            Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away. You can also drag and drop files directly into the app for quick scanning and organization." : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
+                            Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away. \nYou can also drag and drop PDF's \ndirectly into the app." : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
                                 .font(.body)
                                 .foregroundStyle(.gray.opacity(0.5))
                         }
@@ -124,6 +125,16 @@ struct HomeView: View {
             }
             .onDrop(of: [UTType.pdf.identifier], isTargeted: $isTargeted) { providers in
                 handleDrop(providers: providers)
+                if AppReviewRequest.requestAvailable {
+                    Task {
+                        try await Task.sleep(
+                            until: .now + .seconds(1),
+                            tolerance: .seconds(0.5),
+                            clock: .suspending
+                        )
+                        requestReview()
+                    }
+                }
                 return true
             }
             .alert("Upgrade to DocMatic Pro", isPresented: $isFreeLimitAlert) {
