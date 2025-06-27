@@ -10,6 +10,7 @@ import MessageUI
 import PhotosUI
 
 struct feedbackView: View {
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @Environment(\.presentationMode) var presentationMode
     @State private var isShowingMailView = false
@@ -141,7 +142,7 @@ struct feedbackView: View {
                     }
                 }
                 .safeAreaInset(edge: .bottom, spacing: 0) {
-                    Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
+                    Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Reserve space for the tab bar
                 }
             }
             .onAppear {

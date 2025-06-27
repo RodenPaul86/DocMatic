@@ -20,6 +20,7 @@ struct FAQCategory: Identifiable {
 }
 
 struct FAQView: View {
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var expandedCategories: Set<UUID> = []
     
     let faqData: [FAQCategory] = [
@@ -99,7 +100,7 @@ struct FAQView: View {
         }
         .navigationTitle("FAQ")
         .safeAreaInset(edge: .bottom) {
-            Color.clear.frame(height: 60) /// <-- Space for the tab bar
+            Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Space for the tab bar
         }
     }
 }

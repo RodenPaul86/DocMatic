@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct aboutView: View {
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     
     var body: some View {
         NavigationStack {
@@ -33,7 +34,7 @@ struct aboutView: View {
                 }
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
+                Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Reserve space for the tab bar
             }
             .navigationTitle("About")
         }

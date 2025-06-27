@@ -70,6 +70,11 @@ struct ContentView: View {
                             removal: .move(edge: .bottom).combined(with: .opacity)
                         )
                     )
+                    
+                    if !appSubModel.isSubscriptionActive {
+                        adBannerView()
+                            .padding(.top, 10)
+                    }
                 }
             }
             .fullScreenCover(isPresented: $showScannerView) {

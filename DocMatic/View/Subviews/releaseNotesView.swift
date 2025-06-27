@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct releaseNotesView: View {
+    @EnvironmentObject var appSubModel: appSubscriptionModel
+    
     let updates: [appUpdate] = [
         appUpdate(title: "Foundation for the Future",
                   version: "2.0.0",
@@ -62,7 +64,7 @@ DocMatic is designed to streamline your workflow and simplify document managemen
             }
             .padding()
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
+                Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Reserve space for the tab bar
             }
             .navigationTitle("Release Notes")
         }

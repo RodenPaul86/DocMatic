@@ -124,7 +124,7 @@ struct SettingsView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 if UIDevice.current.userInterfaceIdiom == .phone {
-                    Color.clear.frame(height: 60) /// <-- Space for the tab bar
+                    Color.clear.frame(height: appSubModel.isSubscriptionActive ? 50 : 100) /// <-- Space for the tab bar
                 }
             }
             .fullScreenCover(isPresented: $isPaywallPresented) {
