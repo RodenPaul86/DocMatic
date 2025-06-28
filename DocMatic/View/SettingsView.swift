@@ -16,6 +16,7 @@ struct SettingsView: View {
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
+    @State private var resetOnboarding: Bool = false
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @Environment(\.dismiss) private var dismiss
     
@@ -40,73 +41,88 @@ struct SettingsView: View {
                 
                 Section(header: Text("Customization")) {
                     if UIDevice.current.userInterfaceIdiom == .phone {
-                        customRow(icon: "paintbrush", firstLabel: "Appearance", secondLabel: "", action: {
+                        customRow(icon: "paintbrush", firstLabel: "Appearance", action: {
                             showPickerView.toggle()
                         })
                     }
-                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", secondLabel: "", destination: AnyView(alternativeIcons()))
-                    customRow(icon: "iphone.gen2.radiowaves.left.and.right", firstLabel: "In-App Haptics", secondLabel: "", showToggle: true, toggleValue: $isHapticsEnabled)
+                    customRow(icon: "questionmark.app.dashed", firstLabel: "Alternate Icons", destination: AnyView(alternativeIcons()))
+                    customRow(icon: "iphone.gen2.radiowaves.left.and.right", firstLabel: "In-App Haptics", showToggle: true, toggleValue: $isHapticsEnabled)
                 }
                 
                 Section(header: Text("Support Us")) {
-                    customRow(icon: "app.badge", firstLabel: "Release Notes", secondLabel: "", destination: AnyView(releaseNotesView()))
+                    customRow(icon: "app.badge", firstLabel: "Release Notes", destination: AnyView(releaseNotesView()))
                     
                     if AppReviewRequest.showReviewButton, let url = AppReviewRequest.appURL(id: "id6740615012") {
-                        customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)", secondLabel: "") {
+                        customRow(icon: "star.bubble", firstLabel: "Rate & Review \(Bundle.main.appName)") {
                             UIApplication.shared.open(url)
                         }
                     }
                     
-                    customRow(icon: "point.3.filled.connected.trianglepath.dotted", firstLabel: "Share the App", secondLabel: "", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
+                    customRow(icon: "point.3.filled.connected.trianglepath.dotted", firstLabel: "Share the App", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
                     
-                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", secondLabel: "", destination: AnyView(FAQView()))
+                    customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", destination: AnyView(FAQView()))
                     
-                    customRow(icon: "envelope", firstLabel: "Contact Support", secondLabel: "", destination: AnyView(feedbackView()))
+                    customRow(icon: "envelope", firstLabel: "Contact Support", destination: AnyView(feedbackView()))
                 }
                 
                 Section(header: Text("Info")) {
-                    customRow(icon: "list.clipboard", firstLabel: "About", secondLabel: "", destination: AnyView(aboutView()))
+                    customRow(icon: "list.clipboard", firstLabel: "About", destination: AnyView(aboutView()))
                     if appSubModel.isSubscriptionActive {
-                        customRow(icon: "crown", firstLabel: "Manage Subscription", secondLabel: "") {
+                        customRow(icon: "crown", firstLabel: "Manage Subscription") {
                             isPresentedManageSubscription = true
                         }
                     }
-                    customRow(icon: "widget.small", firstLabel: "Install Widget", secondLabel: "", destination: AnyView(WidgetSetupView()))
-                    customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps", secondLabel: "") {
+                    customRow(icon: "widget.small", firstLabel: "Install Widget", destination: AnyView(WidgetSetupView()))
+                    customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps") {
                         showStoreView.toggle()
                     }
                 }
                 
                 Section(footer: Text("Help shape future updates of DocMatic. Your feedback makes a difference!")) {
-                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", secondLabel: "", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
+                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
                     
                 }
                 
                 Section(header: Text("Legal")) {
-                    customRow(icon: "hand.raised", firstLabel: "Privacy Policy", secondLabel: "", url: "https://docmatic.app/privacy.html")
-                    customRow(icon: "doc.text", firstLabel: "Terms of Service", secondLabel: "", url: "https://docmatic.app/terms.html")
-                    customRow(icon: "append.page", firstLabel: "EULA", secondLabel: "", url: "https://docmatic.app/EULA.html")
+                    customRow(icon: "hand.raised", firstLabel: "Privacy Policy", url: "https://docmatic.app/privacy.html")
+                    customRow(icon: "doc.text", firstLabel: "Terms of Service", url: "https://docmatic.app/terms.html")
+                    customRow(icon: "append.page", firstLabel: "EULA", url: "https://docmatic.app/EULA.html")
                 }
 #if DEBUG
                 Section(header: Text("Debuging Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
                     let scanCountString = UserDefaults(suiteName: "group.com.studio4design.DocMatic")?.string(forKey: "scanCount") ?? "0"
                     let scanCount = Int(scanCountString) ?? 0
                     let documentText = scanCount == 1 ? "Document" : "Documents"
-                    customRow(icon: "scanner", firstLabel: "\(scanCount) \(documentText) Scanned", secondLabel: "")
+                    customRow(icon: "scanner", firstLabel: "\(scanCount) \(documentText) Scanned")
                     
-                    customRow(icon: "ladybug", firstLabel: "RC Debug Overlay", secondLabel: "") {
+                    customRow(icon: "ladybug", firstLabel: "RC Debug Overlay") {
                         showDebug = true
                     }
                     
-                    customRow(icon: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90", firstLabel: "Reset userDefaults", secondLabel: "") {
-                        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-                        UserDefaults.standard.synchronize()
-                        debugMessage = "Success!!"
-                    }
+                    customRow(icon: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90", firstLabel: "Reset Onboarding", showToggle: true, toggleValue: $resetOnboarding)
+                        .onChange(of: resetOnboarding) { oldValue, newValue in
+                            if newValue {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                    resetUserDefaults()
+                                    resetOnboarding = false
+                                    debugMessage = "Success!, Restart App."
+                                }
+                            }
+                        }
                     
-                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset Datastore", secondLabel: "", showToggle: true, toggleValue: $resetDatastore)
+                    customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset Datastore", showToggle: true, toggleValue: $resetDatastore)
+                        .onChange(of: resetDatastore) { oldValue, newValue in
+                            if newValue {
+                                debugMessage = "Success!, Restart App."
+                            }
+                        }
                     
-                    customRow(icon: "lightbulb.max", firstLabel: "Show Tips For Testing", secondLabel: "", showToggle: true, toggleValue: $showTipsForTesting)
+                    customRow(icon: "lightbulb.max", firstLabel: "Show Tips For Testing", showToggle: true, toggleValue: $showTipsForTesting)
+                        .onChange(of: showTipsForTesting) { oldValue, newValue in
+                            if newValue {
+                                debugMessage = "Success!, Restart App."
+                            }
+                        }
                 }
 #endif
             }
@@ -138,6 +154,14 @@ struct SettingsView: View {
             .debugRevenueCatOverlay(isPresented: $showDebug)
         }
     }
+    
+    private func resetUserDefaults() {
+        let keys = ["showIntroView"]
+        
+        for key in keys {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
 }
 
 #Preview {
@@ -148,7 +172,7 @@ struct customRow: View {
     var icon: String
     var firstLabel: String
     var firstLabelColor: Color = .gray
-    var secondLabel: String
+    var secondLabel: String?
     var action: (() -> Void)? = nil  /// <-- Optional action
     var destination: AnyView? = nil  /// <-- Optional navigation
     var url: String? = nil           /// <-- Optional URL
@@ -248,7 +272,7 @@ struct customRow: View {
                     .imageScale(.small)
                     .foregroundColor(Color.init(uiColor: .systemGray3))
             } else {
-                Text(secondLabel)
+                Text(secondLabel ?? "")
                     .foregroundStyle((action == nil && destination == nil && url == nil && shareURL == nil) ? .gray : .primary)
             }
         }
