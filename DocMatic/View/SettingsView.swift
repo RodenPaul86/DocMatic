@@ -58,14 +58,14 @@ struct SettingsView: View {
                         }
                     }
                     
-                    customRow(icon: "point.3.filled.connected.trianglepath.dotted", firstLabel: "Share the App", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
+                    customRow(icon: "point.3.filled.connected.trianglepath.dotted", firstLabel: "Share this App", shareURL: URL(string: "https://apps.apple.com/app/docmatic-file-scanner/id6740615012"))
                     
                     customRow(icon: "questionmark.bubble", firstLabel: "Frequently Asked Questions", destination: AnyView(FAQView()))
                     
                     customRow(icon: "envelope", firstLabel: "Contact Support", destination: AnyView(feedbackView()))
                 }
                 
-                Section(header: Text("Info")) {
+                Section(header: Text("Info"), footer: Text("Help shape future updates of DocMatic. Your feedback makes a difference!")) {
                     customRow(icon: "list.clipboard", firstLabel: "About", destination: AnyView(aboutView()))
                     if appSubModel.isSubscriptionActive {
                         customRow(icon: "crown", firstLabel: "Manage Subscription") {
@@ -76,11 +76,8 @@ struct SettingsView: View {
                     customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps") {
                         showStoreView.toggle()
                     }
-                }
-                
-                Section(footer: Text("Help shape future updates of DocMatic. Your feedback makes a difference!")) {
-                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
                     
+                    customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
                 }
                 
                 Section(header: Text("Legal")) {
@@ -244,6 +241,7 @@ struct customRow: View {
         .sheet(isPresented: $isSharing) {
             if let shareURL = shareURL {
                 ActivityView(activityItems: [shareURL])
+                    .presentationDetents([.medium])
             }
         }
     }
