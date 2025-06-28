@@ -53,7 +53,7 @@ let items: [Item] = [
     
     .init(
         image: "square.and.arrow.up",
-        title: "Export and Share Anywhere",
+        title: "Export & Share Anywhere",
         description: "Save to Files, print, or share via AirDrop, email, and more. DocMatic keeps your documents moving smoothly.",
         scale: 0.4,
         anchor: .bottomLeading,
@@ -64,8 +64,8 @@ let items: [Item] = [
     
     .init(
         image: "party.popper",
-        title: "Ad-Free Experience",
-        description: "Thank you for downloading my app, I hope you enjoy it!",
+        title: "Welcome to DocMatic!",
+        description: "Thanks so much for giving my app a try. I made it with users like you in mind!",
         scale: 0.35,
         anchor: .bottomLeading,
         offset: -50,

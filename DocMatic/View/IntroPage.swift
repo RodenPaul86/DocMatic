@@ -55,7 +55,7 @@ struct IntroPage: View {
                 // MARK: Description
                 Text(selectedItem.description)
                     .contentTransition(.numericText())
-                    .font(.caption2)
+                    .font(.callout)
                     .foregroundStyle(.gray)
                 
                 // MARK: Next/Continue Button
