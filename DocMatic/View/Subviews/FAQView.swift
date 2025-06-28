@@ -34,10 +34,26 @@ struct FAQView: View {
         ]),
         
         FAQCategory(title: "Privacy & Security", items: [
-            FAQItem(question: "Are my scanned docs stored securely?", answer: "Yes. All documents are stored locally on your device and are not uploaded unless you choose to share or save them externally."),
-            FAQItem(question: "Can I lock my documents?", answer: "Yes. Use Face ID or Touch ID to lock and unlock your documents for added security."),
-            FAQItem(question: "Is my data synced to any servers?", answer: "No. DocMatic stores data locally. Files are only uploaded if you manually save them to iCloud or share them."),
-            FAQItem(question: "Can I recover deleted documents?", answer: "No. Deleted documents cannot be recovered. Be sure to save important files to the Files app before deleting them from DocMatic.")
+            FAQItem(question: "Are my scanned doc's stored securely?",
+                    answer: "Yes. All documents are stored locally on your device and are not uploaded unless you choose to share or save them externally."),
+            
+            FAQItem(question: "Can I lock my documents?",
+                    answer: "Yes. Use Face ID or Touch ID to lock and unlock your documents for added security."),
+            
+            FAQItem(question: "Is my data synced to any servers?",
+                    answer: "No. DocMatic stores data locally. Files are only uploaded if you manually save them to iCloud or share them."),
+            
+            FAQItem(question: "Can I recover deleted documents?",
+                    answer: "No. Deleted documents cannot be recovered. Be sure to save important files to the Files app before deleting them from DocMatic."),
+            
+            FAQItem(question: "Why do you need microphone access?",
+                    answer: "Microphone access is used solely for recognizing your voice when you search for documents. Your voice is not recorded, stored, or shared. All voice processing happens securely on your device."),
+            
+            FAQItem(question: "Is my voice data saved?",
+                    answer: "No. We do not store or transmit your voice recordings. Voice recognition is used in real-time and handled locally to protect your privacy."),
+            
+            FAQItem(question: "Do I have to allow microphone access?",
+                    answer: "No, microphone access is optional. You can still search manually if you choose not to use voice search.")
         ]),
         
         FAQCategory(title: "Features", items: [
