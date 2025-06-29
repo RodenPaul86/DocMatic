@@ -16,10 +16,11 @@ struct SubscriptionView: View {
     @Binding var isPaywallPresented: Bool
     @State private var selectedPlan: SubscriptionPlan = .weekly
     @State private var currentOffering: Offering?
-    @State private var isLoading = true
+    @State private var isLoading: Bool = true
     @State private var showLegal: Bool = false
-    @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
+    @State private var introOfferAvailable: Bool = false
     
     var body: some View {
         VStack {
@@ -91,12 +92,16 @@ struct SubscriptionView: View {
                 
                 // MARK: Subscription Options and Subscribe button
                 VStack {
-                    // Annual & Monthly Buttons
-                    HStack(spacing: 15) {
-                        SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
-                        SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
+                    // Annualy & Weekly offers
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 15) {
+                            SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
+                            SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
+                            SubscriptionButton(plan: .lifetime, selectedPlan: $selectedPlan, offering: currentOffering)
+                        }
                     }
-                    .frame(height: 100)
+                    .scrollTargetBehavior(.paging)
+                    .scrollClipDisabled()
                     
                     // MARK: Subscribe Button (Full Width)
                     Button(action: {
@@ -105,7 +110,7 @@ struct SubscriptionView: View {
                             hapticManager.shared.notify(.impact(.light))
                         }
                     }) {
-                        Text(hasIntroOffer(for: selectedPlan) ? "Try for Free!" : "Subscribe")
+                        Text(introOfferAvailable ? "Try for Free!" : "Subscribe")
                             .fontWeight(.bold)
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
@@ -125,6 +130,10 @@ struct SubscriptionView: View {
         }
         .onAppear {
             fetchOfferings()
+            updateIntroOffer()
+        }
+        .onChange(of: selectedPlan) { oldValue, newValue in
+            updateIntroOffer()
         }
     }
     
@@ -133,6 +142,7 @@ struct SubscriptionView: View {
         Purchases.shared.getOfferings { offerings, error in
             if let offerings = offerings {
                 self.currentOffering = offerings.current
+                self.updateIntroOffer()
             } else {
                 print("Error fetching offerings: \(String(describing: error))")
             }
@@ -203,6 +213,10 @@ struct SubscriptionView: View {
                 }
             }
         }
+    }
+    
+    func updateIntroOffer() {
+        introOfferAvailable = hasIntroOffer(for: selectedPlan)
     }
     
     func hasIntroOffer(for plan: SubscriptionPlan) -> Bool {

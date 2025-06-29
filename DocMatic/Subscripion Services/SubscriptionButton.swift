@@ -86,7 +86,8 @@ struct SubscriptionButton: View {
             pricingView(for: plan)
         }
         .padding()
-        .frame(maxWidth: .infinity, maxHeight: plan == .lifetime ? 100 : 100, alignment: .leading)
+        .frame(width: 172, height: 100, alignment: .leading)
+        //.frame(maxWidth: .infinity, maxHeight: plan == .lifetime ? 100 : 100, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 10)
                 .fill(Color.gray.opacity(0.2)) /// <-- Dark gray background
