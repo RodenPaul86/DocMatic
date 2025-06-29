@@ -92,7 +92,7 @@ struct SubscriptionView: View {
                 
                 // MARK: Subscription Options and Subscribe button
                 VStack {
-                    // Annualy & Weekly offers
+                    // Annualy, Weekly & Lifetime offers
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 15) {
                             SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
