@@ -30,6 +30,7 @@ struct HomeView: View {
     @State private var isFreeLimitAlert: Bool = false
     @State private var isSettingsOpen: Bool = false
     @State private var isTargeted: Bool = false
+    @State private var isProfileShowing: Bool = false
     
     @FocusState private var isFocused: Bool
     @Query(sort: [.init(\Document.createdAt, order: .reverse)], animation: .snappy(duration: 0.25)) private var documents: [Document]
@@ -174,7 +175,7 @@ struct HomeView: View {
                 Spacer(minLength: 0)
                 
                 // MARK: Profile Picture
-                Button(action: {}) {
+                Button(action: { isProfileShowing = true }) {
                     Image(systemName: "person.circle")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -316,6 +317,9 @@ struct HomeView: View {
         .visualEffect { content, proxy in
             content
                 .offset(y: offsetY(proxy))
+        }
+        .sheet(isPresented: $isProfileShowing) {
+            LoginView()
         }
     }
     
