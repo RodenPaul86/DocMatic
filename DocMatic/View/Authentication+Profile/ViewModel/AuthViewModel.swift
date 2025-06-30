@@ -27,6 +27,18 @@ class AuthViewModel: ObservableObject {
         }
     }
     
+    func sendResetLink(withEmail email: String) {
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                print("❌ Failed to send reset email:", error.localizedDescription)
+                // Optionally show an alert
+            } else {
+                print("✅ Reset link sent!")
+                // Optionally show a success alert
+            }
+        }
+    }
+    
     func signIn(withEmail email: String, password: String) async throws {
         do {
             let result = try await Auth.auth().signIn(withEmail: email, password: password)
@@ -61,7 +73,16 @@ class AuthViewModel: ObservableObject {
     }
     
     func deleteAccount() async {
+        guard let user = Auth.auth().currentUser else { return }
         
+        do {
+            try await Firestore.firestore().collection("users").document(user.uid).delete()
+            try await user.delete() /// <-- Delete FireBase Auth account.
+            self.userSession = nil /// <-- Wipes out user session and takes back to login screen.
+            self.currentUser = nil /// <-- Wipes out current user data model.
+        } catch {
+            print("DEBUG: Failed to delete account with error: \(error.localizedDescription)")
+        }
     }
     
     func fetchUser() async {

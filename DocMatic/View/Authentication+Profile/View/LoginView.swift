@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @State private var showForgotPasswordAlert: Bool = false
     @State private var email: String = ""
     @State private var password: String = ""
     @EnvironmentObject var viewModel: AuthViewModel
@@ -55,6 +56,22 @@ struct LoginView: View {
             .opacity(formIsValid ? 1.0 : 0.5)
             .padding(.top, 24)
             
+            Button(action: {
+                showForgotPasswordAlert = true
+            }) {
+                Text("Forgot Password?")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 14))
+            }
+            .padding(.top, 12)
+            .alert("Reset Password", isPresented: $showForgotPasswordAlert) {
+                TextField("Enter your email", text: $email)
+                Button("Send Reset Link") {
+                    viewModel.sendResetLink(withEmail: email)
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            
             Spacer()
             
             // MARK: sign up button
@@ -70,7 +87,6 @@ struct LoginView: View {
                 .font(.system(size: 14))
             }
         }
-        
     }
 }
 

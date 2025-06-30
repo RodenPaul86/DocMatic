@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthViewModel
+    @State private var showDeleteAlert: Bool = false
     
     var body: some View {
         if let user = viewModel.currentUser {
@@ -46,7 +47,11 @@ struct ProfileView: View {
                     }
                     .foregroundStyle(.primary)
                     
-                    Button(action: {}) {
+                    Button(action: {
+                        Task {
+                            await viewModel.deleteAccount()
+                        }
+                    }) {
                         SettingsRowView(imageName: "xmark.circle.fill",
                                         title: "Delete Account",
                                         tintColor: .red)
