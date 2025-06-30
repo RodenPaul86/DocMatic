@@ -92,10 +92,14 @@ struct ContentView: View {
         }
         .onAppear {
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
-                tabBarVisibility.isVisible = false
+                DispatchQueue.main.async {
+                    tabBarVisibility.isVisible = false
+                }
             }
             NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
-                tabBarVisibility.isVisible = true
+                DispatchQueue.main.async {
+                    tabBarVisibility.isVisible = true
+                }
             }
         }
         .onDisappear {
