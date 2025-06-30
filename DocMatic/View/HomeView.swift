@@ -170,7 +170,8 @@ struct HomeView: View {
                         .foregroundStyle(.gray)
                     
                     if let user = viewModel.currentUser {
-                        Text(user.fullname)
+                        let firstName = user.fullname.split(separator: " ").first.map(String.init) ?? user.fullname
+                        Text(firstName)
                             .font(.title.bold())
                     } else {
                         Text("Guest")
