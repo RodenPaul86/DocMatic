@@ -37,6 +37,7 @@ struct HomeView: View {
     @Namespace private var animationID
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @EnvironmentObject var tabBarVisibility: TabBarVisibility
+    @EnvironmentObject var viewModel: AuthViewModel
     
     // MARK: Filtered documents based on search text
     var filteredDocuments: [Document] {
@@ -168,8 +169,13 @@ struct HomeView: View {
                         .font(.callout)
                         .foregroundStyle(.gray)
                     
-                    Text("Guest")
-                        .font(.title.bold())
+                    if let user = viewModel.currentUser {
+                        Text(user.fullname)
+                            .font(.title.bold())
+                    } else {
+                        Text("Guest")
+                            .font(.title.bold())
+                    }
                 }
                 
                 Spacer(minLength: 0)
@@ -319,7 +325,11 @@ struct HomeView: View {
                 .offset(y: offsetY(proxy))
         }
         .sheet(isPresented: $isProfileShowing) {
-            LoginView()
+            if viewModel.userSession != nil {
+                ProfileView()
+            } else {
+                LoginView()
+            }
         }
     }
     

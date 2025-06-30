@@ -8,45 +8,51 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var viewModel: AuthViewModel
+    
     var body: some View {
-        List {
-            Section {
-                HStack {
-                    Text(User.MOCK_USER.initials)
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                        .frame(width: 72, height: 72)
-                        .background(Color(.systemGray3))
-                        .clipShape(Circle())
-                    
-                    VStack(alignment: .leading) {
-                        Text(User.MOCK_USER.fullname)
-                            .font(.subheadline)
+        if let user = viewModel.currentUser {
+            List {
+                Section {
+                    HStack {
+                        Text(user.initials)
+                            .font(.title)
                             .fontWeight(.semibold)
-                            .padding(.top, 4)
+                            .foregroundStyle(.white)
+                            .frame(width: 72, height: 72)
+                            .background(Color(.systemGray3))
+                            .clipShape(Circle())
                         
-                        Text(User.MOCK_USER.email)
-                            .font(.footnote)
-                            .foregroundStyle(.gray)
+                        VStack(alignment: .leading) {
+                            Text(user.fullname)
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .padding(.top, 4)
+                            
+                            Text(user.email)
+                                .font(.footnote)
+                                .foregroundStyle(.gray)
+                        }
                     }
                 }
-            }
-            
-            Section(header: Text("Account")) {
-                Button(action: {}) {
-                    SettingsRowView(imageName: "arrow.left.circle.fill",
-                                    title: "Sign Out",
-                                    tintColor: .red)
-                }
-                .foregroundStyle(.primary)
                 
-                Button(action: {}) {
-                    SettingsRowView(imageName: "xmark.circle.fill",
-                                    title: "Delete Account",
-                                    tintColor: .red)
+                Section(header: Text("Account")) {
+                    Button(action: {
+                        viewModel.signOut()
+                    }) {
+                        SettingsRowView(imageName: "arrow.left.circle.fill",
+                                        title: "Sign Out",
+                                        tintColor: .red)
+                    }
+                    .foregroundStyle(.primary)
+                    
+                    Button(action: {}) {
+                        SettingsRowView(imageName: "xmark.circle.fill",
+                                        title: "Delete Account",
+                                        tintColor: .red)
+                    }
+                    .foregroundStyle(.primary)
                 }
-                .foregroundStyle(.primary)
             }
         }
     }
