@@ -15,54 +15,87 @@ struct RegistrationView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthViewModel
     
+    @FocusState private var emailFieldIsFocused: Bool
+    @State private var emailFieldWasTouched = false
+    
+    var passwordsMatch: Bool? {
+        if password.isEmpty || confirmPassword.isEmpty {
+            return nil
+        }
+        return password == confirmPassword
+    }
+    
+    var borderColorForPassword: Color? {
+        switch passwordsMatch {
+        case true:
+            return .green
+        case false:
+            return .red
+        default:
+            return nil
+        }
+    }
+    
+    var emailIsValid: Bool {
+        let regex = #"^\S+@\S+\.\S+$"#
+        return email.range(of: regex, options: .regularExpression) != nil
+    }
+    
     var body: some View {
-        VStack {
-            // MARK: image
-            Image("github1024")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 100, height: 120)
-                .padding(.vertical, 32)
+        VStack(spacing: 24) {
+            // MARK: Lottie Image
+            lottieView(name: "settingPass")
+                .frame(width: 200, height: 150)
+                .clipped()
+            
+            Text("Sign Up")
+                .font(.title.bold())
+            
+            Text("Use proper information to create an account.")
+                .font(.subheadline)
+                .foregroundStyle(.gray)
             
             // MARK: form fields
             VStack(spacing: 24) {
-                InputView(text: $email,
-                          title: "Email Address",
-                          placeholder: "name@example.com")
+                InputView(text: $fullName, image: "person", placeholder: "Full Name")
+                
+                InputView(text: $email, image: "envelope", placeholder: "Email Address", borderColor: emailFieldWasTouched && !emailIsValid ? .red : nil) {
+                    emailFieldWasTouched = false
+                }
                 .autocapitalization(.none)
-                
-                InputView(text: $fullName,
-                          title: "Full Name",
-                          placeholder: "Enter your name")
-                
-                InputView(text: $password,
-                          title: "Password",
-                          placeholder: "Enter your new password",
-                          isSecureField: true)
-                
-                ZStack(alignment: .trailing ) {
-                    InputView(text: $confirmPassword,
-                              title: "Confirm Password",
-                              placeholder: "Confirm your new password",
-                              isSecureField: true)
-                    
-                    if !password.isEmpty && !confirmPassword.isEmpty {
-                        if password == confirmPassword {
-                            Image(systemName: "checkmark.circle.fill")
-                                .imageScale(.large)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.green.gradient)
-                        } else {
-                            Image(systemName: "xmark.circle.fill")
-                                .imageScale(.large)
-                                .fontWeight(.bold)
-                                .foregroundStyle(.red.gradient)
-                        }
+                .focused($emailFieldIsFocused)
+                .onChange(of: emailFieldIsFocused) { focused in
+                    if !focused {
+                        emailFieldWasTouched = true // Mark field as touched after focus is lost
                     }
                 }
+                
+                InputView(text: $password, image: "lock", placeholder: "Password", isSecureField: true, borderColor: borderColorForPassword)
+                
+                InputView(text: $confirmPassword, image: "lock", placeholder: "Confirm Password", isSecureField: true, borderColor: borderColorForPassword)
+                
+                VStack(alignment: .center, spacing: 5) {
+                    Text("By signing up, you agree to our")
+                        .foregroundStyle(.gray)
+                    
+                    HStack(spacing: 5) {
+                        Button("Terms & Conditions") {
+                            // Action
+                        }
+                        .font(.footnote.bold())
+                        
+                        Text("and")
+                            .foregroundStyle(.gray)
+                        
+                        Button("Privacy Policy") {
+                            // Action
+                        }
+                        .font(.footnote.bold())
+                    }
+                }
+                .font(.footnote)
+                .multilineTextAlignment(.leading)
             }
-            .padding(.horizontal)
-            .padding(.top, 12)
             
             // MARK: sign in button
             Button(action: {
@@ -70,20 +103,17 @@ struct RegistrationView: View {
                     try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
                 }
             }) {
-                HStack {
-                    Text("Sign Up")
-                        .fontWeight(.semibold)
-                    Image(systemName: "arrow.right")
-                }
-                .foregroundStyle(.white)
-                .frame(width: UIScreen.main.bounds.width - 32, height: 50)
+                Text("Create Account")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
             }
             .background(Color("Default").gradient, in: .capsule)
             .disabled(!formIsValid)
             .opacity(formIsValid ? 1.0 : 0.5)
-            .padding(.top, 24)
             
-            Spacer()
+            Spacer(minLength: 0)
             
             Button(action: { dismiss() }) {
                 HStack(spacing: 5) {
@@ -94,6 +124,7 @@ struct RegistrationView: View {
                 .font(.system(size: 14))
             }
         }
+        .padding(.horizontal, 45)
     }
 }
 

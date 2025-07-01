@@ -11,81 +11,107 @@ struct LoginView: View {
     @State private var showForgotPasswordAlert: Bool = false
     @State private var email: String = ""
     @State private var password: String = ""
+    @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthViewModel
     
     var body: some View {
         NavigationStack {
-            // MARK: image
-            Image("github1024")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 100, height: 120)
-                .padding(.vertical, 32)
-            
-            // MARK: form fields
             VStack(spacing: 24) {
-                InputView(text: $email,
-                          title: "Email Address",
-                          placeholder: "name@example.com")
-                .autocapitalization(.none)
+                // MARK: Lottie Image
+                lottieView(name: "personsPlaying")
+                    .frame(width: 200, height: 150)
+                    .clipped()
                 
-                InputView(text: $password,
-                          title: "Password",
-                          placeholder: "Enter your password",
-                          isSecureField: true)
-            }
-            .padding(.horizontal)
-            .padding(.top, 12)
-            
-            // MARK: sign in button
-            Button(action: {
-                Task {
-                    try await viewModel.signIn(withEmail: email, password: password)
+                Text("Sign In")
+                    .font(.title.bold())
+                
+                Text("Enter valid email and password to sign in.")
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+                
+                // MARK: form fields
+                VStack(spacing: 24) {
+                    InputView(text: $email,
+                              image: "envelope.badge.person.crop",
+                              placeholder: "Email address")
+                    .autocapitalization(.none)
+                    
+                    InputView(text: $password,
+                              image: "lock",
+                              placeholder: "Enter your password",
+                              isSecureField: true)
+                    
+                    // MARK: Forgot Password
+                    HStack {
+                        Spacer()
+                        
+                        NavigationLink {
+                            ForgotPassView()
+                                .navigationBarBackButtonHidden(true)
+                        } label: {
+                            Text("Forgot Password?")
+                                .font(.system(size: 14))
+                        }
+                    }
                 }
-            }) {
-                HStack {
-                    Text("Sign In")
+                
+                // MARK: sign in button
+                Button(action: {
+                    Task {
+                        try await viewModel.signIn(withEmail: email, password: password)
+                    }
+                }) {
+                    Text("Login")
                         .fontWeight(.semibold)
-                    Image(systemName: "arrow.right")
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity, maxHeight: 50)
+                        .padding(.horizontal)
                 }
-                .foregroundStyle(.white)
-                .frame(width: UIScreen.main.bounds.width - 32, height: 50)
-            }
-            .background(Color("Default").gradient, in: .capsule)
-            .disabled(!formIsValid)
-            .opacity(formIsValid ? 1.0 : 0.5)
-            .padding(.top, 24)
-            
-            Button(action: {
-                showForgotPasswordAlert = true
-            }) {
-                Text("Forgot Password?")
-                    .foregroundColor(.gray)
+                .background(Color("Default").gradient, in: .capsule)
+                .disabled(!formIsValid)
+                .opacity(formIsValid ? 1.0 : 0.5)
+                
+                HStack {
+                    Text("----")
+                    Text("Or Continue with")
+                    Text("----")
+                }
+                .font(.footnote)
+                .foregroundStyle(.gray)
+                
+                
+                
+                Spacer()
+                
+                // MARK: sign up button
+                NavigationLink {
+                    RegistrationView()
+                        .navigationBarBackButtonHidden(true)
+                } label: {
+                    HStack(spacing: 5) {
+                        Text("Don't have an account?")
+                        Text("Sign Up")
+                            .fontWeight(.bold)
+                    }
                     .font(.system(size: 14))
-            }
-            .padding(.top, 12)
-            .alert("Reset Password", isPresented: $showForgotPasswordAlert) {
-                TextField("Enter your email", text: $email)
-                Button("Send Reset Link") {
-                    viewModel.sendResetLink(withEmail: email)
                 }
-                Button("Cancel", role: .cancel) {}
             }
-            
-            Spacer()
-            
-            // MARK: sign up button
-            NavigationLink {
-                RegistrationView()
-                    .navigationBarBackButtonHidden(true)
-            } label: {
-                HStack(spacing: 5) {
-                    Text("Don't have an account?")
-                    Text("Sign Up")
-                        .fontWeight(.bold)
+            .padding(.horizontal, 45)
+            .overlay(
+                // MARK: chevron button in top-left
+                HStack {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                            .font(.title3)
+                            .padding(10)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                    Spacer()
                 }
-                .font(.system(size: 14))
-            }
+                    .padding(.leading)
+                    .padding(.top, 10),
+                alignment: .topLeading
+            )
         }
     }
 }

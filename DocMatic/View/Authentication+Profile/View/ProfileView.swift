@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct ProfileView: View {
-    @EnvironmentObject var viewModel: AuthViewModel
     @State private var showDeleteAlert: Bool = false
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: AuthViewModel
     
     var body: some View {
         if let user = viewModel.currentUser {
@@ -59,6 +60,21 @@ struct ProfileView: View {
                     .foregroundStyle(.primary)
                 }
             }
+            .overlay(
+                // MARK: chevron button in top-left
+                HStack {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                            .font(.title3)
+                            .padding(10)
+                            .background(.ultraThinMaterial, in: Circle())
+                    }
+                    Spacer()
+                }
+                    .padding(.leading)
+                    .padding(.top, 10),
+                alignment: .topLeading
+            )
         }
     }
 }
