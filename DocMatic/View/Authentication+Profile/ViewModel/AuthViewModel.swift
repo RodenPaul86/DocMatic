@@ -14,10 +14,37 @@ protocol AuthenticationFormProtocol {
     var formIsValid: Bool { get }
 }
 
+enum AuthAlert: Identifiable {
+    case error(String)
+    case success(String)
+    
+    var id: String {
+        switch self {
+        case .error(let message): return "error:\(message)"
+        case .success(let message): return "success:\(message)"
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .error: return "Error"
+        case .success: return "Success"
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .error(let message), .success(let message):
+            return message
+        }
+    }
+}
+
 @MainActor
 class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: User?
+    @Published var activeAlert: AuthAlert?
     
     init() {
         self.userSession = Auth.auth().currentUser
@@ -31,10 +58,10 @@ class AuthViewModel: ObservableObject {
         Auth.auth().sendPasswordReset(withEmail: email) { error in
             if let error = error {
                 print("❌ Failed to send reset email:", error.localizedDescription)
-                // Optionally show an alert
+                self.activeAlert = .error("Failed to send reset link: \(error.localizedDescription)")
             } else {
                 print("✅ Reset link sent!")
-                // Optionally show a success alert
+                self.activeAlert = .success("A password reset link has been sent to your email.")
             }
         }
     }
@@ -46,6 +73,7 @@ class AuthViewModel: ObservableObject {
             await fetchUser()
         } catch {
             print("DEBUG: Failure to sign in with error: \(error.localizedDescription)")
+            self.activeAlert = .error("It looks like there is no account associated with this email. Please try again or sign up for an account.")
         }
     }
     
@@ -59,6 +87,7 @@ class AuthViewModel: ObservableObject {
             await fetchUser()
         } catch {
             print("DEBUG: Failed to create user with error: \(error.localizedDescription)")
+            self.activeAlert = .error("Faild to create user: \(error.localizedDescription)")
         }
     }
     
@@ -67,8 +96,10 @@ class AuthViewModel: ObservableObject {
             try Auth.auth().signOut() /// <-- Signs out user on backend.
             self.userSession = nil /// <-- Wipes out user session and takes back to login screen.
             self.currentUser = nil /// <-- Wipes out current user data model.
+            self.activeAlert = .success("You’ve been signed out.")
         } catch {
             print("DEBUG: falied to sign out with error \(error.localizedDescription)")
+            self.activeAlert = .error("Sign out failed: \(error.localizedDescription)")
         }
     }
     
@@ -80,8 +111,10 @@ class AuthViewModel: ObservableObject {
             try await user.delete() /// <-- Delete FireBase Auth account.
             self.userSession = nil /// <-- Wipes out user session and takes back to login screen.
             self.currentUser = nil /// <-- Wipes out current user data model.
+            self.activeAlert = .success("Your account has been permanently deleted.")
         } catch {
             print("DEBUG: Failed to delete account with error: \(error.localizedDescription)")
+            self.activeAlert = .error("Delete account failed: \(error.localizedDescription)")
         }
     }
     

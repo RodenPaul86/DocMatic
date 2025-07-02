@@ -97,6 +97,9 @@ struct LoginView: View {
                 }
             }
             .padding(.horizontal, 45)
+            .alert(item: $viewModel.activeAlert) { alert in
+                Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("OK")))
+            }
             .overlay(
                 // MARK: chevron button in top-left
                 HStack {
