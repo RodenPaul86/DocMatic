@@ -231,16 +231,6 @@ struct HomeView: View {
                 
                 // MARK: Right Side Controls
                 if speechRecognizer.isListening {
-                    // Show mic + clear when listening
-                    if !searchText.isEmpty {
-                        Button(action: {
-                            searchText = ""
-                        }) {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundStyle(.gray)
-                        }
-                    }
-                    
                     Button(action: {
                         if isHapticsEnabled {
                             hapticManager.shared.notify(.impact(.medium))

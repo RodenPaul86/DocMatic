@@ -22,6 +22,8 @@ struct IntroPage: View {
                 Image(systemName: "chevron.left")
                     .font(.title3.bold())
                     .foregroundStyle(Color("Default").gradient)
+                    .padding(10)
+                    .background(.ultraThinMaterial, in: Circle())
                     .contentShape(.rect)
             }
             .padding(15)

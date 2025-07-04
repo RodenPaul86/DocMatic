@@ -62,7 +62,7 @@ struct DocMaticApp: App {
                         // Refresh subscription when view loads
                         appSubModel.refreshSubscriptionStatus()
                     }
-                    .sheet(isPresented: $showIntro) {
+                    .fullScreenCover(isPresented: $showIntro) {
                         IntroPage(showIntroView: $hasSeenIntro) {
                             hasSeenIntro = true
                             showIntro = false
@@ -72,7 +72,6 @@ struct DocMaticApp: App {
                                 }
                             }
                         }
-                        .interactiveDismissDisabled()
                     }
                     .fullScreenCover(isPresented: $isPaywallPresented) {
                         SubscriptionView(isPaywallPresented: $isPaywallPresented)
