@@ -14,6 +14,8 @@ struct RegistrationView: View {
     @State private var confirmPassword: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthViewModel
+    @State private var isShowingTermsOfService: Bool = false
+    @State private var isShowingPrivacyPolicy: Bool = false
     
     @FocusState private var emailFieldIsFocused: Bool
     @State private var emailFieldWasTouched = false
@@ -87,17 +89,53 @@ struct RegistrationView: View {
                             
                             HStack(spacing: 5) {
                                 Button("Terms & Conditions") {
-                                    // Action
+                                    isShowingTermsOfService = true
                                 }
                                 .font(.footnote.bold())
+                                .sheet(isPresented: $isShowingTermsOfService) {
+                                    NavigationStack {
+                                        webView(url: "https://docmatic.app/terms.html")
+                                            .navigationTitle("https://docmatic.app/terms.html")
+                                            .navigationBarTitleDisplayMode(.inline)
+                                            .toolbar {
+                                                ToolbarItem(placement: .navigationBarTrailing) {
+                                                    if let link = URL(string: "https://docmatic.app/terms.html") {
+                                                        Link(destination: link) {
+                                                            Image(systemName: "safari")
+                                                                .font(.headline)
+                                                            
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                    }
+                                }
                                 
                                 Text("and")
                                     .foregroundStyle(.gray)
                                 
                                 Button("Privacy Policy") {
-                                    // Action
+                                    isShowingPrivacyPolicy = true
                                 }
                                 .font(.footnote.bold())
+                                .sheet(isPresented: $isShowingPrivacyPolicy) {
+                                    NavigationStack {
+                                        webView(url: "https://docmatic.app/privacy.html")
+                                            .navigationTitle("https://docmatic.app/privacy.html")
+                                            .navigationBarTitleDisplayMode(.inline)
+                                            .toolbar {
+                                                ToolbarItem(placement: .navigationBarTrailing) {
+                                                    if let link = URL(string: "https://docmatic.app/privacy.html") {
+                                                        Link(destination: link) {
+                                                            Image(systemName: "safari")
+                                                                .font(.headline)
+                                                            
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                    }
+                                }
                             }
                         }
                         .font(.footnote)
