@@ -16,70 +16,78 @@ struct LoginView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
-                // MARK: Lottie Image
-                lottieView(name: "personsPlaying")
-                    .frame(width: 200, height: 150)
-                    .clipped()
-                
-                Text("Sign In")
-                    .font(.title.bold())
-                
-                Text("Enter valid email and password to sign in.")
-                    .font(.subheadline)
-                    .foregroundStyle(.gray)
-                
-                // MARK: form fields
-                VStack(spacing: 24) {
-                    InputView(text: $email,
-                              image: "envelope.badge.person.crop",
-                              placeholder: "Email address")
-                    .autocapitalization(.none)
-                    
-                    InputView(text: $password,
-                              image: "lock",
-                              placeholder: "Enter your password",
-                              isSecureField: true)
-                    
-                    // MARK: Forgot Password
-                    HStack {
-                        Spacer()
+            VStack {
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 24) {
+                        // MARK: Lottie Image
+                        lottieView(name: "personsPlaying")
+                            .frame(width: 200, height: 150)
+                            .clipped()
                         
-                        NavigationLink {
-                            ForgotPassView()
-                                .navigationBarBackButtonHidden(true)
-                        } label: {
-                            Text("Forgot Password?")
-                                .font(.system(size: 14))
+                        Text("Sign In")
+                            .font(.title.bold())
+                        
+                        Text("Enter valid email and password to sign in.")
+                            .font(.subheadline)
+                            .foregroundStyle(.gray)
+                        
+                        // MARK: form fields
+                        VStack(spacing: 24) {
+                            InputView(text: $email,
+                                      image: "envelope.badge.person.crop",
+                                      placeholder: "Email address")
+                            .autocapitalization(.none)
+                            
+                            InputView(text: $password,
+                                      image: "lock",
+                                      placeholder: "Enter your password",
+                                      isSecureField: true)
+                            
+                            // MARK: Forgot Password
+                            HStack {
+                                Spacer()
+                                
+                                NavigationLink {
+                                    ForgotPassView()
+                                        .navigationBarBackButtonHidden(true)
+                                } label: {
+                                    Text("Forgot Password?")
+                                        .font(.system(size: 14))
+                                }
+                            }
                         }
+                        
+                        // MARK: sign in button
+                        Button(action: {
+                            Task {
+                                try await viewModel.signIn(withEmail: email, password: password)
+                            }
+                        }) {
+                            Text("Login")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 50)
+                                .padding(.horizontal)
+                        }
+                        .background(Color("Default").gradient, in: .capsule)
+                        .disabled(!formIsValid)
+                        .opacity(formIsValid ? 1.0 : 0.5)
+                        
+#if DEBUG
+                        HStack {
+                            Text("----")
+                            Text("Or Continue with")
+                            Text("----")
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(.gray)
+#endif
                     }
+                    .padding(.horizontal, 45)
+                    .frame(maxWidth: .infinity)
                 }
-                
-                // MARK: sign in button
-                Button(action: {
-                    Task {
-                        try await viewModel.signIn(withEmail: email, password: password)
-                    }
-                }) {
-                    Text("Login")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, maxHeight: 50)
-                        .padding(.horizontal)
-                }
-                .background(Color("Default").gradient, in: .capsule)
-                .disabled(!formIsValid)
-                .opacity(formIsValid ? 1.0 : 0.5)
-                
-                HStack {
-                    Text("----")
-                    Text("Or Continue with")
-                    Text("----")
-                }
-                .font(.footnote)
-                .foregroundStyle(.gray)
-                
-                
+                .scrollBounceBehavior(.basedOnSize) // Optional
+                .scrollDismissesKeyboard(.interactively) // iOS 16+
                 
                 Spacer()
                 
@@ -95,8 +103,8 @@ struct LoginView: View {
                     }
                     .font(.system(size: 14))
                 }
+                .padding(.bottom)
             }
-            .padding(.horizontal, 45)
             .alert(item: $viewModel.activeAlert) { alert in
                 Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("OK")))
             }

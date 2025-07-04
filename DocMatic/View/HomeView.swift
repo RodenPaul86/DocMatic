@@ -165,16 +165,16 @@ struct HomeView: View {
         VStack(spacing: 0) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Welcome Back!")
+                    Text(Date().formatted(date: .long, time: .omitted))
                         .font(.callout)
                         .foregroundStyle(.gray)
                     
                     if let user = viewModel.currentUser {
                         let firstName = user.fullname.split(separator: " ").first.map(String.init) ?? user.fullname
-                        Text(firstName)
+                        Text("Welcome, \(firstName)")
                             .font(.title.bold())
                     } else {
-                        Text("Guest")
+                        Text("Welcome, Guest")
                             .font(.title.bold())
                     }
                 }

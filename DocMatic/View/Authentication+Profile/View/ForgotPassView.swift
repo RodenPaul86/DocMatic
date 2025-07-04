@@ -13,36 +13,46 @@ struct ForgotPassView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     
     var body: some View {
-        VStack(spacing: 24) {
-            // MARK: Lottie Image
-            lottieView(name: "guyAtDesk")
-                .frame(width: 200, height: 150)
-                .clipped()
-            
-            Text("Forgot Password?")
-                .font(.title.bold())
-            
-            Text("Don't worry it happens to everyone. Please enter your email address below and we'll send you a reset link.")
-                .font(.subheadline)
-                .foregroundStyle(.gray)
-            
-            // MARK: form fields
-            InputView(text: $email, image: "envelope", placeholder: "Email Address")
-                .autocapitalization(.none)
-            
-            // MARK: sign in button
-            Button(action: {
-                viewModel.sendResetLink(withEmail: email)
-            }) {
-                Text("Send Link")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, maxHeight: 50)
-                    .padding(.horizontal)
+        VStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 24) {
+                    // MARK: Lottie Image
+                    lottieView(name: "guyAtDesk")
+                        .frame(width: 200, height: 150)
+                        .clipped()
+                    
+                    Text("Forgot Password?")
+                        .font(.title.bold())
+                    
+                    Text("Don't worry it happens. Please enter your email address below and we'll send you a reset link.")
+                        .font(.subheadline)
+                        .foregroundStyle(.gray)
+                    
+                    // MARK: form fields
+                    InputView(text: $email, image: "envelope", placeholder: "Email Address")
+                        .autocapitalization(.none)
+                    
+                    // MARK: sign in button
+                    Button(action: {
+                        viewModel.sendResetLink(withEmail: email)
+                    }) {
+                        Text("Send Link")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .padding(.horizontal)
+                    }
+                    .background(Color("Default").gradient, in: .capsule)
+                    .disabled(!formIsValid)
+                    .opacity(formIsValid ? 1.0 : 0.5)
+                }
+                .padding(.horizontal, 45)
+                .alert(item: $viewModel.activeAlert) { alert in
+                    Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("OK")))
+                }
             }
-            .background(Color("Default").gradient, in: .capsule)
-            .disabled(!formIsValid)
-            .opacity(formIsValid ? 1.0 : 0.5)
+            .scrollBounceBehavior(.basedOnSize) // Optional
+            .scrollDismissesKeyboard(.interactively) // iOS 16+
             
             Spacer()
             
@@ -54,10 +64,7 @@ struct ForgotPassView: View {
                 }
                 .font(.system(size: 14))
             }
-        }
-        .padding(.horizontal, 45)
-        .alert(item: $viewModel.activeAlert) { alert in
-            Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("OK")))
+            .padding(.bottom)
         }
     }
 }

@@ -42,78 +42,85 @@ struct RegistrationView: View {
     }
     
     var body: some View {
-        VStack(spacing: 24) {
-            // MARK: Lottie Image
-            lottieView(name: "settingPass")
-                .frame(width: 200, height: 150)
-                .clipped()
-            
-            Text("Sign Up")
-                .font(.title.bold())
-            
-            Text("Use proper information to create an account.")
-                .font(.subheadline)
-                .foregroundStyle(.gray)
-            
-            // MARK: form fields
-            VStack(spacing: 24) {
-                InputView(text: $fullName, image: "person", placeholder: "Full Name")
-                
-                InputView(text: $email, image: "envelope", placeholder: "Email Address", borderColor: emailFieldWasTouched && !emailIsValid ? .red : nil) {
-                    emailFieldWasTouched = false
-                }
-                .autocapitalization(.none)
-                .focused($emailFieldIsFocused)
-                .onChange(of: emailFieldIsFocused) { focused in
-                    if !focused {
-                        emailFieldWasTouched = true // Mark field as touched after focus is lost
-                    }
-                }
-                
-                InputView(text: $password, image: "lock", placeholder: "Password", isSecureField: true, borderColor: borderColorForPassword)
-                
-                InputView(text: $confirmPassword, image: "lock", placeholder: "Confirm Password", isSecureField: true, borderColor: borderColorForPassword)
-                
-                VStack(alignment: .center, spacing: 5) {
-                    Text("By signing up, you agree to our")
+        VStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 24) {
+                    // MARK: Lottie Image
+                    lottieView(name: "settingPass")
+                        .frame(width: 200, height: 150)
+                        .clipped()
+                    
+                    Text("Sign Up")
+                        .font(.title.bold())
+                    
+                    Text("Use proper information to create an account.")
+                        .font(.subheadline)
                         .foregroundStyle(.gray)
                     
-                    HStack(spacing: 5) {
-                        Button("Terms & Conditions") {
-                            // Action
-                        }
-                        .font(.footnote.bold())
+                    // MARK: form fields
+                    VStack(spacing: 24) {
+                        InputView(text: $fullName, image: "person", placeholder: "Full Name")
                         
-                        Text("and")
-                            .foregroundStyle(.gray)
-                        
-                        Button("Privacy Policy") {
-                            // Action
+                        InputView(text: $email, image: "envelope", placeholder: "Email Address", borderColor: emailFieldWasTouched && !emailIsValid ? .red : nil) {
+                            emailFieldWasTouched = false
                         }
-                        .font(.footnote.bold())
+                        .autocapitalization(.none)
+                        .focused($emailFieldIsFocused)
+                        .onChange(of: emailFieldIsFocused) { focused in
+                            if !focused {
+                                emailFieldWasTouched = true // Mark field as touched after focus is lost
+                            }
+                        }
+                        
+                        InputView(text: $password, image: "lock", placeholder: "Password", isSecureField: true, borderColor: borderColorForPassword)
+                        
+                        InputView(text: $confirmPassword, image: "lock", placeholder: "Confirm Password", isSecureField: true, borderColor: borderColorForPassword)
+                        
+                        VStack(alignment: .center, spacing: 5) {
+                            Text("By signing up, you agree to our")
+                                .foregroundStyle(.gray)
+                            
+                            HStack(spacing: 5) {
+                                Button("Terms & Conditions") {
+                                    // Action
+                                }
+                                .font(.footnote.bold())
+                                
+                                Text("and")
+                                    .foregroundStyle(.gray)
+                                
+                                Button("Privacy Policy") {
+                                    // Action
+                                }
+                                .font(.footnote.bold())
+                            }
+                        }
+                        .font(.footnote)
+                        .multilineTextAlignment(.leading)
                     }
+                    
+                    // MARK: sign in button
+                    Button(action: {
+                        Task {
+                            try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
+                        }
+                    }) {
+                        Text("Create Account")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                    }
+                    .background(Color("Default").gradient, in: .capsule)
+                    .disabled(!formIsValid)
+                    .opacity(formIsValid ? 1.0 : 0.5)
                 }
-                .font(.footnote)
-                .multilineTextAlignment(.leading)
+                .padding(.horizontal, 45)
             }
+            .scrollBounceBehavior(.basedOnSize) // Optional
+            .scrollDismissesKeyboard(.interactively) // iOS 16+
             
-            // MARK: sign in button
-            Button(action: {
-                Task {
-                    try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
-                }
-            }) {
-                Text("Create Account")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-            }
-            .background(Color("Default").gradient, in: .capsule)
-            .disabled(!formIsValid)
-            .opacity(formIsValid ? 1.0 : 0.5)
-            
-            Spacer(minLength: 0)
+            Spacer()
             
             Button(action: { dismiss() }) {
                 HStack(spacing: 5) {
@@ -123,8 +130,8 @@ struct RegistrationView: View {
                 }
                 .font(.system(size: 14))
             }
+            .padding(.bottom)
         }
-        .padding(.horizontal, 45)
     }
 }
 
