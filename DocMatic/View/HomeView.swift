@@ -221,7 +221,7 @@ struct HomeView: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.gray)
                 
-                TextField(speechRecognizer.isListening ? "Listening..." : "Search Documents", text: $searchText)
+                TextField(speechRecognizer.isListening ? "Listening..." : "Search", text: $searchText)
                     .focused($isFocused)
                     .onChange(of: isFocused) { oldValue, newValue in
                         withAnimation {
