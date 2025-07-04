@@ -60,11 +60,14 @@ struct RegistrationView: View {
                     // MARK: form fields
                     VStack(spacing: 24) {
                         InputView(text: $fullName, image: "person", placeholder: "Full Name")
+                            .textContentType(.name)
                         
                         InputView(text: $email, image: "envelope", placeholder: "Email Address", borderColor: emailFieldWasTouched && !emailIsValid ? .red : nil) {
                             emailFieldWasTouched = false
                         }
                         .autocapitalization(.none)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
                         .focused($emailFieldIsFocused)
                         .onChange(of: emailFieldIsFocused) { focused in
                             if !focused {
@@ -73,8 +76,10 @@ struct RegistrationView: View {
                         }
                         
                         InputView(text: $password, image: "lock", placeholder: "Password", isSecureField: true, borderColor: borderColorForPassword)
+                            .textContentType(.newPassword)
                         
                         InputView(text: $confirmPassword, image: "lock", placeholder: "Confirm Password", isSecureField: true, borderColor: borderColorForPassword)
+                            .textContentType(.newPassword)
                         
                         VStack(alignment: .center, spacing: 5) {
                             Text("By signing up, you agree to our")

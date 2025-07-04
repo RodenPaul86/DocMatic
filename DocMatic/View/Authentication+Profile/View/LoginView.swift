@@ -37,11 +37,14 @@ struct LoginView: View {
                                       image: "envelope.badge.person.crop",
                                       placeholder: "Email address")
                             .autocapitalization(.none)
+                            .textContentType(.emailAddress)
+                            .keyboardType(.emailAddress)
                             
                             InputView(text: $password,
                                       image: "lock",
                                       placeholder: "Enter your password",
                                       isSecureField: true)
+                            .textContentType(.password)
                             
                             // MARK: Forgot Password
                             HStack {

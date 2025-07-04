@@ -31,6 +31,8 @@ struct ForgotPassView: View {
                     // MARK: form fields
                     InputView(text: $email, image: "envelope", placeholder: "Email Address")
                         .autocapitalization(.none)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
                     
                     // MARK: sign in button
                     Button(action: {
