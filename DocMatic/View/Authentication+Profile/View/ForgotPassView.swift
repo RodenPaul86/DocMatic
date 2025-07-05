@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ForgotPassView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var email: String = ""
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthViewModel
@@ -34,9 +35,12 @@ struct ForgotPassView: View {
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
                     
-                    // MARK: sign in button
+                    // MARK: Send Link button
                     Button(action: {
                         viewModel.sendResetLink(withEmail: email)
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.notification(.success))
+                        }
                     }) {
                         Text("Send Link")
                             .fontWeight(.semibold)

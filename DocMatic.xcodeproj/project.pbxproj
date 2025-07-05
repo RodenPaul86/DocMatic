@@ -382,6 +382,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "DocMatic requires access to Face ID to securely unlock your saved documents. Face ID is only used for unlocking and not for any other purpose.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "DocMatic requires access to your location only to display the correct exchange rates on the paywall.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "DocMatic needs access to your microphone to start search with your voice.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "DocMatic needs access to your photo library to upload your profile image.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "DocMatic only use speech recognition so you can quickly find your documents by saying their names.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -432,6 +433,7 @@
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "DocMatic requires access to Face ID to securely unlock your saved documents. Face ID is only used for unlocking and not for any other purpose.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "DocMatic requires access to your location only to display the correct exchange rates on the paywall.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "DocMatic needs access to your microphone to start search with your voice.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "DocMatic needs access to your photo library to upload your profile image.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "DocMatic only use speech recognition so you can quickly find your documents by saying their names.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

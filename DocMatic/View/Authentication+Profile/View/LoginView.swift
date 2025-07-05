@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var showForgotPasswordAlert: Bool = false
     @State private var email: String = ""
     @State private var password: String = ""
@@ -65,6 +66,9 @@ struct LoginView: View {
                             Task {
                                 try await viewModel.signIn(withEmail: email, password: password)
                             }
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
                         }) {
                             Text("Login")
                                 .fontWeight(.semibold)
@@ -114,7 +118,12 @@ struct LoginView: View {
             .overlay(
                 // MARK: chevron button in top-left
                 HStack {
-                    Button(action: { dismiss() }) {
+                    Button(action: {
+                        dismiss()
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.impact(.light))
+                        }
+                    }) {
                         Image(systemName: "xmark")
                             .font(.title3)
                             .padding(10)

@@ -15,7 +15,6 @@ struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     @Environment(\.modelContext) private var context
     @StateObject private var profileViewModel = ProfileViewModel()
-
     
     var body: some View {
         if let user = viewModel.currentUser {

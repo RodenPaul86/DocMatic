@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RegistrationView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var email: String = ""
     @State private var fullName: String = ""
     @State private var password: String = ""
@@ -95,7 +96,7 @@ struct RegistrationView: View {
                                 .sheet(isPresented: $isShowingTermsOfService) {
                                     NavigationStack {
                                         webView(url: "https://docmatic.app/terms.html")
-                                            .navigationTitle("https://docmatic.app/terms.html")
+                                            .navigationTitle("Terms & Conditions")
                                             .navigationBarTitleDisplayMode(.inline)
                                             .toolbar {
                                                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -103,7 +104,6 @@ struct RegistrationView: View {
                                                         Link(destination: link) {
                                                             Image(systemName: "safari")
                                                                 .font(.headline)
-                                                            
                                                         }
                                                     }
                                                 }
@@ -121,7 +121,7 @@ struct RegistrationView: View {
                                 .sheet(isPresented: $isShowingPrivacyPolicy) {
                                     NavigationStack {
                                         webView(url: "https://docmatic.app/privacy.html")
-                                            .navigationTitle("https://docmatic.app/privacy.html")
+                                            .navigationTitle("Privacy Policy")
                                             .navigationBarTitleDisplayMode(.inline)
                                             .toolbar {
                                                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -129,7 +129,6 @@ struct RegistrationView: View {
                                                         Link(destination: link) {
                                                             Image(systemName: "safari")
                                                                 .font(.headline)
-                                                            
                                                         }
                                                     }
                                                 }
@@ -142,10 +141,13 @@ struct RegistrationView: View {
                         .multilineTextAlignment(.leading)
                     }
                     
-                    // MARK: sign in button
+                    // MARK: Create Account button
                     Button(action: {
                         Task {
                             try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
+                        }
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.notification(.success))
                         }
                     }) {
                         Text("Create Account")

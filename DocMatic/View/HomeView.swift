@@ -182,7 +182,12 @@ struct HomeView: View {
                 Spacer(minLength: 0)
                 
                 // MARK: Profile Picture
-                Button(action: { isProfileShowing = true }) {
+                Button(action: {
+                    isProfileShowing = true
+                    if isHapticsEnabled {
+                        hapticManager.shared.notify(.impact(.light))
+                    }
+                }) {
                     Image(systemName: "person.circle")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
