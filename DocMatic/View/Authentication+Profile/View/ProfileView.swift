@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ProfileView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var showDeleteAlert: Bool = false
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthViewModel
@@ -30,7 +31,11 @@ struct ProfileView: View {
                                 .background(Color(.systemGray3))
                                 .clipShape(Circle())
                             
-                            Button(action: {}) {
+                            Button(action: {
+                                if isHapticsEnabled {
+                                    hapticManager.shared.notify(.impact(.light))
+                                }
+                            }) {
                                 Image(systemName: "pencil.circle.fill")
                                     .font(.title2)
                                     .foregroundStyle(Color("Default").gradient)
@@ -82,7 +87,12 @@ struct ProfileView: View {
                 .overlay(
                     // MARK: chevron button in top-left
                     HStack {
-                        Button(action: { dismiss() }) {
+                        Button(action: {
+                            dismiss()
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.impact(.rigid))
+                            }
+                        }) {
                             Image(systemName: "xmark")
                                 .font(.title3)
                                 .padding(10)
@@ -103,6 +113,9 @@ struct ProfileView: View {
         HStack(spacing: 12) {
             Button(action: {
                 viewModel.signOut()
+                if isHapticsEnabled {
+                    hapticManager.shared.notify(.notification(.success))
+                }
             }) {
                 Text("Sign Out")
                     .fontWeight(.semibold)
@@ -115,6 +128,9 @@ struct ProfileView: View {
             Button(action: {
                 Task {
                     await viewModel.deleteAccount()
+                }
+                if isHapticsEnabled {
+                    hapticManager.shared.notify(.notification(.success))
                 }
             }) {
                 Text("Delete Account")
