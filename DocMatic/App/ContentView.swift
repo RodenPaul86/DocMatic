@@ -64,6 +64,13 @@ struct ContentView: View {
                         }
                     }
                     .padding(.bottom, -10)
+                    .background {
+                        progressiveBlurView()
+                            .blur(radius: 10)
+                            .padding(.horizontal, -15)
+                            .padding(.bottom, -120)
+                            .padding(.top, -10)
+                    }
                     .transition(
                         .asymmetric(
                             insertion: .move(edge: .bottom).combined(with: .opacity),

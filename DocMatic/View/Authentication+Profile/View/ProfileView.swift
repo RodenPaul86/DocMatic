@@ -33,7 +33,7 @@ struct ProfileView: View {
                             Button(action: {}) {
                                 Image(systemName: "pencil.circle.fill")
                                     .font(.title2)
-                                    .foregroundColor(.accentColor)
+                                    .foregroundStyle(Color("Default").gradient)
                                     .background(Circle().fill(Color.white))
                             }
                             .offset(x: 0, y: 0)
@@ -106,10 +106,10 @@ struct ProfileView: View {
             }) {
                 Text("Sign Out")
                     .fontWeight(.semibold)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red.gradient.opacity(0.25), in: Capsule())
+                    .background(Color.red.gradient, in: Capsule())
             }
             
             Button(action: {
@@ -119,19 +119,21 @@ struct ProfileView: View {
             }) {
                 Text("Delete Account")
                     .fontWeight(.semibold)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red.gradient.opacity(0.25), in: Capsule())
+                    .background(Color.red.gradient, in: Capsule())
             }
         }
         .frame(height: 50)
         .padding(.horizontal)
         .padding(.vertical, 10)
         .background {
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .ignoresSafeArea()
+            progressiveBlurView()
+                .blur(radius: 10)
+                .padding(.horizontal, -15)
+                .padding(.bottom, -100)
+                .padding(.top, -10)
         }
     }
 }
@@ -145,7 +147,7 @@ struct ProfileStatView: View {
         VStack {
             Image(systemName: icon)
                 .font(.title)
-                .foregroundColor(.accentColor)
+                .foregroundStyle(Color("Default").gradient)
                 .padding(15)
                 .background(.ultraThinMaterial, in: Circle())
             Text(value)
@@ -197,8 +199,7 @@ struct achievement: View {
                 Spacer()
             }
             
-            ProgressView(value: Float(progress), total: Float(goal))
-                .accentColor(.green)
+            ProgressView(value: min(Float(max(progress, 0)), Float(goal)), total: Float(goal))
             
             HStack {
                 Text("0")
