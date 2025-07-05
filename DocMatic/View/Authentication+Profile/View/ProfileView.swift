@@ -63,7 +63,7 @@ struct ProfileView: View {
                     
                     ScrollView {
                         VStack(alignment: .leading) {
-                            Text("Achievements")
+                            Text("Eco Achievements")
                                 .font(.title3.bold())
                             
                             achievement(title: "Seedling", description: "Your paperless journey begins.", goal: 1, progress: profileViewModel.ecoAchievements, iconName: "pineCone")

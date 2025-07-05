@@ -22,6 +22,7 @@ struct FAQCategory: Identifiable {
 struct FAQView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var expandedCategories: Set<UUID> = []
+    @EnvironmentObject var tabBarVisibility: TabBarVisibility
     
     let faqData: [FAQCategory] = [
         FAQCategory(title: "General Use", items: [
@@ -115,8 +116,15 @@ struct FAQView: View {
             .padding()
         }
         .navigationTitle("FAQ")
-        .safeAreaInset(edge: .bottom) {
-            Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Space for the tab bar
+        .onAppear {
+            withAnimation {
+                tabBarVisibility.isVisible = false
+            }
+        }
+        .onDisappear {
+            withAnimation {
+                tabBarVisibility.isVisible = true
+            }
         }
     }
 }
