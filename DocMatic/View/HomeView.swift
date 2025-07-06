@@ -195,6 +195,7 @@ struct HomeView: View {
                             case .empty:
                                 ProgressView()
                                     .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
                             case .success(let image):
                                 image
                                     .resizable()
@@ -202,7 +203,7 @@ struct HomeView: View {
                                     .frame(width: 40, height: 40)
                                     .clipShape(Circle())
                             case .failure:
-                                Image(systemName: "person.circle")
+                                Image(systemName: "person.crop.circle")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 40, height: 40)
@@ -212,7 +213,7 @@ struct HomeView: View {
                             }
                         }
                     } else {
-                        Image(systemName: "person.circle")
+                        Image(systemName: "person.crop.circle")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 40, height: 40)
