@@ -182,17 +182,42 @@ struct HomeView: View {
                 Spacer(minLength: 0)
                 
                 // MARK: Profile Picture
-                Button(action: {
+                Button {
                     isProfileShowing = true
                     if isHapticsEnabled {
                         hapticManager.shared.notify(.impact(.light))
                     }
-                }) {
-                    Image(systemName: "person.circle")
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 40, height: 40)
-                        .clipShape(.circle)
+                } label: {
+                    if let urlString = viewModel.currentUser?.profileImageUrl,
+                       let url = URL(string: urlString) {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(width: 40, height: 40)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
+                            case .failure:
+                                Image(systemName: "person.circle")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                    } else {
+                        Image(systemName: "person.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                    }
                 }
                 
                 // MARK: App Scheme and Settings for iPad

@@ -9,6 +9,7 @@ import Foundation
 import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseStorage
 
 protocol AuthenticationFormProtocol {
     var formIsValid: Bool { get }
@@ -50,7 +51,7 @@ class AuthViewModel: ObservableObject {
         self.userSession = Auth.auth().currentUser
         
         Task {
-            await fetchUser()
+            await validateSession()
         }
     }
     
@@ -77,11 +78,22 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func createUser(withEmail email: String, password: String, fullName: String) async throws {
+    func createUser(withEmail email: String, password: String, fullName: String, profileImage: UIImage?) async throws {
         do {
             let result = try await Auth.auth().createUser(withEmail: email, password: password)
             self.userSession = result.user
-            let user = User(id: result.user.uid, fullname: fullName, email: email)
+            var profileImageUrl: String? = nil
+            
+            if let image = profileImage,
+               let imageData = image.jpegData(compressionQuality: 0.5) {
+                
+                let ref = Storage.storage().reference(withPath: "/profile_images/\(result.user.uid).jpg")
+                
+                let _ = try await ref.putDataAsync(imageData)
+                profileImageUrl = try await ref.downloadURL().absoluteString
+            }
+            
+            let user = User(id: result.user.uid, fullname: fullName, email: email, profileImageUrl: profileImageUrl ?? "")
             let encodedUser = try Firestore.Encoder().encode(user)
             try await Firestore.firestore().collection("users").document(user.id).setData(encodedUser)
             await fetchUser()
@@ -107,6 +119,9 @@ class AuthViewModel: ObservableObject {
         guard let user = Auth.auth().currentUser else { return }
         
         do {
+            let ref = Storage.storage().reference(withPath: "profile_images/\(user.uid).jpg")
+            try await ref.delete()
+            print("Profile image deleted")
             try await Firestore.firestore().collection("users").document(user.uid).delete()
             try await user.delete() /// <-- Delete FireBase Auth account.
             self.userSession = nil /// <-- Wipes out user session and takes back to login screen.
@@ -115,6 +130,7 @@ class AuthViewModel: ObservableObject {
         } catch {
             print("DEBUG: Failed to delete account with error: \(error.localizedDescription)")
             self.activeAlert = .error("Delete account failed: \(error.localizedDescription)")
+            signOut()
         }
     }
     
@@ -122,5 +138,44 @@ class AuthViewModel: ObservableObject {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
         self.currentUser = try? snapshot.data(as: User.self)
+    }
+    
+    func validateSession() async {
+        guard let user = Auth.auth().currentUser else { return }
+
+        do {
+            // Try refreshing token to see if user is valid
+            _ = try await user.getIDTokenResult(forcingRefresh: true)
+            await fetchUser()
+        } catch {
+            print("⚠️ User session invalid. Logging out. Reason: \(error.localizedDescription)")
+            signOut()
+        }
+    }
+}
+
+extension AuthViewModel {
+    func uploadProfileImage(_ image: UIImage) async {
+        guard let uid = userSession?.uid else { return }
+        guard let imageData = image.jpegData(compressionQuality: 0.5) else { return }
+        
+        let ref = Storage.storage().reference(withPath: "/profile_images/\(uid).jpg")
+        
+        do {
+            let _ = try await ref.putDataAsync(imageData)
+            let imageUrl = try await ref.downloadURL().absoluteString
+            
+            // Update Firestore user document
+            try await Firestore.firestore().collection("users").document(uid).updateData([
+                "profileImageUrl": imageUrl
+            ])
+            
+            // Refresh user data
+            await fetchUser()
+            
+        } catch {
+            print("❌ Failed to upload profile image: \(error.localizedDescription)")
+            activeAlert = .error("Profile image upload failed: \(error.localizedDescription)")
+        }
     }
 }

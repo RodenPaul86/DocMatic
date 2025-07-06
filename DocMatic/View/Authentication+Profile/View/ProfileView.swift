@@ -22,19 +22,48 @@ struct ProfileView: View {
                 VStack {
                     VStack(alignment: .center, spacing: 12) {
                         ZStack(alignment: .bottomTrailing) {
-                            Text(user.initials)
-                                .font(.title)
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.white)
-                                .frame(width: 80, height: 80)
-                                .background(Color(.systemGray3))
-                                .clipShape(Circle())
-                            
-                            Button(action: {
-                                if isHapticsEnabled {
-                                    hapticManager.shared.notify(.impact(.light))
+                            if let urlString = viewModel.currentUser?.profileImageUrl,
+                               let url = URL(string: urlString) {
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                            .frame(width: 80, height: 80)
+                                            .background(Color(.systemGray3))
+                                            .clipShape(Circle())
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 80, height: 80)
+                                            .clipShape(Circle())
+                                    case .failure:
+                                        // Show initials if image fails to load
+                                        Text(viewModel.currentUser?.initials ?? "")
+                                            .font(.title)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.white)
+                                            .frame(width: 80, height: 80)
+                                            .background(Color(.systemGray3))
+                                            .clipShape(Circle())
+                                    @unknown default:
+                                        EmptyView()
+                                    }
                                 }
-                            }) {
+                            } else {
+                                // Show initials if no profileImageUrl
+                                Text(viewModel.currentUser?.initials ?? "")
+                                    .font(.title)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 80, height: 80)
+                                    .background(Color(.systemGray3))
+                                    .clipShape(Circle())
+                            }
+                            
+                            NavigationLink {
+                                EditView()
+                            } label: {
                                 Image(systemName: "pencil.circle.fill")
                                     .font(.title2)
                                     .foregroundStyle(Color("Default").gradient)

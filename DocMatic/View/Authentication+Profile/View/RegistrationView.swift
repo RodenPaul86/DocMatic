@@ -11,6 +11,7 @@ struct RegistrationView: View {
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var email: String = ""
     @State private var fullName: String = ""
+    @State private var userImage: UIImage?
     @State private var password: String = ""
     @State private var confirmPassword: String = ""
     @Environment(\.dismiss) var dismiss
@@ -98,6 +99,7 @@ struct RegistrationView: View {
                                         webView(url: "https://docmatic.app/terms.html")
                                             .navigationTitle("Terms & Conditions")
                                             .navigationBarTitleDisplayMode(.inline)
+                                        /*
                                             .toolbar {
                                                 ToolbarItem(placement: .navigationBarTrailing) {
                                                     if let link = URL(string: "https://docmatic.app/terms.html") {
@@ -108,6 +110,7 @@ struct RegistrationView: View {
                                                     }
                                                 }
                                             }
+                                         */
                                     }
                                 }
                                 
@@ -123,6 +126,7 @@ struct RegistrationView: View {
                                         webView(url: "https://docmatic.app/privacy.html")
                                             .navigationTitle("Privacy Policy")
                                             .navigationBarTitleDisplayMode(.inline)
+                                        /*
                                             .toolbar {
                                                 ToolbarItem(placement: .navigationBarTrailing) {
                                                     if let link = URL(string: "https://docmatic.app/privacy.html") {
@@ -133,6 +137,7 @@ struct RegistrationView: View {
                                                     }
                                                 }
                                             }
+                                         */
                                     }
                                 }
                             }
@@ -144,7 +149,7 @@ struct RegistrationView: View {
                     // MARK: Create Account button
                     Button(action: {
                         Task {
-                            try await viewModel.createUser(withEmail: email, password: password, fullName: fullName)
+                            try await viewModel.createUser(withEmail: email, password: password, fullName: fullName, profileImage: userImage)
                         }
                         if isHapticsEnabled {
                             hapticManager.shared.notify(.notification(.success))
