@@ -7,83 +7,172 @@
 
 import SwiftUI
 import PhotosUI
-import FirebaseStorage
+import ImagePlayground
 
+@available(iOS 18.1, *)
 struct EditView: View {
-    @EnvironmentObject var authVM: AuthViewModel
     @State private var avatarImage: Image?
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var selectedUIImage: UIImage?
-    @State private var email: String = ""
-    @State private var fullName: String = ""
-    @State private var password: String = ""
-    @State private var confirmPassword: String = ""
+    @State private var showCamera = false
+    
+    @State private var profileImageURL: URL?
+    
+    @Environment(\.supportsImagePlayground) var supportsImagePlayground
+    @State private var isShowingImagePlayground: Bool = false
+     
+    @Environment(\.modelContext) private var context
+    @StateObject private var profileVM = ProfileViewModel()
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var authVM: AuthViewModel
+    
+    var hasChanges: Bool {
+        selectedUIImage != nil
+    }
     
     var body: some View {
-        VStack(spacing: 24) {
-            PhotosPicker(selection: $photosPickerItem, matching: .not(.screenshots)) {
-                (avatarImage ?? Image(systemName: "person.circle.fill"))
-                    .resizable()
-                    .foregroundStyle(Color(.systemGray3))
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 100, height: 100)
-                    .clipShape(Circle())
-            }
-            .onChange(of: photosPickerItem) { _, newItem in
-                Task {
-                    if let newItem,
-                       let data = try? await newItem.loadTransferable(type: Data.self),
-                       let uiImage = UIImage(data: data) {
-                        selectedUIImage = uiImage
-                        avatarImage = Image(uiImage: uiImage)
+        VStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // MARK: Profile Preview Image
+                    if let selectedImage = selectedUIImage {
+                        Image(uiImage: selectedImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
+                    } else if let url = profileImageURL {
+                        AsyncImage(url: url) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
+                            case .failure(_):
+                                Image(systemName: "person.crop.circle.fill")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .foregroundStyle(Color(.systemGray3))
+                                    .frame(width: 120, height: 120)
+                                    .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
+                            @unknown default:
+                                EmptyView()
+                            }
+                        }
+                    } else {
+                        Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .scaledToFill()
+                            .foregroundStyle(Color(.systemGray3))
+                            .frame(width: 120, height: 120)
+                            .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
                     }
-                }
-            }
-            
-            VStack(spacing: 24) {
-                InputView(text: $fullName, image: "person", placeholder: "Full Name")
-                    .textContentType(.name)
-                
-                InputView(text: $email, image: "envelope", placeholder: "Email")
-                    .autocapitalization(.none)
-                    .textContentType(.emailAddress)
-                    .keyboardType(.emailAddress)
-            }
-            
-            Spacer()
-            
-            Button(action: {
-                Task {
-                    if let image = selectedUIImage {
-                        await authVM.uploadProfileImage(image)
-                    }
-                }
-            }) {
-                Text("Save Changes")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-            }
-            .background(Color("Default").gradient, in: .capsule)
-            .disabled((selectedUIImage == nil))
-            .opacity((selectedUIImage != nil) ? 1.0 : 0.5)
-        }
-        .navigationTitle("Edit Profile")
-        .padding(30)
-        .onAppear {
-            // Prefill with current user data
-            if let user = authVM.currentUser {
-                email = user.email
-                fullName = user.fullname
-                if let urlStr = user.profileImageUrl,
-                   let url = URL(string: urlStr) {
-                    Task {
-                        if let data = try? Data(contentsOf: url),
-                           let uiImage = UIImage(data: data) {
-                            avatarImage = Image(uiImage: uiImage)
+                    
+                    // MARK: Buttons for Photo + Camera
+                    VStack(spacing: 24) {
+                        PhotosPicker(
+                            selection: $photosPickerItem,
+                            matching: .not(.screenshots)
+                        ) {
+                            photoButtonView(image: "photo.on.rectangle.angled.fill", title: "Your Photos")
+                        }
+                        
+                        if supportsImagePlayground {
+                            Button(action: { isShowingImagePlayground = true }) {
+                                photoButtonView(image: "sparkles", title: "Generate Image")
+                            }
+                        }
+                         
+                        Button(action: { showCamera = true }) {
+                            photoButtonView(image: "camera.fill", title: "Camera")
                         }
                     }
+                    .frame(maxWidth: .infinity)
+                    
+                }
+                .padding(30)
+            }
+            .scrollBounceBehavior(.basedOnSize) // Optional
+            .scrollDismissesKeyboard(.interactively) // iOS 16+
+            
+            VStack(spacing: 12) {
+                // MARK: Save Button
+                Button(action: {
+                    Task {
+                        if let image = selectedUIImage {
+                            await authVM.uploadProfileImage(image)
+                        }
+                        dismiss()
+                    }
+                }) {
+                    Text("Save Changes")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(Color("Default").gradient, in: .capsule)
+                }
+                .disabled(!hasChanges)
+                .opacity(hasChanges ? 1.0 : 0.5)
+                
+                // MARK: Discard Button
+                Button(action: { dismiss() }) {
+                    Text("Discard")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color("Default").gradient)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(Color(.systemGray6), in: .capsule)
+                        .overlay(
+                            Capsule()
+                                .stroke(Color("Default").gradient, lineWidth: 1)
+                        )
+                }
+            }
+            .padding(30)
+        }
+        .ignoresSafeArea(.keyboard)
+        .onAppear {
+            if let user = authVM.currentUser {
+                if let urlString = user.profileImageUrl,
+                   let url = URL(string: urlString) {
+                    profileImageURL = url
+                }
+            }
+        }
+        .onChange(of: photosPickerItem) { _, newItem in
+            Task {
+                if let newItem,
+                   let data = try? await newItem.loadTransferable(type: Data.self),
+                   let image = UIImage(data: data) {
+                    selectedUIImage = image
+                    avatarImage = Image(uiImage: image)
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showCamera) {
+            ImagePicker(sourceType: .camera) { image in
+                if let image = image {
+                    selectedUIImage = image
+                    avatarImage = Image(uiImage: image)
+                }
+                showCamera = false
+            }
+            .ignoresSafeArea()
+        }
+        .imagePlaygroundSheet(isPresented: $isShowingImagePlayground,
+                              concept: "",
+                              sourceImage: avatarImage) { url in
+            if let data = try? Data(contentsOf: url) {
+                if let image = UIImage(data: data) {
+                    selectedUIImage = image
+                    avatarImage = Image(uiImage: image)
                 }
             }
         }

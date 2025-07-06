@@ -62,7 +62,12 @@ struct ProfileView: View {
                             }
                             
                             NavigationLink {
-                                EditView()
+                                if #available(iOS 18.1, *) {
+                                    EditView()
+                                        .navigationBarBackButtonHidden(true)
+                                } else {
+                                    // Fallback on earlier versions
+                                }
                             } label: {
                                 Image(systemName: "pencil.circle.fill")
                                     .font(.title2)
@@ -110,6 +115,9 @@ struct ProfileView: View {
                     
                 }
                 .onAppear {
+                    Task {
+                        await viewModel.fetchUser()
+                    }
                     profileViewModel.fetchDocuments(from: context)
                 }
                 .overlay(

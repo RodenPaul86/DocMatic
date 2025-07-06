@@ -118,19 +118,37 @@ class AuthViewModel: ObservableObject {
     func deleteAccount() async {
         guard let user = Auth.auth().currentUser else { return }
         
+        let ref = Storage.storage().reference(withPath: "profile_images/\(user.uid).jpg")
+        
         do {
-            let ref = Storage.storage().reference(withPath: "profile_images/\(user.uid).jpg")
-            try await ref.delete()
-            print("Profile image deleted")
+            // Check if the profile image exists before deleting
+            do {
+                _ = try await ref.getMetadata()
+                try await ref.delete()
+                print("Profile image deleted")
+            } catch {
+                if let error = error as NSError?,
+                   error.domain == StorageErrorDomain,
+                   StorageErrorCode(rawValue: error.code) == .objectNotFound {
+                    print("No profile image to delete — skipping.")
+                } else {
+                    throw error // rethrow any other unexpected errors
+                }
+            }
+            
+            // Now delete Firestore user document
             try await Firestore.firestore().collection("users").document(user.uid).delete()
-            try await user.delete() /// <-- Delete FireBase Auth account.
-            self.userSession = nil /// <-- Wipes out user session and takes back to login screen.
-            self.currentUser = nil /// <-- Wipes out current user data model.
+            
+            // Then delete the Auth account
+            try await user.delete()
+            
+            // Clean up app state
+            self.userSession = nil
+            self.currentUser = nil
             self.activeAlert = .success("Your account has been permanently deleted.")
         } catch {
             print("DEBUG: Failed to delete account with error: \(error.localizedDescription)")
             self.activeAlert = .error("Delete account failed: \(error.localizedDescription)")
-            signOut()
         }
     }
     
