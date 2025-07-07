@@ -54,6 +54,25 @@ struct EditView: View {
                                     .frame(width: 120, height: 120)
                                     .clipShape(Circle())
                                     .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
+                                    .contextMenu {
+                                        Button(action: {
+                                            if let selectedUIImage {
+                                                UIImageWriteToSavedPhotosAlbum(selectedUIImage, nil, nil, nil)
+                                            } else {
+                                                // If selectedUIImage is nil, try loading from the URL (fallback)
+                                                Task {
+                                                    if let url = profileImageURL,
+                                                       let data = try? Data(contentsOf: url),
+                                                       let image = UIImage(data: data) {
+                                                        UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+                                                    }
+                                                }
+                                            }
+                                        }) {
+                                            Label("Save Image", systemImage: "square.and.arrow.down")
+                                                .tint(.primary)
+                                        }
+                                    }
                             case .failure(_):
                                 Image(systemName: "person.crop.circle.fill")
                                     .resizable()
