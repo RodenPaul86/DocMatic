@@ -24,6 +24,7 @@ struct DocMaticApp: App {
     
     @State private var showIntro: Bool = false
     @State private var isPaywallPresented: Bool = false
+    @State private var showLaunchView: Bool = true
     
     init() {
         Purchases.logLevel = .error
@@ -33,50 +34,60 @@ struct DocMaticApp: App {
     
     var body: some Scene {
         WindowGroup {
-            SchemeHostView {
-                ContentView()
-                    .environmentObject(viewModel)
-                    .environmentObject(tabBarVisibility)
-                    .modelContainer(for: Document.self)
-                    .environmentObject(appSubModel)
-                    .task {
-                        if resetDatastore {
-                            try? Tips.resetDatastore() /// <-- This is to reset data store
-                        } else if showTipsForTesting {
-                            Tips.showAllTipsForTesting() /// <-- Shows all tips for testing
+            ZStack {
+                SchemeHostView {
+                    ContentView()
+                        .environmentObject(viewModel)
+                        .environmentObject(tabBarVisibility)
+                        .modelContainer(for: Document.self)
+                        .environmentObject(appSubModel)
+                        .task {
+                            if resetDatastore {
+                                try? Tips.resetDatastore() /// <-- This is to reset data store
+                            } else if showTipsForTesting {
+                                Tips.showAllTipsForTesting() /// <-- Shows all tips for testing
+                            }
+                            try? Tips.configure([
+                                .datastoreLocation(.applicationDefault)
+                            ])
                         }
-                        try? Tips.configure([
-                            .datastoreLocation(.applicationDefault)
-                        ])
-                    }
-                    .tint(Color("Default").gradient)
-                    .onAppear {
-                        checkAccessFlow()
-                    }
-                    .onChange(of: appSubModel.isLoading) { _, newValue in
-                        if !newValue {
+                        .tint(Color("Default").gradient)
+                        .onAppear {
                             checkAccessFlow()
                         }
-                    }
-                    .task {
-                        // Refresh subscription when view loads
-                        appSubModel.refreshSubscriptionStatus()
-                    }
-                    .fullScreenCover(isPresented: $showIntro) {
-                        IntroPage(showIntroView: $hasSeenIntro) {
-                            hasSeenIntro = true
-                            showIntro = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                if !appSubModel.isSubscriptionActive {
-                                    isPaywallPresented = true
+                        .onChange(of: appSubModel.isLoading) { _, newValue in
+                            if !newValue {
+                                checkAccessFlow()
+                            }
+                        }
+                        .task {
+                            // Refresh subscription when view loads
+                            appSubModel.refreshSubscriptionStatus()
+                        }
+                        .fullScreenCover(isPresented: $showIntro) {
+                            IntroPage(showIntroView: $hasSeenIntro) {
+                                hasSeenIntro = true
+                                showIntro = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    if !appSubModel.isSubscriptionActive {
+                                        isPaywallPresented = true
+                                    }
                                 }
                             }
                         }
+                        .fullScreenCover(isPresented: $isPaywallPresented) {
+                            SubscriptionView(isPaywallPresented: $isPaywallPresented)
+                                .preferredColorScheme(.dark)
+                        }
+                }
+                
+                ZStack {
+                    if showLaunchView {
+                        LaunchView(showLaunchView: $showLaunchView)
+                            .transition(.move(edge: .leading))
                     }
-                    .fullScreenCover(isPresented: $isPaywallPresented) {
-                        SubscriptionView(isPaywallPresented: $isPaywallPresented)
-                            .preferredColorScheme(.dark)
-                    }
+                }
+                .zIndex(2.0)
             }
         }
     }
