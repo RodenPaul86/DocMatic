@@ -25,9 +25,19 @@ struct DocMaticApp: App {
     
     @State private var showIntro: Bool = false
     @State private var isPaywallPresented: Bool = false
+    @State private var isFreeLimitAlert: Bool = false
     @State private var showLaunchView: Bool = true
     
     let container = try! ModelContainer(for: Document.self)
+    
+    let proLockMessages = [
+        "Whoa there, import wizard! You’ll need DocMatic Pro to conjure this PDF.",
+        "This feature is VIP only. Upgrade to Pro and unlock the PDF party!",
+        "PDF imports are behind the velvet rope. Pro members only!",
+        "You’ve found a secret passage… but only Pro heroes can enter.",
+        "DocMatic Pro unlocks this door. Right now, you’re just rattling the knob.",
+        "Pro unlocks the PDF pipeline. Right now, it’s under construction 🚧."
+    ]
     
     init() {
         Purchases.logLevel = .error
@@ -46,9 +56,13 @@ struct DocMaticApp: App {
                         .environmentObject(tabBarVisibility)
                         .onOpenURL { url in
                             Task {
-                                let importer = PDFImportManager()
-                                importer.importPDF(from: url, context: container.mainContext)
-                                ScanManager.shared.incrementScanCount()
+                                if appSubModel.isSubscriptionActive {
+                                    let importer = PDFImportManager()
+                                    importer.importPDF(from: url, context: container.mainContext)
+                                    ScanManager.shared.incrementScanCount()
+                                } else {
+                                    isFreeLimitAlert = true
+                                }
                             }
                         }
                         .task {
@@ -83,6 +97,15 @@ struct DocMaticApp: App {
                                     }
                                 }
                             }
+                        }
+                        .alert("Upgrade to DocMatic Pro", isPresented: $isFreeLimitAlert) {
+                            Button("Subscribe") {
+                                isPaywallPresented = true
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        } message: {
+                            let randomMessage = proLockMessages.randomElement() ?? "Importing PDFs is only available with a Pro subscription."
+                            Text(randomMessage)
                         }
                         .fullScreenCover(isPresented: $isPaywallPresented) {
                             SubscriptionView(isPaywallPresented: $isPaywallPresented)
