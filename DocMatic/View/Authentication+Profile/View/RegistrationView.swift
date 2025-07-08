@@ -60,6 +60,7 @@ struct RegistrationView: View {
                     Text("Use proper information to create an account.")
                         .font(.subheadline)
                         .foregroundStyle(.gray)
+                        .multilineTextAlignment(.center)
                     
                     // MARK: form fields
                     VStack(spacing: 24) {

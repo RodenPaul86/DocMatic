@@ -59,7 +59,7 @@ struct HomeView: View {
                                 .font(.title3.bold())
                                 .foregroundStyle(.gray)
                             
-                            Text(appSubModel.isSubscriptionActive ? "Your first document is just a tap away. \nYou can also drag and drop PDF's \ndirectly into the app." : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
+                            Text(appSubModel.isSubscriptionActive ? "You can drag and drop or Import PDF's \ndirectly into the app." : "Enjoy 3 free scans to get you started! \n Need more? Unlock Pro.")
                                 .font(.body)
                                 .foregroundStyle(.gray.opacity(0.5))
                         }

@@ -28,6 +28,7 @@ struct ForgotPassView: View {
                     Text("Don't worry it happens. Please enter your email address below and we'll send you a reset link.")
                         .font(.subheadline)
                         .foregroundStyle(.gray)
+                        .multilineTextAlignment(.center)
                     
                     // MARK: form fields
                     InputView(text: $email, image: "envelope", placeholder: "Email Address")
