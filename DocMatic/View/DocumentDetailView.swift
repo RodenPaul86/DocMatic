@@ -154,7 +154,7 @@ struct DocumentDetailView: View {
                 } label: {
                     Text("Done")
                         .font(.title3.bold())
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color.theme.accent)
                 }
             }
             .overlay(alignment: .leading) {
@@ -231,7 +231,7 @@ struct DocumentDetailView: View {
                     } label: {
                         Image(systemName: "list.bullet.indent")
                             .font(.title2)
-                            .foregroundStyle(Color("Default").gradient)
+                            .foregroundStyle(Color.theme.accent)
                     }
                     .popoverTip(allinOne)
                     .confirmationDialog("Permanently delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
@@ -285,7 +285,7 @@ struct DocumentDetailView: View {
             }) {
                 Image(systemName: "plus.magnifyingglass") /// <- Zoom-in icon
                     .font(.title)
-                    .foregroundStyle(zoom < 5.0 ? Color("Default").gradient : Color.gray.gradient)
+                    .foregroundStyle(zoom < 5.0 ? Color.theme.accent : Color.gray.gradient)
             }
             .disabled(zoom >= 5.0)
             
@@ -298,7 +298,7 @@ struct DocumentDetailView: View {
                 }) {
                     Image(systemName: "minus.magnifyingglass") /// <- Zoom-out icon
                         .font(.title)
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color.theme.accent)
                 }
             }
             
@@ -312,7 +312,7 @@ struct DocumentDetailView: View {
                 }) {
                     Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <- Zoom all the way out icon
                         .font(.title)
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color.theme.accent)
                 }
             }
         }
