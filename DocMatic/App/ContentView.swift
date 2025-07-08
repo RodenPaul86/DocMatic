@@ -8,6 +8,8 @@
 import SwiftUI
 import VisionKit
 import WidgetKit
+import PDFKit
+import SwiftData
 
 enum ScannerError: Error {
     case cameraAccessDenied
@@ -19,6 +21,8 @@ struct ContentView: View {
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var showScannerView: Bool = false
+    @State private var showImportOption: Bool = false
+    @State private var showDocumentPicker = false
     @State private var isPaywallPresented: Bool = false
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -53,7 +57,7 @@ struct ContentView: View {
                 if tabBarVisibility.isVisible {
                     GlassTabBar(selectedTab: $selectedTab) {
                         if appSubModel.isSubscriptionActive {
-                            showScannerView = true
+                            showImportOption = true
                         } else if ScanManager.shared.scansLeft > 0 {
                             showScannerView = true
                         } else {
@@ -81,6 +85,27 @@ struct ContentView: View {
                     if !appSubModel.isSubscriptionActive {
                         adBannerView()
                             .padding(.top, 10)
+                    }
+                }
+            }
+            .confirmationDialog("Choose how you’d like to add a document.", isPresented: $showImportOption, titleVisibility: .visible) {
+                Button("Scan") {
+                    showScannerView = true
+                }
+                
+                Button("Import") {
+                    showDocumentPicker = true
+                }
+                
+                Button("Cancel", role: .cancel) {}
+            }
+            .sheet(isPresented: $showDocumentPicker) {
+                DocumentPicker { urls in
+                    // Handle imported document URLs here
+                    for url in urls {
+                        Task {
+                            await saveImportedDocument(from: url, in: context)
+                        }
                     }
                 }
             }
@@ -373,5 +398,61 @@ struct ContentView: View {
         // Use luminance formula
         let luminance = 0.299 * r + 0.587 * g + 0.114 * b
         return luminance < 0.5 // true = dark background
+    }
+    
+    func saveImportedDocument(from url: URL, in context: ModelContext) async {
+        guard url.startAccessingSecurityScopedResource() else {
+            print("❌ Failed to access security scoped resource")
+            return
+        }
+        defer { url.stopAccessingSecurityScopedResource() }
+        
+        guard let document = PDFDocument(url: url) else {
+            print("❌ Failed to load PDF")
+            return
+        }
+        
+        let docName = url.deletingPathExtension().lastPathComponent
+        let newDoc = Document(name: docName)
+        var pages: [DocumentPage] = []
+        
+        for i in 0..<document.pageCount {
+            guard let page = document.page(at: i) else { continue }
+            
+            let pageBounds = page.bounds(for: .mediaBox)
+            let renderer = UIGraphicsImageRenderer(size: pageBounds.size)
+            
+            let img = renderer.image { ctx in
+                let cgContext = ctx.cgContext
+                
+                UIColor.white.set()
+                cgContext.fill(pageBounds)
+                
+                // Flip the context vertically
+                cgContext.saveGState()
+                cgContext.translateBy(x: 0, y: pageBounds.height)
+                cgContext.scaleBy(x: 1, y: -1)
+                
+                page.draw(with: .mediaBox, to: cgContext)
+                
+                cgContext.restoreGState()
+            }
+            
+            if let data = img.jpegData(compressionQuality: 0.9) {
+                let docPage = DocumentPage(document: newDoc, pageIndex: i, pageData: data)
+                pages.append(docPage)
+            }
+        }
+        
+        newDoc.pages = pages
+        context.insert(newDoc)
+        
+        do {
+            try context.save()
+            ScanManager.shared.incrementScanCount()
+            print("✅ Document saved successfully")
+        } catch {
+            print("❌ Failed to save document: \(error)")
+        }
     }
 }
