@@ -26,6 +26,11 @@ struct DocMaticApp: App {
     @State private var isPaywallPresented: Bool = false
     @State private var showLaunchView: Bool = true
     
+    var container: ModelContainer = {
+        let schema = Schema([Document.self, DocumentPage.self])
+        return try! ModelContainer(for: schema)
+    }()
+    
     init() {
         Purchases.logLevel = .error
         Purchases.configure(withAPIKey: apiKeys.revenueCat)
@@ -39,6 +44,14 @@ struct DocMaticApp: App {
                     ContentView()
                         .environmentObject(viewModel)
                         .environmentObject(tabBarVisibility)
+                        .modelContainer(container)
+                        .onOpenURL { url in
+                            Task {
+                                let context = container.mainContext
+                                let importer = PDFImportManager()
+                                importer.importPDF(from: url, context: context)
+                            }
+                        }
                         .modelContainer(for: Document.self)
                         .environmentObject(appSubModel)
                         .task {
