@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LaunchView: View {
-    @State private var loadingText: [String] = "Loading...".map { String($0) }
+    @State private var loadingText: [String] = "Loading content...".map { String($0) }
     @State private var showLoadingText: Bool = false
     private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
