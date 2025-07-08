@@ -253,6 +253,7 @@ struct HomeView: View {
                     .foregroundStyle(.gray)
                 
                 TextField(speechRecognizer.isListening ? "Listening..." : "Search", text: $searchText)
+                    .disabled(speechRecognizer.isListening ? true : false)
                     .focused($isFocused)
                     .onChange(of: isFocused) { oldValue, newValue in
                         withAnimation {
