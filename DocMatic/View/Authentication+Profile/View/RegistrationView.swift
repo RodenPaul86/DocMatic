@@ -161,7 +161,7 @@ struct RegistrationView: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                     }
-                    .background(Color("Default").gradient, in: .capsule)
+                    .background(Color.theme.accent, in: .capsule)
                     .disabled(!formIsValid)
                     .opacity(formIsValid ? 1.0 : 0.5)
                 }

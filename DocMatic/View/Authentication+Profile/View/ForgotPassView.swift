@@ -48,7 +48,7 @@ struct ForgotPassView: View {
                             .frame(maxWidth: .infinity, minHeight: 50)
                             .padding(.horizontal)
                     }
-                    .background(Color("Default").gradient, in: .capsule)
+                    .background(Color.theme.accent, in: .capsule)
                     .disabled(!formIsValid)
                     .opacity(formIsValid ? 1.0 : 0.5)
                 }

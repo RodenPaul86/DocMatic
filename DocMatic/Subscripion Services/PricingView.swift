@@ -39,7 +39,7 @@ struct PricingView: View {
                 
                 Text("Pro")
                     .font(.headline.italic())
-                    .foregroundStyle(Color("Default").gradient)
+                    .foregroundStyle(Color.theme.accent)
                     .frame(width: 50) /// <-- Fixed width for alignment
             }
             
@@ -61,13 +61,13 @@ struct PricingView: View {
                             .foregroundStyle(.gray)
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundStyle(feature.freeHasAccess ? Color("Default").gradient : Color.red.gradient)
+                            .foregroundStyle(feature.freeHasAccess ? Color.theme.accent : Color.red.gradient)
                             .frame(width: 50)
                     }
                     
                     // Pro Version Column
                     Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color.theme.accent)
                         .frame(width: 50)
                 }
                 .padding(.vertical, 5)

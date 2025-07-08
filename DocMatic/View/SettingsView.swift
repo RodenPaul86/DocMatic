@@ -130,7 +130,7 @@ struct SettingsView: View {
                     if UIDevice.current.userInterfaceIdiom == .pad {
                         Button(action: { dismiss() }) {
                             Text("Done")
-                                .foregroundStyle(Color("Default").gradient)
+                                .foregroundStyle(Color.theme.accent)
                         }
                     }
                 }
@@ -252,7 +252,7 @@ struct customRow: View {
                 .font(.system(size: 18)) /// <-- Fixed size, unaffected by user settings
                 .foregroundColor(.white)
                 .frame(width: 32, height: 32)
-                .background(Color("Default").gradient)
+                .background(Color.theme.accent)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Text(firstLabel)

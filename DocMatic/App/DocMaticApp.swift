@@ -50,6 +50,7 @@ struct DocMaticApp: App {
                                 let context = container.mainContext
                                 let importer = PDFImportManager()
                                 importer.importPDF(from: url, context: context)
+                                ScanManager.shared.incrementScanCount()
                             }
                         }
                         .modelContainer(for: Document.self)
@@ -64,7 +65,7 @@ struct DocMaticApp: App {
                                 .datastoreLocation(.applicationDefault)
                             ])
                         }
-                        .tint(Color("Default").gradient)
+                        .tint(Color.theme.accent)
                         .onAppear {
                             checkAccessFlow()
                         }

@@ -76,7 +76,7 @@ struct SubscriptionButton: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color("Default").gradient)
+                        .background(Color.theme.accent)
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
             }
@@ -94,7 +94,7 @@ struct SubscriptionButton: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color("Default").gradient : Color(.systemGray6).gradient, lineWidth: 2)
+                .stroke(isSelected ? Color.theme.accent : Color(.systemGray6).gradient, lineWidth: 2)
         )
         .onTapGesture {
             selectedPlan = plan
@@ -115,7 +115,7 @@ struct SubscriptionButton: View {
         case .annual:
             VStack(alignment: .leading, spacing: 4) {
                 Text(currency.format(originalYearlyPrice))
-                    .foregroundStyle(Color("Default").gradient)
+                    .foregroundStyle(Color.theme.accent)
                     .bold()
                     .strikethrough()
                 Text("\(price) / yr")
@@ -132,7 +132,7 @@ struct SubscriptionButton: View {
             VStack(alignment: .leading, spacing: 4) {
                 if isTrialEligible {
                     Text("3-Day Trial")
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color.theme.accent)
                         .bold()
                 }
                 Text("\(price) / wk")
@@ -143,7 +143,7 @@ struct SubscriptionButton: View {
         case .lifetime:
             VStack(alignment: .leading, spacing: 4) {
                 Text("No Renewals")
-                    .foregroundStyle(Color("Default").gradient)
+                    .foregroundStyle(Color.theme.accent)
                     .bold()
                 
                 Text("\(price) / once")

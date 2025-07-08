@@ -60,7 +60,7 @@ struct ProfileView: View {
                                     .background(Color(.systemGray3))
                                     .clipShape(Circle())
                             }
-                            
+#if DEBUG
                             NavigationLink {
                                 if #available(iOS 18.1, *) {
                                     EditView()
@@ -71,10 +71,11 @@ struct ProfileView: View {
                             } label: {
                                 Image(systemName: "pencil.circle.fill")
                                     .font(.title2)
-                                    .foregroundStyle(Color("Default").gradient)
+                                    .foregroundStyle(Color.theme.accent)
                                     .background(Circle().fill(Color.white))
                             }
                             .offset(x: 0, y: 0)
+#endif
                         }
                         
                         Text(user.fullname)
@@ -155,10 +156,14 @@ struct ProfileView: View {
             }) {
                 Text("Sign Out")
                     .fontWeight(.semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.red)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red.gradient, in: Capsule())
+                    .background(Color(.systemGray6), in: .capsule)
+                    .overlay(
+                        Capsule()
+                            .stroke(Color(.systemGray5), lineWidth: 1)
+                    )
             }
             
             Button(action: {
@@ -171,10 +176,14 @@ struct ProfileView: View {
             }) {
                 Text("Delete Account")
                     .fontWeight(.semibold)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.red)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red.gradient, in: Capsule())
+                    .background(Color(.systemGray6), in: .capsule)
+                    .overlay(
+                        Capsule()
+                            .stroke(Color(.systemGray5), lineWidth: 1)
+                    )
             }
         }
         .frame(height: 50)
@@ -199,7 +208,7 @@ struct ProfileStatView: View {
         VStack {
             Image(systemName: icon)
                 .font(.title)
-                .foregroundStyle(Color("Default").gradient)
+                .foregroundStyle(Color.theme.accent)
                 .padding(15)
                 .background(.ultraThinMaterial, in: Circle())
             Text(value)

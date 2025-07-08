@@ -17,7 +17,7 @@ struct WidgetSetupView: View {
                 // MARK: Icon
                 Image(systemName: "widget.small")
                     .font(.system(size: 48))
-                    .foregroundStyle(Color("Default").gradient)
+                    .foregroundStyle(Color.theme.accent)
                     .padding(.bottom, 4)
                 
                 // MARK: Title and Description
@@ -101,7 +101,7 @@ struct StepView: View {
             Text("\(number)")
                 .font(.headline)
                 .frame(width: 24, height: 24)
-                .background(Circle().fill(Color("Default").gradient))
+                .background(Circle().fill(Color.theme.accent))
                 .foregroundColor(.white)
             
             VStack(alignment: .leading, spacing: 4) {

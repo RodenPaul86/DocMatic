@@ -45,7 +45,7 @@ struct IntroScreen: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color("Default").gradient, in: .capsule)
+                    .background(Color.theme.accent, in: .capsule)
                     .foregroundColor(.white)
                     .cornerRadius(14)
             }
@@ -62,7 +62,7 @@ struct IntroScreen: View {
         HStack(spacing: 15) {
             Image(systemName: image)
                 .font(.largeTitle)
-                .foregroundStyle(Color("Default").gradient)
+                .foregroundStyle(Color.theme.accent)
             
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)

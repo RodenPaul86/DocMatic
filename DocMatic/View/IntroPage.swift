@@ -21,7 +21,7 @@ struct IntroPage: View {
             Button(action: { updateItem(isForward: false) }) {
                 Image(systemName: "chevron.left")
                     .font(.title3.bold())
-                    .foregroundStyle(Color("Default").gradient)
+                    .foregroundStyle(Color.theme.accent)
                     .padding(10)
                     .background(.ultraThinMaterial, in: Circle())
                     .contentShape(.rect)
@@ -75,7 +75,7 @@ struct IntroPage: View {
                         .contentTransition(.numericText())
                         .frame(width: 250)
                         .padding(.vertical, 12)
-                        .background(Color("Default").gradient, in: .capsule)
+                        .background(Color.theme.accent, in: .capsule)
                 }
                 .padding(.top, 25)
             }
@@ -94,7 +94,7 @@ struct IntroPage: View {
             .foregroundStyle(.white.shadow(.drop(radius: 10)))
             .blendMode(.overlay)
             .frame(width: 120, height: 120)
-            .background(Color("Default").gradient, in: .rect(cornerRadius: 32))
+            .background(Color.theme.accent, in: .rect(cornerRadius: 32))
             .background {
                 RoundedRectangle(cornerRadius: 35)
                     .fill(.background)

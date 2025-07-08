@@ -8,6 +8,7 @@
 import SwiftUI
 import WidgetKit
 import LocalAuthentication
+import SwiftData
 
 struct DocumentCardView: View {
     var document: Document
@@ -91,15 +92,22 @@ struct DocumentCardView: View {
         }
         .padding(10) /// <- Padding for a cleaner look around the content
         .contextMenu {
-            Button {
+            Button(action: {
                 newFileName = document.name /// <-- Pre-fill the current name
                 isRenaming = true
-            } label: {
+            }) {
                 Label("Rename", systemImage: "pencil")
                     .tint(.primary)
             }
             
-            Button {
+            Button(action: {
+                duplicateDocument()
+            }) {
+                Label("Duplicate", systemImage: "doc.on.doc")
+                    .tint(.primary)
+            }
+            
+            Button(action: {
                 if document.isLocked {
                     // Attempt biometric authentication before unlocking
                     authenticateUser()
@@ -110,14 +118,14 @@ struct DocumentCardView: View {
                     try? context.save()
                     WidgetCenter.shared.reloadAllTimelines()
                 }
-            } label: {
+            }) {
                 Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
                     .tint(.primary)
             }
             
-            Button(role: .destructive) {
+            Button(role: .destructive, action: {
                 deleteAlert = true
-            } label: {
+            }) {
                 Label("Delete", systemImage: "trash")
                     .tint(.red)
             }
@@ -191,5 +199,55 @@ struct DocumentCardView: View {
         } else {
             isUnlocked = false
         }
+    }
+    
+    private func duplicateDocument() {
+        do {
+            let existingDocs = try context.fetch(FetchDescriptor<Document>())
+            let existingNames = existingDocs.map { $0.name }
+            
+            // Use improved name logic
+            let newName = generateDuplicateName(from: document.name, existingNames: existingNames)
+            
+            let copiedPages = document.pages?.map { originalPage in
+                DocumentPage(
+                    pageIndex: originalPage.pageIndex,
+                    pageData: originalPage.pageData
+                )
+            } ?? []
+            
+            let duplicated = Document(name: newName, pages: copiedPages)
+            copiedPages.forEach { $0.document = duplicated }
+            
+            context.insert(duplicated)
+            try context.save()
+            
+            ScanManager.shared.incrementScanCount()
+            
+        } catch {
+            print("Failed to duplicate document: \(error)")
+        }
+    }
+    
+    private func generateDuplicateName(from originalName: String, existingNames: [String]) -> String {
+        let baseName: String
+        
+        // Try to strip off any existing "(copy...)" suffix
+        if let range = originalName.range(of: #" \((copy(?: \d+)?)\)$"#, options: .regularExpression) {
+            baseName = String(originalName[..<range.lowerBound])
+        } else {
+            baseName = originalName
+        }
+        
+        // Try "Base (copy)", then "Base (copy 2)", etc.
+        var newName = baseName + " (copy)"
+        var copyIndex = 2
+        
+        while existingNames.contains(newName) {
+            newName = "\(baseName) (copy \(copyIndex))"
+            copyIndex += 1
+        }
+        
+        return newName
     }
 }

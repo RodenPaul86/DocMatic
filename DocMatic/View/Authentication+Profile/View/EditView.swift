@@ -107,7 +107,7 @@ struct EditView: View {
                                 photoButtonView(image: "sparkles", title: "Generate Image")
                             }
                         }
-                         
+                        
                         Button(action: { showCamera = true }) {
                             photoButtonView(image: "camera.fill", title: "Camera")
                         }
@@ -135,7 +135,7 @@ struct EditView: View {
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
-                        .background(Color("Default").gradient, in: .capsule)
+                        .background(Color.theme.accent, in: .capsule)
                 }
                 .disabled(!hasChanges)
                 .opacity(hasChanges ? 1.0 : 0.5)
@@ -144,13 +144,13 @@ struct EditView: View {
                 Button(action: { dismiss() }) {
                     Text("Discard")
                         .fontWeight(.semibold)
-                        .foregroundStyle(Color("Default").gradient)
+                        .foregroundStyle(Color.theme.accent)
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .background(Color(.systemGray6), in: .capsule)
                         .overlay(
                             Capsule()
-                                .stroke(Color("Default").gradient, lineWidth: 1)
+                                .stroke(Color(.systemGray5), lineWidth: 1)
                         )
                 }
             }

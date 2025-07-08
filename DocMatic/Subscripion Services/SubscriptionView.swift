@@ -47,7 +47,7 @@ struct SubscriptionView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Color("Default").gradient)
+                    .background(Color.theme.accent)
                     .clipShape(RoundedRectangle(cornerRadius: 4))
                 
                 Spacer()
@@ -115,7 +115,7 @@ struct SubscriptionView: View {
                             .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(Color("Default").gradient, in: .capsule)
+                            .background(Color.theme.accent, in: .capsule)
                             .foregroundColor(.white)
                             .cornerRadius(14)
                     }
