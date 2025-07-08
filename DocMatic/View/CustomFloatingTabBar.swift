@@ -16,7 +16,7 @@ struct GlassTabBar: View {
     
     @Namespace private var tabAnimation
     @EnvironmentObject var appSubModel: appSubscriptionModel
-    @ObservedObject private var scanManager = ScanManager.shared
+    @StateObject private var scanManager = ScanManager.shared
     
     var body: some View {
         HStack(spacing: 20) {

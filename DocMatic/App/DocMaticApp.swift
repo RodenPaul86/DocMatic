@@ -19,6 +19,7 @@ struct DocMaticApp: App {
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var context
     @StateObject var tabBarVisibility = TabBarVisibility()
     @AppStorage("showIntroView") private var hasSeenIntro: Bool = false
     
@@ -26,10 +27,7 @@ struct DocMaticApp: App {
     @State private var isPaywallPresented: Bool = false
     @State private var showLaunchView: Bool = true
     
-    var container: ModelContainer = {
-        let schema = Schema([Document.self, DocumentPage.self])
-        return try! ModelContainer(for: schema)
-    }()
+    let container = try! ModelContainer(for: Document.self)
     
     init() {
         Purchases.logLevel = .error
@@ -42,24 +40,22 @@ struct DocMaticApp: App {
             ZStack {
                 SchemeHostView {
                     ContentView()
+                        .modelContainer(for: Document.self)
+                        .environmentObject(appSubModel)
                         .environmentObject(viewModel)
                         .environmentObject(tabBarVisibility)
-                        .modelContainer(container)
                         .onOpenURL { url in
                             Task {
-                                let context = container.mainContext
                                 let importer = PDFImportManager()
-                                importer.importPDF(from: url, context: context)
+                                importer.importPDF(from: url, context: container.mainContext)
                                 ScanManager.shared.incrementScanCount()
                             }
                         }
-                        .modelContainer(for: Document.self)
-                        .environmentObject(appSubModel)
                         .task {
                             if resetDatastore {
-                                try? Tips.resetDatastore() /// <-- This is to reset data store
+                                try? Tips.resetDatastore()
                             } else if showTipsForTesting {
-                                Tips.showAllTipsForTesting() /// <-- Shows all tips for testing
+                                Tips.showAllTipsForTesting()
                             }
                             try? Tips.configure([
                                 .datastoreLocation(.applicationDefault)
@@ -75,7 +71,6 @@ struct DocMaticApp: App {
                             }
                         }
                         .task {
-                            // Refresh subscription when view loads
                             appSubModel.refreshSubscriptionStatus()
                         }
                         .fullScreenCover(isPresented: $showIntro) {
