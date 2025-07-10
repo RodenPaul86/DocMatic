@@ -34,6 +34,21 @@ struct FAQView: View {
             FAQItem(question: "Can I scan multiple pages into one file?", answer: "Yes. After scanning the first page, tap 'Add Page' to continue scanning additional pages into the same document.")
         ]),
         
+        FAQCategory(title: "Account & Profile", items: [
+            FAQItem(question: "Is my profile information stored securely?",
+                    answer: "Yes. DocMatic uses Google Firebase to securely handle your login and profile data. Firebase follows industry-standard security practices, including end-to-end encryption and secure authentication protocols."),
+            FAQItem(question: "How does DocMatic protect my login credentials?",
+                    answer: "Your login credentials (email/password or third-party sign-in) are securely managed by Firebase Authentication. DocMatic does not store your password or access your third-party login details."),
+            FAQItem(question: "Is my personal data shared or sold?",
+                    answer: "No. DocMatic does not sell, rent, or share your profile or usage data. Your account is used solely for personalizing your experience and managing your documents on your device."),
+            FAQItem(question: "What happens if I forget my password?",
+                    answer: "You can reset your password from the login screen using the “Forgot Password” option. Firebase will send a secure password reset link to your registered email."),
+            FAQItem(question: "Can someone access my profile without permission?",
+                    answer: "No. Your profile is protected by Firebase Authentication and optionally by your device’s Face ID or Touch ID when accessing locked features or documents."),
+            FAQItem(question: "How do I delete my account?",
+                    answer: "In the Profile section, you can choose to sign out or delete your account. Deleting your account will remove your authentication data from Firebase, but documents already saved on your device will remain unless you delete them manually.")
+        ]),
+        
         FAQCategory(title: "Privacy & Security", items: [
             FAQItem(question: "Are my scanned doc's stored securely?",
                     answer: "Yes. All documents are stored locally on your device and are not uploaded unless you choose to share or save them externally."),
