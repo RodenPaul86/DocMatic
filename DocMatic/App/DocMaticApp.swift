@@ -13,7 +13,7 @@ import Firebase
 
 @main
 struct DocMaticApp: App {
-    @StateObject var viewModel: AuthViewModel = .init()
+    @StateObject var authVM: AuthViewModel = .init()
     @StateObject var appSubModel = appSubscriptionModel()
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
@@ -52,7 +52,7 @@ struct DocMaticApp: App {
                     ContentView()
                         .modelContainer(for: Document.self)
                         .environmentObject(appSubModel)
-                        .environmentObject(viewModel)
+                        .environmentObject(authVM)
                         .environmentObject(tabBarVisibility)
                         .onOpenURL { url in
                             Task {

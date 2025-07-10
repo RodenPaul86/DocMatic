@@ -14,7 +14,7 @@ class ScanManager: ObservableObject {
     
     private let freeScanLimit = 3
     private let scanCountKey = "scanCount"
-    private let defaults = UserDefaults(suiteName: "group.com.studio4design.DocMatic")!  // Ensure consistent access
+    private let defaults = UserDefaults.standard  /// <-- Ensure consistent access
     
     @Published var scanCount: Int {
         didSet {
@@ -22,30 +22,28 @@ class ScanManager: ObservableObject {
         }
     }
     
+    // MARK: Initialize with a custom `init()` method to check UserDefaults for the scan count.
     init() {
-        if let sharedDefaults = UserDefaults(suiteName: "group.com.studio4design.DocMatic") {
-            if sharedDefaults.object(forKey: scanCountKey) != nil {
-                scanCount = sharedDefaults.integer(forKey: scanCountKey)
-            } else {
-                let oldCount = UserDefaults.standard.integer(forKey: scanCountKey)
-                scanCount = oldCount
-                sharedDefaults.set(oldCount, forKey: scanCountKey)
-            }
+        if defaults.integer(forKey: scanCountKey) == 0 {
+            scanCount = 0  // Set the initial value if no value is stored
         } else {
-            scanCount = 0
+            scanCount = defaults.integer(forKey: scanCountKey)
         }
     }
     
+    // MARK: Returns the number of scans left before requiring a premium purchase.
     var scansLeft: Int {
         max(freeScanLimit - scanCount, 0)
     }
     
+    // MARK: Increments the scan count when a scan is performed.
     func incrementScanCount() {
         print("Current Scan Count Before Increment: \(scanCount)")
         scanCount += 1
         print("Incremented Scan Count: \(scanCount)")
     }
     
+    // MARK: Decrements the scan count when a scan is deleted.
     func decrementScanCount() {
         print("Current Scan Count Before Decrement: \(scanCount)")
         if scanCount > 0 {
@@ -57,6 +55,7 @@ class ScanManager: ObservableObject {
         resetScansIfNeeded()
     }
     
+    // MARK: Resets scan count when all scans are deleted.
     func resetScansIfNeeded() {
         if scanCount == 0 {
             defaults.set(0, forKey: scanCountKey)
@@ -64,7 +63,7 @@ class ScanManager: ObservableObject {
         }
     }
     
-    // Optional: Call this after a Pro upgrade to give unlimited scans
+    // MARK: Optional: Call this after a Pro upgrade to give unlimited scans
     func resetForProUser() {
         scanCount = 0
         defaults.set(0, forKey: scanCountKey)
