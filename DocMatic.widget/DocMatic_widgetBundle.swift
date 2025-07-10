@@ -14,6 +14,6 @@ struct DocMatic_widgetBundle: WidgetBundle {
     var body: some Widget {
         //DocCountWidget()
         ScanDocWidget()
-        DocViewerWidget()
+        //DocViewerWidget()
     }
 }

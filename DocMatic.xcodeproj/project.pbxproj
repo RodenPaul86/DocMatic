@@ -45,7 +45,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3A20B4922E1FF4B1003233DF /* DocMatic.widgetExtension 2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "DocMatic.widgetExtension 2.entitlements"; sourceTree = "<group>"; };
 		3A9659392DFF13AE00A5AB6E /* DocMatic.widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DocMatic.widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A96593A2DFF13AE00A5AB6E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		3A96593C2DFF13AE00A5AB6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -136,7 +135,6 @@
 				3A96593E2DFF13AE00A5AB6E /* DocMatic.widget */,
 				3AD12EA52D57E06E00A3699E /* Frameworks */,
 				3AA0011F2D39CBFC0087A850 /* Products */,
-				3A20B4922E1FF4B1003233DF /* DocMatic.widgetExtension 2.entitlements */,
 			);
 			sourceTree = "<group>";
 		};
