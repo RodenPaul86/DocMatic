@@ -141,9 +141,9 @@ struct DocumentCardView: View {
             Button("Delete", role: .destructive) {
                 Task { @MainActor in
                     try? await Task.sleep(for: .seconds(0.3))
-                    ScanManager.shared.decrementScanCount()
                     context.delete(document)
                     try? context.save()
+                    ScanManager.shared.decrementScanCount()
                     WidgetCenter.shared.reloadAllTimelines()
                 }
             }

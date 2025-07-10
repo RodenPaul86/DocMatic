@@ -227,7 +227,6 @@ struct DocumentDetailView: View {
                             Label("Delete", systemImage: "trash")
                                 .tint(.red)
                         }
-                        
                     } label: {
                         Image(systemName: "list.bullet.indent")
                             .font(.title2)
@@ -239,9 +238,9 @@ struct DocumentDetailView: View {
                             dismiss()
                             Task { @MainActor in
                                 try? await Task.sleep(for: .seconds(0.3))
-                                ScanManager.shared.decrementScanCount()
                                 context.delete(document)
                                 try? context.save()
+                                ScanManager.shared.decrementScanCount()
                                 WidgetCenter.shared.reloadAllTimelines()
                             }
                         }
