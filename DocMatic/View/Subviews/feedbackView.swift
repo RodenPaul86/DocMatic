@@ -160,25 +160,19 @@ struct feedbackView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if !isKeyboardVisible {
-                        Button(action: { isShowingMailView.toggle() }) {
-                            Text("Send")
-                        }
-                        .disabled(textBody.isEmpty)
-                        .sheet(isPresented: $isShowingMailView) {
-                            MailView(
-                                isShowing: $isShowingMailView,
-                                recipient: "support@docmatic.app",
-                                subject: "DocMatic: \(selectedTopic)",
-                                body: generateEmailBody(),
-                                imageData: imageData
-                            ) {
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                        }
-                    } else {
-                        Button(action: { UIApplication.shared.hideKeyboard() }) {
-                            Text("Done")
+                    Button(action: { isShowingMailView.toggle() }) {
+                        Text("Send")
+                    }
+                    .disabled(textBody.isEmpty)
+                    .sheet(isPresented: $isShowingMailView) {
+                        MailView(
+                            isShowing: $isShowingMailView,
+                            recipient: "support@docmatic.app",
+                            subject: "DocMatic: \(selectedTopic)",
+                            body: generateEmailBody(),
+                            imageData: imageData
+                        ) {
+                            presentationMode.wrappedValue.dismiss()
                         }
                     }
                 }
@@ -294,10 +288,4 @@ struct MailView: UIViewControllerRepresentable {
     }
     
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
-}
-
-extension UIApplication {
-    func hideKeyboard() {
-        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
 }
