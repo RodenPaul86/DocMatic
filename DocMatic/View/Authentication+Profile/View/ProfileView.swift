@@ -126,9 +126,6 @@ struct ProfileView: View {
                     HStack {
                         Button(action: {
                             dismiss()
-                            if isHapticsEnabled {
-                                hapticManager.shared.notify(.impact(.rigid))
-                            }
                         }) {
                             Image(systemName: "xmark")
                                 .font(.title3)

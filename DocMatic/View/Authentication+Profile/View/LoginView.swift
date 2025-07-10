@@ -120,9 +120,6 @@ struct LoginView: View {
                 HStack {
                     Button(action: {
                         dismiss()
-                        if isHapticsEnabled {
-                            hapticManager.shared.notify(.impact(.light))
-                        }
                     }) {
                         Image(systemName: "xmark")
                             .font(.title3)
