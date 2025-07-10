@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct LaunchView: View {
-    @State private var loadingText: [String] = "Loading content...".map { String($0) }
+    @State private var loadingText: [String] = []
     @State private var showLoadingText: Bool = false
     private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
     @State private var counter: Int = 0
     @State private var loops: Int = 0
     @Binding var showLaunchView: Bool
+    
+    let documentCount: Int  // 👈 Add this
     
     var body: some View {
         ZStack {
@@ -28,7 +30,7 @@ struct LaunchView: View {
             ZStack {
                 if showLoadingText {
                     HStack(spacing: 0) {
-                        ForEach(loadingText.indices) { index in
+                        ForEach(loadingText.indices, id: \.self) { index in
                             Text(loadingText[index])
                                 .font(.headline)
                                 .fontWeight(.heavy)
@@ -36,13 +38,17 @@ struct LaunchView: View {
                                 .offset(y: counter == index ? -5 : 0)
                         }
                     }
-                    .transition(AnyTransition.scale.animation(.easeIn))
+                    .transition(.scale.animation(.easeIn))
                 }
             }
             .offset(y: 70)
         }
         .onAppear {
-            showLoadingText.toggle()
+            print("DEBUG: Document count = \(documentCount)")
+            // 👇 Choose text based on document count
+            let baseText = documentCount == 0 ? "Warming up the scanner…" : "Retrieving your scans…"
+            loadingText = baseText.map { String($0) }
+            showLoadingText = true
         }
         .onReceive(timer) { _ in
             withAnimation(.spring()) {
@@ -62,5 +68,5 @@ struct LaunchView: View {
 }
 
 #Preview {
-    LaunchView(showLaunchView: .constant(true))
+    LaunchView(showLaunchView: .constant(true), documentCount: 0)
 }
