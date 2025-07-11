@@ -11,7 +11,7 @@ struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
         ("Document Scans", "3", .infinity, true),
         ("Drag & Drop PDF's", "3", .infinity, true),
-        ("Remove Annoying Ad Banner", nil, .checkmark, false),
+        ("Remove Annoying Ad Banners", nil, .checkmark, false),
         ("Remove Watermark", nil, .checkmark, false),
         ("Lock & Home Screen Widgets", nil, .checkmark, true),
         ("Alternate App Icons", nil, .checkmark, false),
