@@ -146,7 +146,7 @@ struct SettingsView: View {
                 StoreProductPresenter(appStoreID: 693041126, isPresented: $showStoreView)
             )
             .manageSubscriptionsSheet(isPresented: $isPresentedManageSubscription)
-            .debugRevenueCatOverlay(isPresented: $showDebug)
+            //.debugRevenueCatOverlay(isPresented: $showDebug) /// <-- Disable this before sending for review.
         }
     }
     
