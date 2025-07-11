@@ -53,21 +53,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3A96594D2DFF13B000A5AB6E /* Exceptions for "DocMatic.widget" folder in "DocMatic.widgetExtension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */;
-		};
 		3A9659502DFF158E00A5AB6E /* Exceptions for "DocMatic" folder in "DocMatic.widgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Model/Document.swift,
 				Model/DocumentPage.swift,
-				Model/Item.swift,
-				Model/User.swift,
-				"View/Subviews/Theme+Sanner Helper/ScanManager.swift",
 			);
 			target = 3A9659382DFF13AE00A5AB6E /* DocMatic.widgetExtension */;
 		};
@@ -83,9 +73,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3A96593E2DFF13AE00A5AB6E /* DocMatic.widget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				3A96594D2DFF13B000A5AB6E /* Exceptions for "DocMatic.widget" folder in "DocMatic.widgetExtension" target */,
-			);
 			path = DocMatic.widget;
 			sourceTree = "<group>";
 		};
