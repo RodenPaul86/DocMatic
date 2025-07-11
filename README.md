@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="Images/github1024.png" alt="icon" width="150" style="border-radius: 25px;">
+    <img src="Images/github1024.png" alt="Icon" width="150" style="border-radius: 25px"/>
     <br />
     <b>DocMatic: Document Scanner</b>
 </h1>
@@ -43,7 +43,7 @@
     <a href="https://apps.apple.com/us/app/docmatic-document-scanner/id6740615012">
         <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
     </a>
-    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.1">
+    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.2">
         <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
 </div>
 
@@ -54,8 +54,11 @@ There are many document-scanning apps available, but only a few that truly get i
 
 DocMatic is designed to be a fast, intuitive, and privacy-focused document scanner that meets users’ expectations without unnecessary complexity.
 
-As part of my [portfolio](https://paulrodenjr.org) projects. DocMatic showcases my expertise in iOS development, combining powerful features with a seamless user experience.
+As part of my [portfolio projects](https://paulrodenjr.org/#projects). DocMatic showcases my expertise in iOS development, combining powerful features with a seamless user experience.
 </p>
+
+paulrodenjr.org/#projects
+
 
 ## Features
 
@@ -130,3 +133,13 @@ Thank you!
 
 ## License
 DocMatic is written in (Swift) and is distributed under the terms of the [Apache License](https://github.com/RodenPaul86/DocMatic/blob/main/LICENSE) Version 2.0).
+
+## App Store Notice
+
+This GitHub repository contains the open-source version of the app, intended for educational and non-commercial purposes.
+
+The version available on the App Store may include additional features, assets, or services that are not part of this repository.
+
+**Redistribution of this app—modified or unmodified—to any app store or software marketplace (including but not limited to the Apple App Store, Google Play Store, or Microsoft Store) is strictly prohibited without prior written permission.**
+
+Sensitive materials such as API keys, proprietary assets, and commercial features have been removed or excluded from this repository.
