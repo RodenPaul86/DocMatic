@@ -77,13 +77,21 @@ struct DocMaticApp: App {
                         }
                         .tint(Color.theme.accent)
                         .onAppear {
+                            notifyManager.shared.cancelReminder()
+                            notifyManager.shared.requestPermission()
                             checkAccessFlow()
                         }
                         .onChange(of: appSubModel.isLoading) { _, newValue in
                             if !newValue {
+                                notifyManager.shared.cancelReminder()
                                 checkAccessFlow()
                             }
                         }
+                        .onChange(of: scenePhase, { _, newPhase in
+                            if newPhase == .background {
+                                notifyManager.shared.appDidClose()
+                            }
+                        })
                         .task {
                             appSubModel.refreshSubscriptionStatus()
                         }
