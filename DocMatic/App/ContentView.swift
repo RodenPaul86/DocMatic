@@ -172,6 +172,7 @@ struct ContentView: View {
     private func createDocument() {
         guard let scanDocument else { return }
         isLoading = true
+        
         Task.detached(priority: .high) { [documentName] in
             let document = Document(name: documentName)
             var pages: [DocumentPage] = []
@@ -188,18 +189,61 @@ struct ContentView: View {
                     ? UIColor.white.withAlphaComponent(0.15)
                     : UIColor.black.withAlphaComponent(0.15)
                     
-                    if let logoImage = UIImage(named: "") { /// <-- TODO: create a logo that works with the watermark
-                        finalImage = await addTiledWatermarkWithLogo(to: originalImage, text: Bundle.main.appName, logo: logoImage, color: watermarkColor)
+                    if let logoImage = UIImage(named: "") {
+                        finalImage = await addTiledWatermarkWithLogo(
+                            to: originalImage,
+                            text: Bundle.main.appName,
+                            logo: logoImage,
+                            color: watermarkColor
+                        )
                     } else {
-                        finalImage = await addTiledWatermark(to: originalImage, text: Bundle.main.appName, color: watermarkColor)
+                        finalImage = await addTiledWatermark(
+                            to: originalImage,
+                            text: Bundle.main.appName,
+                            color: watermarkColor
+                        )
                     }
                 }
                 
+                // Save page image data
                 guard let pageData = finalImage.jpegData(compressionQuality: 0.65) else { return }
+                
+                let fileName = "\(documentName).pdf"
+                let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+                
+                let pdfDocument = PDFDocument()
+                
+                // Insert the scanned image as a real PDF page
+                if let pdfPage = PDFPage(image: finalImage) {
+                    pdfDocument.insert(pdfPage, at: 0) // or insert at current page count if multiple pages
+                }
+                
+                do {
+                    if FileManager.default.fileExists(atPath: tempURL.path) {
+                        try FileManager.default.removeItem(at: tempURL)
+                    }
+                    pdfDocument.write(to: tempURL)
+                    
+                    // Now copy to persistent location
+                    let docsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    let destination = docsURL.appendingPathComponent(fileName)
+                    
+                    if FileManager.default.fileExists(atPath: destination.path) {
+                        try FileManager.default.removeItem(at: destination)
+                    }
+                    try FileManager.default.copyItem(at: tempURL, to: destination)
+                    
+                    print("✅ Real PDF saved at: \(destination.path)")
+                    
+                } catch {
+                    print("❌ Error saving real PDF: \(error)")
+                    return
+                }
                 
                 let documentPage = DocumentPage(document: document, pageIndex: pageIndex, pageData: pageData)
                 pages.append(documentPage)
             }
+            
             document.pages = pages
             
             await MainActor.run {

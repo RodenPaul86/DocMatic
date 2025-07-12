@@ -87,8 +87,6 @@ struct SettingsView: View {
                 }
 #if DEBUG
                 Section(header: Text("Debuging Tools"), footer: Text(debugMessage)) { /// <-- Display the debug message
-                    let scanCount = UserDefaults.standard.value(forKey: "scanCount")
-                    customRow(icon: "scanner", firstLabel: "\(scanCount ?? "0") Document\(scanCount as? Int != 1 ? "s" : "") Scanned", secondLabel: "")
                     
                     customRow(icon: "ladybug", firstLabel: "RC Debug Overlay") {
                         showDebug = true

@@ -89,7 +89,7 @@ struct ProfileView: View {
                     
                     // MARK: Stats Section
                     HStack(alignment: .bottom, spacing: 40) {
-                        ProfileStatView(value: "\(profileViewModel.scannedCount)", label: "Scanned", icon: "document.viewfinder")
+                        ProfileStatView(value: "\(profileViewModel.scanCount)", label: "Scanned", icon: "document.viewfinder")
                         ProfileStatView(value: "\(profileViewModel.lockedCount)", label: "Locked", icon: "lock.doc")
                         ProfileStatView(value: "\(profileViewModel.streakCount)", label: "Streak", icon: "flame.fill")
                     }

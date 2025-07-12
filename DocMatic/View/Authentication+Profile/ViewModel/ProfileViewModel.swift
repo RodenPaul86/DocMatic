@@ -12,7 +12,7 @@ import SwiftData
 class ProfileViewModel: ObservableObject {
     @Published var documents: [Document] = []
     
-    var scannedCount: Int {
+    var scanCount: Int {
         documents.count
     }
     
