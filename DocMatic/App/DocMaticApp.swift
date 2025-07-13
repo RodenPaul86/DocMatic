@@ -124,8 +124,7 @@ struct DocMaticApp: App {
                 
                 ZStack {
                     if showLaunchView {
-                        let scanCount = UserDefaults.standard.integer(forKey: "scanCount") /// <-- returns 0 if nil
-                        LaunchView(showLaunchView: $showLaunchView, documentCount: scanCount)
+                        LaunchView(showLaunchView: $showLaunchView)
                             .transition(.move(edge: .leading))
                     }
                 }

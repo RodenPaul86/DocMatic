@@ -16,7 +16,7 @@ struct LaunchView: View {
     @State private var loops: Int = 0
     @Binding var showLaunchView: Bool
     
-    let documentCount: Int  // 👈 Add this
+    @ObservedObject private var scanManager = ScanManager.shared
     
     var body: some View {
         ZStack {
@@ -44,9 +44,11 @@ struct LaunchView: View {
             .offset(y: 70)
         }
         .onAppear {
-            print("DEBUG: Document count = \(documentCount)")
-            // 👇 Choose text based on document count
-            let baseText = documentCount == 0 ? "Warming up the scanner…" : "Retrieving your scans…"
+            print("DEBUG: Document count = \(scanManager.scanCount)")
+            let baseText = scanManager.scanCount == 0
+            ? "Warming up the scanner…"
+            : "Retrieving your scans…"
+            
             loadingText = baseText.map { String($0) }
             showLoadingText = true
         }
@@ -65,8 +67,4 @@ struct LaunchView: View {
             }
         }
     }
-}
-
-#Preview {
-    LaunchView(showLaunchView: .constant(true), documentCount: 0)
 }

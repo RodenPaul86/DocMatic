@@ -175,7 +175,7 @@ struct ContentView: View {
         isLoading = true
         
         Task.detached(priority: .high) { [documentName] in
-            let document = Document(name: documentName)
+            let document = Document(name: documentName, createdAt: Date())
             var pages: [DocumentPage] = []
             
             for pageIndex in 0..<scanDocument.pageCount {
@@ -252,6 +252,8 @@ struct ContentView: View {
                 
                 context.insert(document)
                 try? context.save()
+                ScanManager.shared.documents.append(document)
+                ScanManager.shared.documents = ScanManager.shared.documents
                 
                 self.scanDocument = nil
                 isLoading = false
@@ -457,7 +459,7 @@ struct ContentView: View {
         }
         
         let docName = url.deletingPathExtension().lastPathComponent
-        let newDoc = Document(name: docName)
+        let newDoc = Document(name: docName, createdAt: Date())
         var pages: [DocumentPage] = []
         
         for i in 0..<document.pageCount {
@@ -493,6 +495,9 @@ struct ContentView: View {
         
         do {
             try context.save()
+            ScanManager.shared.documents.append(newDoc)
+            ScanManager.shared.documents = ScanManager.shared.documents
+            
             print("✅ Document saved successfully")
         } catch {
             print("❌ Failed to save document: \(error)")

@@ -15,6 +15,7 @@ struct ProfileView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     @Environment(\.modelContext) private var context
     @StateObject private var profileViewModel = ProfileViewModel()
+    @StateObject private var scanManager = ScanManager.shared
     
     var body: some View {
         if let user = viewModel.currentUser {
@@ -89,9 +90,9 @@ struct ProfileView: View {
                     
                     // MARK: Stats Section
                     HStack(alignment: .bottom, spacing: 40) {
-                        ProfileStatView(value: "\(profileViewModel.scanCount)", label: "Scanned", icon: "document.viewfinder")
-                        ProfileStatView(value: "\(profileViewModel.lockedCount)", label: "Locked", icon: "lock.doc")
-                        ProfileStatView(value: "\(profileViewModel.streakCount)", label: "Streak", icon: "flame.fill")
+                        ProfileStatView(value: "\(scanManager.scanCount)", label: "Scanned", icon: "document.viewfinder")
+                        //ProfileStatView(value: "\(docVM.lockedCount)", label: "Locked", icon: "lock.doc")
+                        ProfileStatView(value: "\(scanManager.streakCount) day\(scanManager.streakCount == 1 ? "" : "s")", label: "Streak", icon: "flame.fill")
                     }
                     .padding(.vertical)
                     

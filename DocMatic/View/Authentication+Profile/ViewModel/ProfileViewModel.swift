@@ -12,34 +12,6 @@ import SwiftData
 class ProfileViewModel: ObservableObject {
     @Published var documents: [Document] = []
     
-    var scanCount: Int {
-        documents.count
-    }
-    
-    var lockedCount: Int {
-        documents.filter { $0.isLocked }.count
-    }
-    
-    var streakCount: Int {
-        let dates = documents.map { Calendar.current.startOfDay(for: $0.createdAt) }
-        let uniqueDays = Set(dates)
-        let sortedDays = uniqueDays.sorted(by: >)
-        
-        var streak = 0
-        var currentDay = Calendar.current.startOfDay(for: Date())
-        
-        for day in sortedDays {
-            if day == currentDay {
-                streak += 1
-                currentDay = Calendar.current.date(byAdding: .day, value: -1, to: currentDay)!
-            } else {
-                break
-            }
-        }
-        
-        return streak
-    }
-    
     // MARK: - Pages Shared
     @Published var pagesSharedCount: Int {
         didSet {

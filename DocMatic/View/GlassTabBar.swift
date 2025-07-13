@@ -81,7 +81,7 @@ struct GlassTabBar: View {
                                 Circle()
                                     .fill(Color.red)
                                 
-                                Text("\(scanManager.scansLeft)")
+                                Text("\(ScanManager.shared.scansLeft)")
                                     .font(.system(size: 16))
                                     .fontWeight(.semibold)
                                     .foregroundColor(.white)
@@ -89,7 +89,7 @@ struct GlassTabBar: View {
                             .frame(width: 23, height: 23)
                             .offset(x: 22, y: -22)
                             .transition(.scale.combined(with: .opacity))
-                            .animation(.easeInOut(duration: 0.4), value: scanManager.scansLeft)
+                            .animation(.easeInOut(duration: 0.4), value: ScanManager.shared.scansLeft)
                         }
                     }
                     .overlay {
