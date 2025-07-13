@@ -45,6 +45,9 @@ class PDFImportManager: ObservableObject {
         }
         
         context.insert(document)
+        ScanManager.shared.documents.append(document)
+        ScanManager.shared.documents = ScanManager.shared.documents
+        
         print("PDF imported successfully: \(documentName)")
     }
 }
