@@ -34,6 +34,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     @EnvironmentObject var tabBarVisibility: TabBarVisibility
+    @StateObject private var profileViewModel = ProfileViewModel()
     
     @State private var selectedTab = "Home"
     @State private var isKeyboardVisible: Bool = false
@@ -251,7 +252,6 @@ struct ContentView: View {
                 
                 context.insert(document)
                 try? context.save()
-                ScanManager.shared.incrementScanCount()
                 
                 self.scanDocument = nil
                 isLoading = false
@@ -493,7 +493,6 @@ struct ContentView: View {
         
         do {
             try context.save()
-            ScanManager.shared.incrementScanCount()
             print("✅ Document saved successfully")
         } catch {
             print("❌ Failed to save document: \(error)")

@@ -46,6 +46,7 @@ struct DocumentDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scene
     @EnvironmentObject var tabBarVisibility: TabBarVisibility
+    @EnvironmentObject var profileViewModel: ProfileViewModel
     
     let allinOne = AllinOne()
     
@@ -163,6 +164,8 @@ struct DocumentDetailView: View {
                         // MARK: Share Document
                         Button(action: {
                             if let url = generatePDFURL(from: document) {
+                                let sharedPageCount = document.pages?.count ?? 1
+                                profileViewModel.addSharedPages(sharedPageCount)
                                 DocumentActionManager.shared.share(documentURL: url)
                             }
                             allinOne.invalidate(reason: .actionPerformed)

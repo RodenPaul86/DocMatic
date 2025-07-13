@@ -96,20 +96,109 @@ struct ProfileView: View {
                     .padding(.vertical)
                     
                     ScrollView {
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 16) {
                             Text("Eco Achievements")
                                 .font(.title3.bold())
+                                .padding(.bottom)
                             
-                            achievement(title: "Seedling", description: "Your paperless journey begins.", goal: 1, progress: profileViewModel.ecoAchievements, iconName: "pineCone")
-                            achievement(title: "Sprout", description: "25 pages saved from the printer.", goal: 25, progress: profileViewModel.ecoAchievements, iconName: "sprout")
-                            achievement(title: "Twig", description: "100 pages saved. Keep growing!", goal: 100, progress: profileViewModel.ecoAchievements, iconName: "plant")
-                            achievement(title: "Branch", description: "250 pages saved. That’s a lot of paper.", goal: 250, progress: profileViewModel.ecoAchievements, iconName: "bamboo")
-                            achievement(title: "Tree Hugger", description: "500 pages saved! That’s a whole tree!", goal: 500, progress: profileViewModel.ecoAchievements, iconName: "tree")
-                            achievement(title: "Eco Hero", description: "1000 pages saved. You’ve gone green!", goal: 1000, progress: profileViewModel.ecoAchievements, iconName: "ecoLabel")
+                            achievement(title: "🌱 Paper Saver",
+                                        description: "Your first shared scan—one small step for you, one leafy leap for Earth.",
+                                        goal: 1,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "leaf")
+                            
+                            achievement(title: "🐛 Eco Explorer",
+                                        description: "You’re starting a sustainable sharing habit. Keep it growing!",
+                                        goal: 5,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "ant")
+                            
+                            achievement(title: "🍃 Leaf It to Me",
+                                        description: "10 pages shared—trees are quietly celebrating.",
+                                        goal: 10,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "leaf.circle")
+                            
+                            achievement(title: "🪴 Green Thumb",
+                                        description: "Your eco-sharing habits are starting to blossom beautifully.",
+                                        goal: 25,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "sun.min")
+                            
+                            achievement(title: "🐝 Buzz of Efficiency",
+                                        description: "50 pages shared—you’re working like a busy (and green) bee.",
+                                        goal: 50,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "hare")
+                            
+                            achievement(title: "🌳 Tree Hugger",
+                                        description: "100 shared pages—roughly a full tree saved from the printer!",
+                                        goal: 100,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "tree")
+                            
+                            achievement(title: "🌎 Planet Protector",
+                                        description: "You’re officially doing your part to keep things paperless.",
+                                        goal: 250,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "globe")
+                            
+                            achievement(title: "🔋 Carbon Cutter",
+                                        description: "500 shared scans—your impact is high-voltage eco-smart.",
+                                        goal: 500,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "bolt.fill")
+                            
+                            achievement(title: "🚴 Green Commuter",
+                                        description: "You’re sharing like a sustainable cyclist: clean and consistent.",
+                                        goal: 750,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "bicycle")
+                            
+                            achievement(title: "🦉 Wise Eco Warrior",
+                                        description: "1,000 pages shared! The forests nod in respect.",
+                                        goal: 1000,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "brain.head.profile")
+                            
+                            achievement(title: "🌤 Sky Saver",
+                                        description: "You’ve helped clear the air—CO₂ dodged thanks to your shares.",
+                                        goal: 1500,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "cloud.sun")
+                            
+                            achievement(title: "🧘 Zen Paperless Master",
+                                        description: "You’ve reached sharing serenity—2,000 pages and counting.",
+                                        goal: 2000,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "figure.mind.and.body")
+                            
+                            achievement(title: "🧪 Sustainable Scientist",
+                                        description: "You’re experimenting with paperless perfection. Results: impressive.",
+                                        goal: 2500,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "testtube.2")
+                            
+                            achievement(title: "🛰 Eco Pioneer",
+                                        description: "You’re sharing at orbital speeds. Next stop: a greener future.",
+                                        goal: 3000,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "satellite")
+                            
+                            achievement(title: "🛸 Planet Level: Expert",
+                                        description: "You’ve gone intergalactic with your green impact. Beam us up!",
+                                        goal: 3500,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "sparkles")
+                            
+                            achievement(title: "🏆 Legendary Earth Ally",
+                                        description: "A forest’s worth of shared pages. Earth salutes you.",
+                                        goal: 4000,
+                                        progress: profileViewModel.ecoAchievements,
+                                        iconName: "trophy")
                         }
                         .padding()
                     }
-                    
                 }
                 .safeAreaInset(edge: .bottom) {
                     customUserButtons()
@@ -119,7 +208,6 @@ struct ProfileView: View {
                     Task {
                         await viewModel.fetchUser()
                     }
-                    profileViewModel.fetchDocuments(from: context)
                 }
                 .overlay(
                     // MARK: chevron button in top-left
@@ -231,7 +319,6 @@ struct ProfileRowView: View {
 }
 
 struct achievement: View {
-    let id = UUID()
     let title: String
     let description: String
     let goal: Int

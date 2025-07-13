@@ -417,7 +417,6 @@ extension HomeView {
                                 newDocument.pages = pages
                             }
                             modelContext.insert(newDocument)
-                            ScanManager.shared.incrementScanCount()
                             WidgetCenter.shared.reloadAllTimelines()
                         }
                     } catch {

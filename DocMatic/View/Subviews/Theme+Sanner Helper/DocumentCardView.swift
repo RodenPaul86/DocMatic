@@ -222,8 +222,6 @@ struct DocumentCardView: View {
             context.insert(duplicated)
             try context.save()
             
-            ScanManager.shared.incrementScanCount()
-            
         } catch {
             print("Failed to duplicate document: \(error)")
         }
