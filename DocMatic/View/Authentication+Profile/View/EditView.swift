@@ -20,7 +20,7 @@ struct EditView: View {
     
     @Environment(\.supportsImagePlayground) var supportsImagePlayground
     @State private var isShowingImagePlayground: Bool = false
-     
+    
     @Environment(\.modelContext) private var context
     @StateObject private var profileVM = ProfileViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -156,7 +156,6 @@ struct EditView: View {
             }
             .padding(30)
         }
-        .ignoresSafeArea(.keyboard)
         .onAppear {
             if let user = authVM.currentUser {
                 if let urlString = user.profileImageUrl,

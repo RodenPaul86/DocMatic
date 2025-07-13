@@ -58,9 +58,16 @@ struct DocMaticApp: App {
                         .environmentObject(profileViewModel)
                         .onOpenURL { url in
                             Task {
-                                if appSubModel.isSubscriptionActive {
+                                let isPDF = url.pathExtension.lowercased() == "pdf"
+                                
+                                if !isPDF {
+                                    print("❌ Unsupported file type: \(url.lastPathComponent)")
+                                    return
+                                }
+                                
+                                if appSubModel.isSubscriptionActive || ScanManager.shared.scansLeft > 0 {
                                     let importer = PDFImportManager()
-                                    importer.importPDF(from: url, context: container.mainContext)
+                                    await importer.importPDF(from: url, context: container.mainContext)
                                 } else {
                                     isFreeLimitAlert = true
                                 }

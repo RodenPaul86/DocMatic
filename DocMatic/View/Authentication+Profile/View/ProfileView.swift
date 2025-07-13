@@ -16,6 +16,7 @@ struct ProfileView: View {
     @Environment(\.modelContext) private var context
     @StateObject private var profileViewModel = ProfileViewModel()
     @StateObject private var scanManager = ScanManager.shared
+    @Query(sort: [.init(\Document.createdAt, order: .reverse)]) private var allDocuments: [Document]
     
     var body: some View {
         if let user = viewModel.currentUser {
@@ -216,6 +217,10 @@ struct ProfileView: View {
                 }
                 .onAppear {
                     Task {
+                        // MARK: Load latest documents into ScanManager
+                        ScanManager.shared.loadDocuments(from: allDocuments)
+                        
+                        // MARK: Fetch user data
                         await viewModel.fetchUser()
                     }
                 }
