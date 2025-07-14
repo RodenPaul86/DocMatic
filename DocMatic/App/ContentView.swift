@@ -128,8 +128,8 @@ struct ContentView: View {
                 }
                 .ignoresSafeArea()
             }
-            .alert("Import URL", isPresented: $showingImportPrompt) {
-                TextField("Paste URL here...", text: $pdfURLString)
+            .alert("Import Document", isPresented: $showingImportPrompt) {
+                TextField("Paste your URL here...", text: $pdfURLString)
                 Button("Import") {
                     if let url = URL(string: pdfURLString.trimmingCharacters(in: .whitespacesAndNewlines)) {
                         Task {
@@ -143,6 +143,8 @@ struct ContentView: View {
                 Button("Cancel", role: .cancel) {
                     pdfURLString = ""
                 }
+            } message: {
+                Text("Example: https://example.com/file.pdf")
             }
         }
         .onAppear {
