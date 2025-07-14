@@ -12,37 +12,51 @@ import SwiftData
 class ProfileViewModel: ObservableObject {
     @Published var documents: [Document] = []
     
-    var scannedCount: Int {
-        documents.count
-    }
-    
-    var lockedCount: Int {
-        documents.filter { $0.isLocked }.count
-    }
-    
-    var streakCount: Int {
-        let dates = documents.map { Calendar.current.startOfDay(for: $0.createdAt) }
-        let uniqueDays = Set(dates)
-        let sortedDays = uniqueDays.sorted(by: >)
-        
-        var streak = 0
-        var currentDay = Calendar.current.startOfDay(for: Date())
-        
-        for day in sortedDays {
-            if day == currentDay {
-                streak += 1
-                currentDay = Calendar.current.date(byAdding: .day, value: -1, to: currentDay)!
-            } else {
-                break
-            }
+    // MARK: - Pages Shared
+    @Published var pagesSharedCount: Int {
+        didSet {
+            UserDefaults.standard.set(pagesSharedCount, forKey: "pagesSharedCount")
+            checkAndUpdateMilestones()
         }
-        
-        return streak
     }
     
     var ecoAchievements: Int {
-        let totalScannedPages = documents.compactMap { $0.pages?.count }.reduce(0, +)
-        return totalScannedPages
+        pagesSharedCount
+    }
+    
+    @Published var unlockedMilestones: Set<Int> = []
+    private let unlockedKey = "ecoUnlockedMilestones"
+    private let sharedKey = "pagesSharedCount"
+    
+    init() {
+        self.pagesSharedCount = UserDefaults.standard.integer(forKey: sharedKey)
+        loadUnlockedMilestones()
+    }
+    
+    func addSharedPages(_ count: Int) {
+        pagesSharedCount += count
+    }
+    
+    func checkAndUpdateMilestones() {
+        let allMilestones = [1, 5, 10, 25, 50, 100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 3500, 4000]
+        
+        for milestone in allMilestones {
+            if ecoAchievements >= milestone && !unlockedMilestones.contains(milestone) {
+                unlockedMilestones.insert(milestone)
+            }
+        }
+        
+        saveUnlockedMilestones()
+    }
+    
+    private func saveUnlockedMilestones() {
+        let array = Array(unlockedMilestones)
+        UserDefaults.standard.set(array, forKey: unlockedKey)
+    }
+    
+    private func loadUnlockedMilestones() {
+        let array = UserDefaults.standard.array(forKey: unlockedKey) as? [Int] ?? []
+        unlockedMilestones = Set(array)
     }
     
     func fetchDocuments(from context: ModelContext) {
@@ -52,5 +66,6 @@ class ProfileViewModel: ObservableObject {
         } catch {
             print("Failed to fetch documents: \(error)")
         }
+        checkAndUpdateMilestones()
     }
 }

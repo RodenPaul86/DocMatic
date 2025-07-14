@@ -125,6 +125,9 @@ struct HomeView: View {
                     progress = max(min(-newValue / 75, 1), 0)
                 }
             }
+            .onAppear {
+                ScanManager.shared.loadDocuments(from: documents)
+            }
             .onDrop(of: [UTType.pdf.identifier], isTargeted: $isTargeted) { providers in
                 handleDrop(providers: providers)
                 if AppReviewRequest.requestAvailable {
@@ -403,7 +406,7 @@ extension HomeView {
                         try FileManager.default.copyItem(at: tempURL, to: destination)
                         
                         DispatchQueue.main.async {
-                            let newDocument = Document(name: safeName)
+                            let newDocument = Document(name: safeName, createdAt: Date())
                             
                             if let pageImages = extractImagesFromPDF(at: destination) {
                                 var pages: [DocumentPage] = []
@@ -417,7 +420,8 @@ extension HomeView {
                                 newDocument.pages = pages
                             }
                             modelContext.insert(newDocument)
-                            ScanManager.shared.incrementScanCount()
+                            ScanManager.shared.documents.append(newDocument)
+                            ScanManager.shared.documents = ScanManager.shared.documents
                             WidgetCenter.shared.reloadAllTimelines()
                         }
                     } catch {

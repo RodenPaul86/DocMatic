@@ -203,51 +203,49 @@ struct DocumentCardView: View {
     
     private func duplicateDocument() {
         do {
+            // 1. Fetch all document names to avoid name collision
             let existingDocs = try context.fetch(FetchDescriptor<Document>())
             let existingNames = existingDocs.map { $0.name }
             
-            // Use improved name logic
+            // 2. Generate a unique name like "My File (Copy)"
             let newName = generateDuplicateName(from: document.name, existingNames: existingNames)
             
-            let copiedPages = document.pages?.map { originalPage in
+            // 3. Clone document pages
+            let copiedPages: [DocumentPage] = document.pages?.map { originalPage in
                 DocumentPage(
                     pageIndex: originalPage.pageIndex,
                     pageData: originalPage.pageData
                 )
             } ?? []
             
+            // 4. Create the new document and reassign page ownership
             let duplicated = Document(name: newName, pages: copiedPages)
             copiedPages.forEach { $0.document = duplicated }
             
+            // 5. Save to persistent context
             context.insert(duplicated)
             try context.save()
             
-            ScanManager.shared.incrementScanCount()
+            // 6. ✅ Update ScanManager (for streak, count, etc.)
+            ScanManager.shared.documents.append(duplicated)
+            ScanManager.shared.documents = ScanManager.shared.documents // Force UI update
+            
+            // Optional: Widget update
+            WidgetCenter.shared.reloadAllTimelines()
             
         } catch {
-            print("Failed to duplicate document: \(error)")
+            print("❌ Failed to duplicate document: \(error)")
         }
     }
     
-    private func generateDuplicateName(from originalName: String, existingNames: [String]) -> String {
-        let baseName: String
-        
-        // Try to strip off any existing "(copy...)" suffix
-        if let range = originalName.range(of: #" \((copy(?: \d+)?)\)$"#, options: .regularExpression) {
-            baseName = String(originalName[..<range.lowerBound])
-        } else {
-            baseName = originalName
-        }
-        
-        // Try "Base (copy)", then "Base (copy 2)", etc.
-        var newName = baseName + " (copy)"
+    func generateDuplicateName(from original: String, existingNames: [String]) -> String {
+        var newName = "\(original) (Copy)"
         var copyIndex = 2
         
         while existingNames.contains(newName) {
-            newName = "\(baseName) (copy \(copyIndex))"
+            newName = "\(original) (Copy \(copyIndex))"
             copyIndex += 1
         }
-        
         return newName
     }
 }

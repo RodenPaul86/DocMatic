@@ -11,48 +11,57 @@ struct releaseNotesView: View {
     @EnvironmentObject var appSubModel: appSubscriptionModel
     
     let updates: [appUpdate] = [
-        appUpdate(title: "Foundation for the Future",
-                  version: "2.0.0",
-                  date: "July 2025",
-                  description: "",
-                  imageName: "",
-                  features: [
-                    "UI/UX Redesign and Improvements.",
-                    "Optional profile login.",
-                    "Lock & Home screen widgets",
-                    "Drag and Drop PDF's"],
-                  bugFixes: [
-                    "General proformance upgrades and bug fixes."
-                  ]),
+        appUpdate(
+            title: "Foundation for the Future",
+            version: "2.0.0",
+            date: "July 2025",
+            description: "DocMatic 2.0 lays the groundwork for what's next with a complete redesign, better performance, and powerful new features.",
+            imageName: "update_2.0",
+            features: [
+                "Completely redesigned UI for a cleaner, smoother experience.",
+                "Optional profile login to personalize your setup.",
+                "New Lock & Home Screen widgets for quick access.",
+                "Automatic PDF backup to the Files app.",
+                "Drag & Drop support for even easier document handling.",
+                "Direct file imports into DocMatic from anywhere."
+            ],
+            bugFixes: [
+                "Improved performance and overall stability.",
+                "Various under-the-hood fixes for a smoother experience."
+            ]
+        ),
         
-        appUpdate(title: "The Polishing Update",
-                  version: "1.1.0",
-                  date: "May 2025",
-                  description: "",
-                  imageName: "",
-                  features: [
-                    "12 new app icons.",
-                    "DocMatic now has a full-screen, otimized iPad app.",
-                    "Redesigned settings UI.",
-                    "Long press gestures for quick access to frequently used features."
-                  ],
-                  bugFixes: [
-                    "Adjusted the color of the default app icon.",
-                    "Addressed a bug related to document thumbnails.",
-                    "Squashed other bugs."
-                  ]),
+        appUpdate(
+            title: "The Polishing Update",
+            version: "1.1.0",
+            date: "May 2025",
+            description: "",
+            imageName: "",
+            features: [
+                "12 new app icons.",
+                "DocMatic now has a full-screen, otimized iPad app.",
+                "Redesigned settings UI.",
+                "Long press gestures for quick access to frequently used features."
+            ],
+            bugFixes: [
+                "Adjusted the color of the default app icon.",
+                "Addressed a bug related to document thumbnails.",
+                "Squashed other bugs."
+            ]
+        ),
         
-        appUpdate(title: "DocMatic is Here!",
-                  version: "1.0.0",
-                  date: "February 2025",
-                  description: """
+        appUpdate(
+            title: "DocMatic is Here!",
+            version: "1.0.0",
+            date: "February 2025",
+            description: """
 We're thrilled to introduce DocMatic, your all-in-one document scanning solution! With this first release, you can scan, organize, and securely store your documents effortlessly. 
 
 DocMatic is designed to streamline your workflow and simplify document management, wherever you are.
 """,
-                  imageName: "",
-                  features: nil,
-                  bugFixes: nil)
+            imageName: "",
+            features: nil,
+            bugFixes: nil)
     ]
     
     var body: some View {
@@ -81,32 +90,32 @@ struct UpdateCard: View {
             VStack(spacing: 4) {
                 if !update.title.isEmpty {
                     Text(update.title)
-                        .font(.title2)
-                        .fontWeight(.bold)
+                        .font(.title2.bold())
                 }
                 
                 Text("v\(update.version) • \(update.date)")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                
+                // Description
+                if !update.description.isEmpty {
+                    Text(update.description)
+                        .font(.body)
+                        .padding(.top, 6)
+                }
             }
             .frame(maxWidth: .infinity)
             .multilineTextAlignment(.center)
             
-            // Description
-            if !update.description.isEmpty {
-                Text(update.description)
-                    .font(.body)
-            }
-            
             // Centered Optional image
-            VStack(spacing: 4) {
+            VStack(spacing: 6) {
                 if !update.imageName.isEmpty {
                     Image(update.imageName)
                         .resizable()
                         .scaledToFit()
-                        .frame(maxHeight: 150)
+                        .frame(maxHeight: 400)
                         .cornerRadius(12)
-                        .padding(.bottom, 4)
+                        .padding(.bottom, 6)
                 }
             }
             .frame(maxWidth: .infinity)

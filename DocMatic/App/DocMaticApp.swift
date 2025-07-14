@@ -15,6 +15,7 @@ import Firebase
 struct DocMaticApp: App {
     @StateObject var authVM: AuthViewModel = .init()
     @StateObject var appSubModel = appSubscriptionModel()
+    @StateObject private var profileViewModel = ProfileViewModel()
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
     @AppStorage("showTipsForTesting") private var showTipsForTesting: Bool = false
     
@@ -54,12 +55,19 @@ struct DocMaticApp: App {
                         .environmentObject(appSubModel)
                         .environmentObject(authVM)
                         .environmentObject(tabBarVisibility)
+                        .environmentObject(profileViewModel)
                         .onOpenURL { url in
                             Task {
-                                if appSubModel.isSubscriptionActive {
+                                let isPDF = url.pathExtension.lowercased() == "pdf"
+                                
+                                if !isPDF {
+                                    print("❌ Unsupported file type: \(url.lastPathComponent)")
+                                    return
+                                }
+                                
+                                if appSubModel.isSubscriptionActive || ScanManager.shared.scansLeft > 0 {
                                     let importer = PDFImportManager()
-                                    importer.importPDF(from: url, context: container.mainContext)
-                                    ScanManager.shared.incrementScanCount()
+                                    await importer.importPDF(from: url, context: container.mainContext)
                                 } else {
                                     isFreeLimitAlert = true
                                 }
@@ -123,8 +131,7 @@ struct DocMaticApp: App {
                 
                 ZStack {
                     if showLaunchView {
-                        let scanCount = UserDefaults.standard.value(forKey: "scanCount")
-                        LaunchView(showLaunchView: $showLaunchView, documentCount: scanCount as! Int)
+                        LaunchView(showLaunchView: $showLaunchView)
                             .transition(.move(edge: .leading))
                     }
                 }

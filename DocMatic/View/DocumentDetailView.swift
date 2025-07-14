@@ -46,8 +46,11 @@ struct DocumentDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scene
     @EnvironmentObject var tabBarVisibility: TabBarVisibility
+    @EnvironmentObject var profileViewModel: ProfileViewModel
     
     let allinOne = AllinOne()
+    
+    @State private var documentSize: String? = nil
     
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
@@ -120,6 +123,10 @@ struct DocumentDetailView: View {
                     tabBarVisibility.isVisible = false
                 }
                 
+                if let url = generatePDFURL(from: document) {
+                    documentSize = getFileSize(for: url)
+                }
+                
                 guard document.isLocked else {
                     isUnlocked = true
                     return
@@ -160,72 +167,86 @@ struct DocumentDetailView: View {
             .overlay(alignment: .leading) {
                 GeometryReader { geometry in
                     Menu {
-                        // MARK: Share Document
-                        Button(action: {
-                            if let url = generatePDFURL(from: document) {
-                                DocumentActionManager.shared.share(documentURL: url)
+                        if let documentSize {
+                            Section {
+                                Label("Size: \(documentSize)", systemImage: "doc")
+                                    .tint(.primary)
+                                    .disabled(true)
                             }
-                            allinOne.invalidate(reason: .actionPerformed)
-                        }) {
-                            Label("Share", systemImage: "square.and.arrow.up")
-                                .tint(.primary)
                         }
                         
-                        // MARK: Save Document
-                        Button(action: {
-                            if let url = generatePDFURL(from: document) {
-                                DocumentActionManager.shared.saveToFiles(documentURL: url)
+                        Section {
+                            // MARK: Share Document
+                            Button(action: {
+                                if let url = generatePDFURL(from: document) {
+                                    let sharedPageCount = document.pages?.count ?? 1
+                                    profileViewModel.addSharedPages(sharedPageCount)
+                                    DocumentActionManager.shared.share(documentURL: url)
+                                }
+                                allinOne.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("Share", systemImage: "square.and.arrow.up")
+                                    .tint(.primary)
                             }
-                            allinOne.invalidate(reason: .actionPerformed)
-                        }) {
-                            Label("Save to Files", systemImage: "folder")
-                                .tint(.primary)
-                        }
-                        
-                        // MARK: Print File
-                        Button(action: {
-                            //printDocument()
-                            if let url = generatePDFURL(from: document) {
-                                DocumentActionManager.shared.print(documentURL: url)
+                            
+                            // MARK: Save Document
+                            Button(action: {
+                                if let url = generatePDFURL(from: document) {
+                                    DocumentActionManager.shared.saveToFiles(documentURL: url)
+                                }
+                                allinOne.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("Save to Files", systemImage: "folder")
+                                    .tint(.primary)
                             }
-                            allinOne.invalidate(reason: .actionPerformed)
-                        }) {
-                            Label("Print", systemImage: "printer")
-                                .tint(.primary)
-                        }
-                        
-                        // MARK: Rename File
-                        Button(action: {
-                            newFileName = document.name /// <-- Pre-fill the current name
-                            isRenaming = true
-                            allinOne.invalidate(reason: .actionPerformed)
-                        }) {
-                            Label("Rename", systemImage: "pencil")
-                                .tint(.primary)
-                        }
-                        
-                        // MARK: Lock File
-                        Button(action: {
-                            document.isLocked.toggle()
-                            isUnlocked = !document.isLocked
-                            try? context.save()
-                            allinOne.invalidate(reason: .actionPerformed)
-                            if document.isLocked {
-                                dismiss()
+                            
+                            // MARK: Print File
+                            Button(action: {
+                                //printDocument()
+                                if let url = generatePDFURL(from: document) {
+                                    DocumentActionManager.shared.print(documentURL: url)
+                                }
+                                allinOne.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("Print", systemImage: "printer")
+                                    .tint(.primary)
                             }
-                            WidgetCenter.shared.reloadAllTimelines()
-                        }) {
-                            Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
-                                .tint(.primary)
                         }
                         
-                        // MARK: Delete File
-                        Button(role: .destructive) {
-                            deleteAlert = true
-                            allinOne.invalidate(reason: .actionPerformed)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                                .tint(.red)
+                        Section {
+                            // MARK: Lock File
+                            Button(action: {
+                                document.isLocked.toggle()
+                                isUnlocked = !document.isLocked
+                                try? context.save()
+                                allinOne.invalidate(reason: .actionPerformed)
+                                if document.isLocked {
+                                    dismiss()
+                                }
+                                WidgetCenter.shared.reloadAllTimelines()
+                            }) {
+                                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
+                                    .tint(.primary)
+                            }
+                            
+                            // MARK: Rename File
+                            Button(action: {
+                                newFileName = document.name /// <-- Pre-fill the current name
+                                isRenaming = true
+                                allinOne.invalidate(reason: .actionPerformed)
+                            }) {
+                                Label("Rename", systemImage: "pencil")
+                                    .tint(.primary)
+                            }
+                            
+                            // MARK: Delete File
+                            Button(role: .destructive) {
+                                deleteAlert = true
+                                allinOne.invalidate(reason: .actionPerformed)
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                                    .tint(.red)
+                            }
                         }
                     } label: {
                         Image(systemName: "list.bullet.indent")
@@ -389,5 +410,18 @@ struct DocumentDetailView: View {
         } catch {
             print("Failed to rename the file: \(error)")
         }
+    }
+    
+    func getFileSize(for url: URL) -> String? {
+        do {
+            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+            if let fileSize = attributes[.size] as? NSNumber {
+                let bytes = fileSize.doubleValue
+                return ByteCountFormatter.string(fromByteCount: Int64(bytes), countStyle: .file)
+            }
+        } catch {
+            print("❌ Failed to get file size: \(error)")
+        }
+        return nil
     }
 }

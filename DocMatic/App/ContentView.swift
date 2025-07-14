@@ -34,9 +34,13 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.requestReview) var requestReview
     @EnvironmentObject var tabBarVisibility: TabBarVisibility
+    @StateObject private var profileViewModel = ProfileViewModel()
     
     @State private var selectedTab = "Home"
     @State private var isKeyboardVisible: Bool = false
+    
+    @State private var showingImportPrompt: Bool = false
+    @State private var pdfURLString = ""
     
     var body: some View {
         ZStack {
@@ -89,22 +93,25 @@ struct ContentView: View {
                 }
             }
             .confirmationDialog("Choose how you’d like to add a document.", isPresented: $showImportOption, titleVisibility: .visible) {
-                Button("Scan") {
+                Button("Scan a Document") {
                     showScannerView = true
                 }
                 
-                Button("Import") {
+                Button("Import from Files") {
                     showDocumentPicker = true
+                }
+                
+                Button("Import PDF from URL") {
+                    showingImportPrompt = true
                 }
                 
                 Button("Cancel", role: .cancel) {}
             }
             .sheet(isPresented: $showDocumentPicker) {
                 DocumentPicker { urls in
-                    // Handle imported document URLs here
                     for url in urls {
                         Task {
-                            await saveImportedDocument(from: url, in: context)
+                            await importFromFiles(from: url, in: context)
                         }
                     }
                 }
@@ -120,6 +127,22 @@ struct ContentView: View {
                     askDocumentName = true
                 }
                 .ignoresSafeArea()
+            }
+            .alert("Import URL", isPresented: $showingImportPrompt) {
+                TextField("Paste URL here...", text: $pdfURLString)
+                Button("Import") {
+                    if let url = URL(string: pdfURLString.trimmingCharacters(in: .whitespacesAndNewlines)) {
+                        Task {
+                            await importPDF(from: url, in: context)
+                        }
+                    }
+                    pdfURLString = ""
+                }
+                .disabled(!isValidURL(pdfURLString))
+                
+                Button("Cancel", role: .cancel) {
+                    pdfURLString = ""
+                }
             }
         }
         .onAppear {
@@ -168,12 +191,13 @@ struct ContentView: View {
         }
     }
     
-    // MARK: Helper Methods
+    // MARK: Craeting Document with Camera
     private func createDocument() {
         guard let scanDocument else { return }
         isLoading = true
+        
         Task.detached(priority: .high) { [documentName] in
-            let document = Document(name: documentName)
+            let document = Document(name: documentName, createdAt: Date())
             var pages: [DocumentPage] = []
             
             for pageIndex in 0..<scanDocument.pageCount {
@@ -188,18 +212,61 @@ struct ContentView: View {
                     ? UIColor.white.withAlphaComponent(0.15)
                     : UIColor.black.withAlphaComponent(0.15)
                     
-                    if let logoImage = UIImage(named: "") { /// <-- TODO: create a logo that works with the watermark
-                        finalImage = await addTiledWatermarkWithLogo(to: originalImage, text: Bundle.main.appName, logo: logoImage, color: watermarkColor)
+                    if let logoImage = UIImage(named: "") {
+                        finalImage = await addTiledWatermarkWithLogo(
+                            to: originalImage,
+                            text: Bundle.main.appName,
+                            logo: logoImage,
+                            color: watermarkColor
+                        )
                     } else {
-                        finalImage = await addTiledWatermark(to: originalImage, text: Bundle.main.appName, color: watermarkColor)
+                        finalImage = await addTiledWatermark(
+                            to: originalImage,
+                            text: Bundle.main.appName,
+                            color: watermarkColor
+                        )
                     }
                 }
                 
+                // Save page image data
                 guard let pageData = finalImage.jpegData(compressionQuality: 0.65) else { return }
+                
+                let fileName = "\(documentName).pdf"
+                let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+                
+                let pdfDocument = PDFDocument()
+                
+                // Insert the scanned image as a real PDF page
+                if let pdfPage = PDFPage(image: finalImage) {
+                    pdfDocument.insert(pdfPage, at: 0) // or insert at current page count if multiple pages
+                }
+                
+                do {
+                    if FileManager.default.fileExists(atPath: tempURL.path) {
+                        try FileManager.default.removeItem(at: tempURL)
+                    }
+                    pdfDocument.write(to: tempURL)
+                    
+                    // Now copy to persistent location
+                    let docsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                    let destination = docsURL.appendingPathComponent(fileName)
+                    
+                    if FileManager.default.fileExists(atPath: destination.path) {
+                        try FileManager.default.removeItem(at: destination)
+                    }
+                    try FileManager.default.copyItem(at: tempURL, to: destination)
+                    
+                    print("✅ Real PDF saved at: \(destination.path)")
+                    
+                } catch {
+                    print("❌ Error saving real PDF: \(error)")
+                    return
+                }
                 
                 let documentPage = DocumentPage(document: document, pageIndex: pageIndex, pageData: pageData)
                 pages.append(documentPage)
             }
+            
             document.pages = pages
             
             await MainActor.run {
@@ -207,7 +274,8 @@ struct ContentView: View {
                 
                 context.insert(document)
                 try? context.save()
-                ScanManager.shared.incrementScanCount()
+                ScanManager.shared.documents.append(document)
+                ScanManager.shared.documents = ScanManager.shared.documents
                 
                 self.scanDocument = nil
                 isLoading = false
@@ -248,12 +316,13 @@ struct ContentView: View {
         showAlert(with: errorMessage)
     }
     
-    func showAlert(with message: String) {
+    private func showAlert(with message: String) {
         // MARK: Add your alert presentation logic, e.g., using SwiftUI's `Alert`
         alertMessage = message
         showAlert = true
     }
     
+    // MARK: Tiled Watermark Wth Logo
     func addTiledWatermarkWithLogo(to image: UIImage, text: String = "DocMatic", logo: UIImage, color: UIColor) -> UIImage {
         let scale = image.scale
         let size = image.size
@@ -314,6 +383,7 @@ struct ContentView: View {
         return watermarkedImage ?? image
     }
     
+    // MARK: Regular Watermark
     func addTiledWatermark(to image: UIImage, text: String = "DocMatic", color: UIColor) -> UIImage {
         let scale = image.scale
         let size = image.size
@@ -400,7 +470,8 @@ struct ContentView: View {
         return luminance < 0.5 // true = dark background
     }
     
-    func saveImportedDocument(from url: URL, in context: ModelContext) async {
+    // MARK: Import Documents From Files and Web
+    func importFromFiles(from url: URL, in context: ModelContext) async {
         guard url.startAccessingSecurityScopedResource() else {
             print("❌ Failed to access security scoped resource")
             return
@@ -413,7 +484,7 @@ struct ContentView: View {
         }
         
         let docName = url.deletingPathExtension().lastPathComponent
-        let newDoc = Document(name: docName)
+        let newDoc = Document(name: docName, createdAt: Date())
         var pages: [DocumentPage] = []
         
         for i in 0..<document.pageCount {
@@ -428,13 +499,11 @@ struct ContentView: View {
                 UIColor.white.set()
                 cgContext.fill(pageBounds)
                 
-                // Flip the context vertically
                 cgContext.saveGState()
                 cgContext.translateBy(x: 0, y: pageBounds.height)
                 cgContext.scaleBy(x: 1, y: -1)
                 
                 page.draw(with: .mediaBox, to: cgContext)
-                
                 cgContext.restoreGState()
             }
             
@@ -445,14 +514,125 @@ struct ContentView: View {
         }
         
         newDoc.pages = pages
-        context.insert(newDoc)
+        
+        // ✅ Save the original PDF to the app’s Documents folder
+        let fileName = "\(docName).pdf"
+        let destination = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            .appendingPathComponent(fileName)
         
         do {
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try FileManager.default.removeItem(at: destination)
+            }
+            try FileManager.default.copyItem(at: url, to: destination)
+            print("📄 Original PDF copied to: \(destination.lastPathComponent)")
+            
+            // Optionally store the file name or URL on your Document model:
+            // newDoc.pdfURL = destination
+            
+            context.insert(newDoc)
             try context.save()
-            ScanManager.shared.incrementScanCount()
+            
+            ScanManager.shared.documents.append(newDoc)
+            ScanManager.shared.documents = ScanManager.shared.documents
+            
             print("✅ Document saved successfully")
         } catch {
             print("❌ Failed to save document: \(error)")
+        }
+    }
+    
+    func importFromWeb(from url: URL, in context: ModelContext) async {
+        guard let document = PDFDocument(url: url) else {
+            print("❌ Failed to load PDF")
+            return
+        }
+
+        let docName = url.deletingPathExtension().lastPathComponent
+        let newDoc = Document(name: docName, createdAt: Date())
+        var pages: [DocumentPage] = []
+
+        for i in 0..<document.pageCount {
+            guard let page = document.page(at: i) else { continue }
+
+            let pageBounds = page.bounds(for: .mediaBox)
+            let renderer = UIGraphicsImageRenderer(size: pageBounds.size)
+
+            let img = renderer.image { ctx in
+                let cgContext = ctx.cgContext
+
+                UIColor.white.set()
+                cgContext.fill(pageBounds)
+
+                cgContext.saveGState()
+                cgContext.translateBy(x: 0, y: pageBounds.height)
+                cgContext.scaleBy(x: 1, y: -1)
+
+                page.draw(with: .mediaBox, to: cgContext)
+                cgContext.restoreGState()
+            }
+
+            if let data = img.jpegData(compressionQuality: 0.9) {
+                let docPage = DocumentPage(document: newDoc, pageIndex: i, pageData: data)
+                pages.append(docPage)
+            }
+        }
+
+        newDoc.pages = pages
+
+        // ✅ Save the original PDF to the app’s Documents folder
+        let fileName = "\(docName).pdf"
+        let destination = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            .appendingPathComponent(fileName)
+
+        do {
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try FileManager.default.removeItem(at: destination)
+            }
+            try FileManager.default.copyItem(at: url, to: destination)
+            print("📄 Original PDF copied to: \(destination.lastPathComponent)")
+
+            // Optionally store the file name or URL on your Document model:
+            // newDoc.pdfURL = destination
+
+            context.insert(newDoc)
+            try context.save()
+
+            ScanManager.shared.documents.append(newDoc)
+            ScanManager.shared.documents = ScanManager.shared.documents
+
+            print("✅ Document saved successfully")
+        } catch {
+            print("❌ Failed to save document: \(error)")
+        }
+    }
+    
+    func isValidURL(_ urlString: String) -> Bool {
+        guard let url = URL(string: urlString.lowercased()) else { return false }
+        return url.scheme == "http" || url.scheme == "https"
+    }
+    
+    func importPDF(from remoteURL: URL, in context: ModelContext) async {
+        do {
+            // 1. Download the PDF data
+            let (data, response) = try await URLSession.shared.data(from: remoteURL)
+            
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("❌ Invalid HTTP response")
+                return
+            }
+            
+            // 2. Save the downloaded data to a temp file
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".pdf")
+            try data.write(to: tempURL)
+            
+            // 3. Reuse your existing import logic
+            await importFromWeb(from: tempURL, in: context)
+            
+            print("✅ PDF downloaded and imported successfully")
+            
+        } catch {
+            print("❌ Failed to download or import PDF: \(error)")
         }
     }
 }
