@@ -119,7 +119,9 @@ paulrodenjr.org/#projects
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.21.1")
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.32.0")
+    .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.2")
+    .package(url: "https://github.com/firebase/firebase-ios-sdk" from: "11.15.0")
 ]
 ```
 
