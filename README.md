@@ -39,12 +39,22 @@
 ## Download
 
 <div align="center">
-    <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
+  <h4><b>You can get DocMatic from one of the links below! 👇</b></h4>
+
+  <div style="display: flex; align-items: center; gap: 20px;">
     <a href="https://apps.apple.com/us/app/docmatic-document-scanner/id6740615012">
-        <img src="Images/Badges/download-appstore/black_appstore_badge.svg" alt="Get it on AppStore" width= "160" height="80" />
+      <img src="Images/Badges/download-appstore/black_appstore_badge.svg"
+           alt="Get it on App Store"
+           width="160" height="80"
+           style="border: none; outline: none; box-shadow: none;" />
     </a>
     <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.2">
-        <img src="Images/Badges/github-badge.png" alt="Get it on GitHub" height="80" />
+      <img src="Images/Badges/github-badge.png"
+           alt="Get it on GitHub"
+           height="80"
+           style="border: none; outline: none; box-shadow: none;" />
+    </a>
+  </div>
 </div>
 
 ## Motivation
@@ -109,7 +119,9 @@ paulrodenjr.org/#projects
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.21.1")
+    .package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "5.32.0")
+    .package(url: "https://github.com/airbnb/lottie-ios", from: "4.5.2")
+    .package(url: "https://github.com/firebase/firebase-ios-sdk" from: "11.15.0")
 ]
 ```
 
