@@ -59,32 +59,54 @@ struct ContentView: View {
                 Spacer()
                 
                 if tabBarVisibility.isVisible {
-                    GlassTabBar(selectedTab: $selectedTab) {
-                        if appSubModel.isSubscriptionActive {
-                            showImportOption = true
-                        } else if ScanManager.shared.scansLeft > 0 {
-                            showScannerView = true
-                        } else {
-                            isPaywallPresented = true
+                    if #available(iOS 26.0, *) {
+                        GlassTabBar(selectedTab: $selectedTab) {
+                            if appSubModel.isSubscriptionActive {
+                                showImportOption = true
+                            } else if ScanManager.shared.scansLeft > 0 {
+                                showScannerView = true
+                            } else {
+                                isPaywallPresented = true
+                            }
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
                         }
-                        if isHapticsEnabled {
-                            hapticManager.shared.notify(.notification(.success))
-                        }
-                    }
-                    .padding(.bottom, -10)
-                    .background {
-                        progressiveBlurView()
-                            .blur(radius: 10)
-                            .padding(.horizontal, -15)
-                            .padding(.bottom, -120)
-                            .padding(.top, -10)
-                    }
-                    .transition(
-                        .asymmetric(
-                            insertion: .move(edge: .bottom).combined(with: .opacity),
-                            removal: .move(edge: .bottom).combined(with: .opacity)
+                        .padding(.bottom, -13)
+                        .transition(
+                            .asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .move(edge: .bottom).combined(with: .opacity)
+                            )
                         )
-                    )
+                    } else {
+                        GlassTabBar(selectedTab: $selectedTab) {
+                            if appSubModel.isSubscriptionActive {
+                                showImportOption = true
+                            } else if ScanManager.shared.scansLeft > 0 {
+                                showScannerView = true
+                            } else {
+                                isPaywallPresented = true
+                            }
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
+                        }
+                        .padding(.bottom, -10)
+                        .background {
+                            progressiveBlurView()
+                                .blur(radius: 10)
+                                .padding(.horizontal, -15)
+                                .padding(.bottom, -120)
+                                .padding(.top, -10)
+                        }
+                        .transition(
+                            .asymmetric(
+                                insertion: .move(edge: .bottom).combined(with: .opacity),
+                                removal: .move(edge: .bottom).combined(with: .opacity)
+                            )
+                        )
+                    }
                     
                     if !appSubModel.isSubscriptionActive {
                         adBannerView()
