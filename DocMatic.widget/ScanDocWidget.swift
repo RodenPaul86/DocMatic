@@ -111,7 +111,7 @@ struct ScanDocWidget: Widget {
         StaticConfiguration(kind: kind, provider: ScanDocProvider()) { entry in
             Link(destination: URL(string: "docmatic://scan")!) {
                 YourWidgetEntryView(entry: entry)
-                    .containerBackground(Color("WidgetBackground"), for: .widget)
+                    .containerBackground(.clear, for: .widget)
             }
         }
         .configurationDisplayName("Quick Scan")
