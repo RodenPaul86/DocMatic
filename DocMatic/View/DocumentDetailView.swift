@@ -225,7 +225,7 @@ struct DocumentDetailView: View {
                                 }
                                 WidgetCenter.shared.reloadAllTimelines()
                             }) {
-                                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
+                                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock")
                                     .tint(.primary)
                             }
                             

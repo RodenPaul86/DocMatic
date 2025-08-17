@@ -91,45 +91,6 @@ struct DocumentCardView: View {
                 .foregroundStyle(.gray)
         }
         .padding(10) /// <- Padding for a cleaner look around the content
-        .contextMenu {
-            Button(action: {
-                newFileName = document.name /// <-- Pre-fill the current name
-                isRenaming = true
-            }) {
-                Label("Rename", systemImage: "pencil")
-                    .tint(.primary)
-            }
-            
-            Button(action: {
-                duplicateDocument()
-            }) {
-                Label("Duplicate", systemImage: "doc.on.doc")
-                    .tint(.primary)
-            }
-            
-            Button(action: {
-                if document.isLocked {
-                    // Attempt biometric authentication before unlocking
-                    authenticateUser()
-                } else {
-                    // Lock the document directly
-                    document.isLocked = true
-                    isUnlocked = false
-                    try? context.save()
-                    WidgetCenter.shared.reloadAllTimelines()
-                }
-            }) {
-                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open.fill" : "lock.fill")
-                    .tint(.primary)
-            }
-            
-            Button(role: .destructive, action: {
-                deleteAlert = true
-            }) {
-                Label("Delete", systemImage: "trash")
-                    .tint(.red)
-            }
-        }
         .onChange(of: isUnlocked) { oldValue, newValue in
             if newValue && document.isLocked {
                 document.isLocked = false
@@ -174,6 +135,45 @@ struct DocumentCardView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 15)) /// <- Keep rounded corners for the "paper" effect
         )
         .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 5) /// <- Paper shadow effect
+        .contextMenu {
+            Button(action: {
+                newFileName = document.name /// <-- Pre-fill the current name
+                isRenaming = true
+            }) {
+                Label("Rename", systemImage: "pencil")
+                    .tint(.primary)
+            }
+            
+            Button(action: {
+                duplicateDocument()
+            }) {
+                Label("Duplicate", systemImage: "doc.on.doc")
+                    .tint(.primary)
+            }
+            
+            Button(action: {
+                if document.isLocked {
+                    // Attempt biometric authentication before unlocking
+                    authenticateUser()
+                } else {
+                    // Lock the document directly
+                    document.isLocked = true
+                    isUnlocked = false
+                    try? context.save()
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+            }) {
+                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock")
+                    .tint(.primary)
+            }
+            
+            Button(role: .destructive, action: {
+                deleteAlert = true
+            }) {
+                Label("Delete", systemImage: "trash")
+                    .tint(.red)
+            }
+        }
     }
     
     // MARK: Renaming Files
