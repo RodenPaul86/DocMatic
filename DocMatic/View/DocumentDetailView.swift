@@ -17,9 +17,6 @@ struct DocumentDetailView: View {
     @State private var currentPageIndex: Int = 0
     @State private var showPageNumber: Bool = false
     
-    @State private var isMarkupActive: Bool = false
-    @State private var drawing = PKDrawing()
-    
     // MARK: View Properties
     @State private var isLoading: Bool = false
     @State private var showFileMover: Bool = false
@@ -68,59 +65,51 @@ struct DocumentDetailView: View {
                     TabView(selection: $currentPageIndex) {
                         ForEach(pages) { page in
                             if let image = UIImage(data: page.pageData) {
-                                ZStack {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .scaleEffect(zoom)
-                                        .offset(offset) /// <-  Apply the drag offset
-                                        .gesture(
-                                            // MARK: Only allow dragging if zoomed in
-                                            zoom > 1.0 ? DragGesture()
-                                                .onChanged { value in
-                                                    offset = CGSize(
-                                                        width: lastOffset.width + value.translation.width,
-                                                        height: lastOffset.height + value.translation.height
-                                                    )
-                                                }
-                                                .onEnded { value in
-                                                    lastOffset = offset
-                                                } : nil /// <- Disable dragging if zoomed out
-                                        )
-                                        .highPriorityGesture( /// <-- Double-tap zoom
-                                            TapGesture(count: 2)
-                                                .onEnded {
-                                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                                        if zoom > 1.0 {
-                                                            zoom = 1.0
-                                                            offset = .zero
-                                                            lastOffset = .zero
-                                                        } else {
-                                                            zoom = 2.5
-                                                        }
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .scaleEffect(zoom)
+                                    .offset(offset) /// <-  Apply the drag offset
+                                    .gesture(
+                                        // MARK: Only allow dragging if zoomed in
+                                        zoom > 1.0 ? DragGesture()
+                                            .onChanged { value in
+                                                offset = CGSize(
+                                                    width: lastOffset.width + value.translation.width,
+                                                    height: lastOffset.height + value.translation.height
+                                                )
+                                            }
+                                            .onEnded { value in
+                                                lastOffset = offset
+                                            } : nil /// <- Disable dragging if zoomed out
+                                    )
+                                    .highPriorityGesture( /// <-- Double-tap zoom
+                                        TapGesture(count: 2)
+                                            .onEnded {
+                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                                    if zoom > 1.0 {
+                                                        zoom = 1.0
+                                                        offset = .zero
+                                                        lastOffset = .zero
+                                                    } else {
+                                                        zoom = 2.5
                                                     }
                                                 }
-                                        )
-                                        .onTapGesture { /// <-- Single-tap show page number
-                                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                                showPageNumber = true
                                             }
-                                            
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { /// <-- Auto-hide after 6s
-                                                withAnimation {
-                                                    showPageNumber = false
-                                                }
+                                    )
+                                    .onTapGesture { /// <-- Single-tap show page number
+                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                            showPageNumber = true
+                                        }
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { /// <-- Auto-hide after 6s
+                                            withAnimation {
+                                                showPageNumber = false
                                             }
                                         }
-                                        .animation(.easeInOut, value: zoom) /// <-  Smooth zooming animation
-                                    
-                                    // MARK: PencilKit canvas overlay
-                                    if isMarkupActive {
-                                        CanvasRepresentable(drawing: $drawing, showTools: $isMarkupActive)
-                                            .allowsHitTesting(isMarkupActive)
                                     }
-                                }
-                                .tag(page.pageIndex)
+                                    .animation(.easeInOut, value: zoom) /// <-  Smooth zooming animation
+                                    .tag(page.pageIndex)
                             }
                         }
                     }
@@ -257,21 +246,6 @@ struct DocumentDetailView: View {
                                     allinOne.invalidate(reason: .actionPerformed)
                                 }) {
                                     Label("Print", systemImage: "printer")
-                                        .tint(.primary)
-                                }
-                            }
-                            
-                            Section {
-                                // MARK: Markup
-                                Button(action: {
-                                    showPageNumber = false
-                                    
-                                    withAnimation {
-                                        isMarkupActive.toggle()
-                                        
-                                    }
-                                }) {
-                                    Label("Markup", systemImage: "pencil.tip")
                                         .tint(.primary)
                                 }
                             }
