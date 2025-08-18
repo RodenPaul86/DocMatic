@@ -10,7 +10,6 @@ import PDFKit
 import LocalAuthentication
 import TipKit
 import WidgetKit
-import PencilKit
 
 struct DocumentDetailView: View {
     var document: Document
@@ -98,7 +97,7 @@ struct DocumentDetailView: View {
                                             }
                                     )
                                     .onTapGesture { /// <-- Single-tap show page number
-                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                        withAnimation(.spring(response: 0.4)) {
                                             showPageNumber = true
                                         }
                                         
