@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct releaseNotesView: View {
-    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @EnvironmentObject private var tabBarVisibility: TabBarVisibility
     
     let updates: [appUpdate] = [
         appUpdate(
@@ -71,11 +71,18 @@ DocMatic is designed to streamline your workflow and simplify document managemen
                     UpdateCard(update: update)
                 }
             }
-            .padding()
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Reserve space for the tab bar
-            }
             .navigationTitle("Release Notes")
+            .onAppear {
+                withAnimation {
+                    tabBarVisibility.isVisible = false
+                }
+            }
+            .onDisappear {
+                withAnimation {
+                    tabBarVisibility.isVisible = true
+                }
+            }
+            .padding()
         }
     }
 }

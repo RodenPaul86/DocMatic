@@ -10,9 +10,15 @@ import PDFKit
 import LocalAuthentication
 import TipKit
 import WidgetKit
+import PencilKit
 
 struct DocumentDetailView: View {
     var document: Document
+    @State private var currentPageIndex: Int = 0
+    @State private var showPageNumber: Bool = false
+    
+    @State private var isMarkupActive: Bool = false
+    @State private var drawing = PKDrawing()
     
     // MARK: View Properties
     @State private var isLoading: Bool = false
@@ -52,233 +58,297 @@ struct DocumentDetailView: View {
     
     @State private var documentSize: String? = nil
     
+    @Namespace var namespace
+    @State var isExpanded: Bool = false
+    
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
-            VStack(spacing: 10) {
-                // Header View
-                HeaderView()
-                    .padding([.horizontal, .top], 15)
-                
-                TabView {
-                    ForEach(pages) { page in
-                        if let image = UIImage(data: page.pageData) {
-                            Image(uiImage: image)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .scaleEffect(zoom)
-                                .offset(offset) /// <-  Apply the drag offset
-                                .gesture(
-                                    // MARK: Only allow dragging if zoomed in
-                                    zoom > 1.0 ? DragGesture()
-                                        .onChanged { value in
-                                            offset = CGSize(
-                                                width: lastOffset.width + value.translation.width,
-                                                height: lastOffset.height + value.translation.height
-                                            )
-                                        }
-                                        .onEnded { value in
-                                            lastOffset = offset
-                                        } : nil /// <- Disable dragging if zoomed out
-                                )
-                                .simultaneousGesture(
-                                    TapGesture(count: 1)
-                                        .onEnded {
+            ZStack {
+                VStack(spacing: 10) {
+                    TabView(selection: $currentPageIndex) {
+                        ForEach(pages) { page in
+                            if let image = UIImage(data: page.pageData) {
+                                ZStack {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .scaleEffect(zoom)
+                                        .offset(offset) /// <-  Apply the drag offset
+                                        .gesture(
+                                            // MARK: Only allow dragging if zoomed in
+                                            zoom > 1.0 ? DragGesture()
+                                                .onChanged { value in
+                                                    offset = CGSize(
+                                                        width: lastOffset.width + value.translation.width,
+                                                        height: lastOffset.height + value.translation.height
+                                                    )
+                                                }
+                                                .onEnded { value in
+                                                    lastOffset = offset
+                                                } : nil /// <- Disable dragging if zoomed out
+                                        )
+                                        .highPriorityGesture( /// <-- Double-tap zoom
+                                            TapGesture(count: 2)
+                                                .onEnded {
+                                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                                        if zoom > 1.0 {
+                                                            zoom = 1.0
+                                                            offset = .zero
+                                                            lastOffset = .zero
+                                                        } else {
+                                                            zoom = 2.5
+                                                        }
+                                                    }
+                                                }
+                                        )
+                                        .onTapGesture { /// <-- Single-tap show page number
                                             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                                if zoom > 1.0 {
-                                                    zoom = 1.0
-                                                    offset = .zero
-                                                    lastOffset = .zero
-                                                } else {
-                                                    zoom = 2.5
+                                                showPageNumber = true
+                                            }
+                                            
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { /// <-- Auto-hide after 6s
+                                                withAnimation {
+                                                    showPageNumber = false
                                                 }
                                             }
                                         }
-                                )
-                                .animation(.easeInOut, value: zoom) /// <-  Smooth zooming animation
+                                        .animation(.easeInOut, value: zoom) /// <-  Smooth zooming animation
+                                    
+                                    // MARK: PencilKit canvas overlay
+                                    if isMarkupActive {
+                                        CanvasRepresentable(drawing: $drawing, showTools: $isMarkupActive)
+                                            .allowsHitTesting(isMarkupActive)
+                                    }
+                                }
+                                .tag(page.pageIndex)
+                            }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .onChange(of: currentPageIndex) { oldValue, newValue in
+                        showAndAutoHidePageNumber()
+                    }
+                }
+                .ignoresSafeArea(edges: .bottom)
+                .loadingScreen(status: $isLoading)
+                .overlay {
+                    LockView()
+                }
+                .fileMover(isPresented: $showFileMover, file: fileURL) { result in
+                    if case .failure(_) = result {
+                        // Removing the temp file
+                        guard let fileURL else { return }
+                        try? FileManager.default.removeItem(at: fileURL)
+                        self.fileURL = nil
+                    }
+                }
+                .onAppear {
+                    showAndAutoHidePageNumber()
+                    
+                    withAnimation {
+                        tabBarVisibility.isVisible = false
+                    }
+                    
+                    if let url = generatePDFURL(from: document) {
+                        documentSize = getFileSize(for: url)
+                    }
+                    
+                    guard document.isLocked else {
+                        isUnlocked = true
+                        return
+                    }
+                    
+                    let context = LAContext()
+                    isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+                }
+                .onDisappear {
+                    withAnimation {
+                        tabBarVisibility.isVisible = true
+                    }
+                }
+                .onChange(of: scene) { oldValue, newValue in
+                    if newValue != .active && document.isLocked {
+                        isUnlocked = false
+                    }
+                }
+                
+                // MARK: Overlayed controls
+                VStack(alignment: .leading) {
+                    if isUnlocked {
+                        if #available(iOS 26.0, *) {
+                            if showPageNumber {
+                                Text("\(currentPageIndex + 1) of \(pages.count)")
+                                    .font(.callout.bold())
+                                    .padding()
+                                    .glassEffect(.regular, in: .capsule)
+                                    .foregroundColor(.primary)
+                                    .transition(.opacity.combined(with: .move(edge: .top)))
+                                    .padding()
+                            }
+                        } else {
+                            if showPageNumber {
+                                Text("\(currentPageIndex + 1) of \(pages.count)")
+                                    .font(.callout.bold())
+                                    .padding(8)
+                                    .background(.black.opacity(0.6))
+                                    .foregroundColor(.white)
+                                    .clipShape(Capsule())
+                                    .transition(.opacity.combined(with: .move(edge: .top)))
+                                    .padding()
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        FooterView() /// <-- Footer View
+                            .padding(.horizontal)
+                            .padding(.bottom, -13)
+                            .background(Color.clear) /// <-- stays transparent
+                        
+                    }
+                }
+            }
+            .navigationBarBackButtonHidden(true)
+            .navigationTitle(document.name)
+            .toolbar {
+                // Header View
+                ToolbarItem(placement: .topBarLeading) {
+                    if isUnlocked {
+                        Menu {
+                            if let documentSize {
+                                Section {
+                                    Label("Size: \(documentSize)", systemImage: "doc")
+                                        .tint(.primary)
+                                        .disabled(true)
+                                }
+                            }
+                            
+                            Section {
+                                // MARK: Share Document
+                                Button(action: {
+                                    if let url = generatePDFURL(from: document) {
+                                        let sharedPageCount = document.pages?.count ?? 1
+                                        profileViewModel.addSharedPages(sharedPageCount)
+                                        DocumentActionManager.shared.share(documentURL: url)
+                                    }
+                                    allinOne.invalidate(reason: .actionPerformed)
+                                }) {
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                        .tint(.primary)
+                                }
+                                
+                                // MARK: Save Document
+                                Button(action: {
+                                    if let url = generatePDFURL(from: document) {
+                                        DocumentActionManager.shared.saveToFiles(documentURL: url)
+                                    }
+                                    allinOne.invalidate(reason: .actionPerformed)
+                                }) {
+                                    Label("Save to Files", systemImage: "folder")
+                                        .tint(.primary)
+                                }
+                                
+                                // MARK: Print File
+                                Button(action: {
+                                    //printDocument()
+                                    if let url = generatePDFURL(from: document) {
+                                        DocumentActionManager.shared.print(documentURL: url)
+                                    }
+                                    allinOne.invalidate(reason: .actionPerformed)
+                                }) {
+                                    Label("Print", systemImage: "printer")
+                                        .tint(.primary)
+                                }
+                            }
+                            
+                            Section {
+                                // MARK: Markup
+                                Button(action: {
+                                    showPageNumber = false
+                                    
+                                    withAnimation {
+                                        isMarkupActive.toggle()
+                                        
+                                    }
+                                }) {
+                                    Label("Markup", systemImage: "pencil.tip")
+                                        .tint(.primary)
+                                }
+                            }
+                            
+                            Section {
+                                // MARK: Lock File
+                                Button(action: {
+                                    document.isLocked.toggle()
+                                    isUnlocked = !document.isLocked
+                                    try? context.save()
+                                    allinOne.invalidate(reason: .actionPerformed)
+                                    if document.isLocked {
+                                        dismiss()
+                                    }
+                                    WidgetCenter.shared.reloadAllTimelines()
+                                }) {
+                                    Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock")
+                                        .tint(.primary)
+                                }
+                                
+                                // MARK: Rename File
+                                Button(action: {
+                                    newFileName = document.name /// <-- Pre-fill the current name
+                                    isRenaming = true
+                                    allinOne.invalidate(reason: .actionPerformed)
+                                }) {
+                                    Label("Rename", systemImage: "pencil")
+                                        .tint(.primary)
+                                }
+                                
+                                // MARK: Delete File
+                                Button(role: .destructive) {
+                                    deleteAlert = true
+                                    allinOne.invalidate(reason: .actionPerformed)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                        .tint(.red)
+                                }
+                            }
+                        } label: {
+                            if document.isLocked {
+                                Image(systemName: "lock.fill")
+                            } else {
+                                Image(systemName: "list.bullet.indent")
+                            }
+                        }
+                        .popoverTip(allinOne)
+                        .confirmationDialog("Permanently delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
+                            Button("Delete", role: .destructive) {
+                                dismiss()
+                                Task { @MainActor in
+                                    try? await Task.sleep(for: .seconds(0.3))
+                                    context.delete(document)
+                                    try? context.save()
+                                    ScanManager.shared.decrementScanCount()
+                                    WidgetCenter.shared.reloadAllTimelines()
+                                }
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        }
+                        .alert("Renaming?", isPresented: $isRenaming) {
+                            TextField("New File Name", text: $newFileName)
+                            Button("Save", action: renameFile)
+                            Button("Cancel", role: .cancel) { }
+                        } message: {
+                            Text("Enter a new name for your document.")
                         }
                     }
                 }
-                .tabViewStyle(zoom > 1.0 ? .page(indexDisplayMode: .never) : .page(indexDisplayMode: .automatic))
-                .indexViewStyle(.page(backgroundDisplayMode: .automatic))
                 
-                // Footer View
-                FooterView()
-            }
-            .background(.black)
-            .toolbarVisibility(.hidden, for: .navigationBar)
-            .loadingScreen(status: $isLoading)
-            .overlay {
-                LockView()
-            }
-            .fileMover(isPresented: $showFileMover, file: fileURL) { result in
-                if case .failure(_) = result {
-                    // Removing the temp file
-                    guard let fileURL else { return }
-                    try? FileManager.default.removeItem(at: fileURL)
-                    self.fileURL = nil
-                }
-            }
-            .onAppear {
-                withAnimation {
-                    tabBarVisibility.isVisible = false
-                }
-                
-                if let url = generatePDFURL(from: document) {
-                    documentSize = getFileSize(for: url)
-                }
-                
-                guard document.isLocked else {
-                    isUnlocked = true
-                    return
-                }
-                
-                let context = LAContext()
-                isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-            }
-            .onDisappear {
-                withAnimation {
-                    tabBarVisibility.isVisible = true
-                }
-            }
-            .onChange(of: scene) { oldValue, newValue in
-                if newValue != .active && document.isLocked {
-                    isUnlocked = false
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done", systemImage: "xmark") {
+                        dismiss()
+                    }
                 }
             }
         }
-    }
-    
-    @ViewBuilder
-    private func HeaderView() -> some View {
-        Label(document.name, systemImage: document.isLocked ? "lock.fill" : "")
-            .font(.title3)
-            .foregroundStyle(.white)
-            .hSpacing(.center)
-            .overlay(alignment: .trailing) {
-                // MARK: Close Button
-                Button {
-                    dismiss()
-                } label: {
-                    Text("Done")
-                        .font(.title3.bold())
-                        .foregroundStyle(Color.theme.accent)
-                }
-            }
-            .overlay(alignment: .leading) {
-                GeometryReader { geometry in
-                    Menu {
-                        if let documentSize {
-                            Section {
-                                Label("Size: \(documentSize)", systemImage: "doc")
-                                    .tint(.primary)
-                                    .disabled(true)
-                            }
-                        }
-                        
-                        Section {
-                            // MARK: Share Document
-                            Button(action: {
-                                if let url = generatePDFURL(from: document) {
-                                    let sharedPageCount = document.pages?.count ?? 1
-                                    profileViewModel.addSharedPages(sharedPageCount)
-                                    DocumentActionManager.shared.share(documentURL: url)
-                                }
-                                allinOne.invalidate(reason: .actionPerformed)
-                            }) {
-                                Label("Share", systemImage: "square.and.arrow.up")
-                                    .tint(.primary)
-                            }
-                            
-                            // MARK: Save Document
-                            Button(action: {
-                                if let url = generatePDFURL(from: document) {
-                                    DocumentActionManager.shared.saveToFiles(documentURL: url)
-                                }
-                                allinOne.invalidate(reason: .actionPerformed)
-                            }) {
-                                Label("Save to Files", systemImage: "folder")
-                                    .tint(.primary)
-                            }
-                            
-                            // MARK: Print File
-                            Button(action: {
-                                //printDocument()
-                                if let url = generatePDFURL(from: document) {
-                                    DocumentActionManager.shared.print(documentURL: url)
-                                }
-                                allinOne.invalidate(reason: .actionPerformed)
-                            }) {
-                                Label("Print", systemImage: "printer")
-                                    .tint(.primary)
-                            }
-                        }
-                        
-                        Section {
-                            // MARK: Lock File
-                            Button(action: {
-                                document.isLocked.toggle()
-                                isUnlocked = !document.isLocked
-                                try? context.save()
-                                allinOne.invalidate(reason: .actionPerformed)
-                                if document.isLocked {
-                                    dismiss()
-                                }
-                                WidgetCenter.shared.reloadAllTimelines()
-                            }) {
-                                Label(document.isLocked ? "Unlock" : "Lock", systemImage: document.isLocked ? "lock.open" : "lock")
-                                    .tint(.primary)
-                            }
-                            
-                            // MARK: Rename File
-                            Button(action: {
-                                newFileName = document.name /// <-- Pre-fill the current name
-                                isRenaming = true
-                                allinOne.invalidate(reason: .actionPerformed)
-                            }) {
-                                Label("Rename", systemImage: "pencil")
-                                    .tint(.primary)
-                            }
-                            
-                            // MARK: Delete File
-                            Button(role: .destructive) {
-                                deleteAlert = true
-                                allinOne.invalidate(reason: .actionPerformed)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                                    .tint(.red)
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "list.bullet.indent")
-                            .font(.title2)
-                            .foregroundStyle(Color.theme.accent)
-                    }
-                    .popoverTip(allinOne)
-                    .confirmationDialog("Permanently delete this document?", isPresented: $deleteAlert, titleVisibility: .visible) {
-                        Button("Delete", role: .destructive) {
-                            dismiss()
-                            Task { @MainActor in
-                                try? await Task.sleep(for: .seconds(0.3))
-                                context.delete(document)
-                                try? context.save()
-                                ScanManager.shared.decrementScanCount()
-                                WidgetCenter.shared.reloadAllTimelines()
-                            }
-                        }
-                        Button("Cancel", role: .cancel) {}
-                    }
-                    .alert("Renaming?", isPresented: $isRenaming) {
-                        TextField("New File Name", text: $newFileName)
-                        Button("Save", action: renameFile)
-                        Button("Cancel", role: .cancel) { }
-                    } message: {
-                        Text("Enter a new name for your document.")
-                    }
-                }
-                .onPreferenceChange(ButtonFrameKey.self) { frame in
-                    shareButtonFrame = frame
-                }
-            }
     }
     
     struct ButtonFrameKey: PreferenceKey {
@@ -290,53 +360,107 @@ struct DocumentDetailView: View {
     
     @ViewBuilder
     private func FooterView() -> some View {
-        HStack {
-            Text("Zoom: \(zoomPercentage)%")
-                .font(.callout)
-                .foregroundStyle(.white)
-            
-            Spacer(minLength: 0)
-            
-            // MARK: Magnifyingglass (Plus)
-            Button(action: {
-                withAnimation(.easeInOut) {
-                    zoom = min(zoom + 1.0, 5.0) /// <- Increase zoom with a maximum limit
-                }
-            }) {
-                Image(systemName: "plus.magnifyingglass") /// <- Zoom-in icon
-                    .font(.title)
-                    .foregroundStyle(zoom < 5.0 ? Color.theme.accent : Color.gray.gradient)
-            }
-            .disabled(zoom >= 5.0)
-            
-            // MARK: Magnifyingglass (Minus)
-            if zoom > 1.0 {
+        if #available(iOS 26.0, *) {
+            HStack {
+                Text("Zoom: \(zoomPercentage)%")
+                    .font(.callout.bold())
+                    .padding()
+                    .glassEffect(.regular, in: .capsule)
+                
+                Spacer(minLength: 0)
+                
                 Button(action: {
                     withAnimation(.easeInOut) {
-                        zoom = max(zoom - 0.5, 1.0) /// <- Decrease zoom with a maximum limit
+                        zoom = min(zoom + 1.0, 5.0) /// <-- Increase zoom with a maximum limit
                     }
                 }) {
-                    Image(systemName: "minus.magnifyingglass") /// <- Zoom-out icon
+                    Image(systemName: "plus.magnifyingglass") /// <-- Zoom-in icon
                         .font(.title)
-                        .foregroundStyle(Color.theme.accent)
+                        .foregroundStyle(zoom < 5.0 ? Color.theme.accent : Color.gray.gradient)
+                        .frame(width: 50, height: 50)
+                        .glassEffect(.regular.interactive(), in: .circle)
+                }
+                .disabled(zoom >= 5.0)
+                
+                // MARK: Magnifyingglass (Minus)
+                if zoom > 1.0 {
+                    Button(action: {
+                        withAnimation(.easeInOut) {
+                            zoom = max(zoom - 0.5, 1.0) /// <-- Decrease zoom with a maximum limit
+                        }
+                    }) {
+                        Image(systemName: "minus.magnifyingglass") /// <-- Zoom-out icon
+                            .font(.title)
+                            .foregroundStyle(Color.theme.accent)
+                            .frame(width: 50, height: 50)
+                            .glassEffect(.regular.interactive(), in: .circle)
+                    }
+                }
+                
+                // MARK: Magnifyingglass (All the way out)
+                if zoom > 1.5 {
+                    Button(action: {
+                        withAnimation(.easeInOut) {
+                            zoom = 1.0 /// <-- Reset zoom
+                            offset = .zero /// <-- Reset drag offset
+                        }
+                    }) {
+                        Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <-- Zoom all the way out icon
+                            .font(.title)
+                            .foregroundStyle(Color.theme.accent)
+                            .frame(width: 50, height: 50)
+                            .glassEffect(.regular.interactive(), in: .circle)
+                    }
                 }
             }
-            
-            // MARK: Magnifyingglass (All the way out)
-            if zoom > 1.5 {
+        } else {
+            HStack {
+                Text("Zoom: \(zoomPercentage)%")
+                    .font(.callout)
+                    .foregroundStyle(.primary)
+                
+                Spacer(minLength: 0)
+                
+                // MARK: Magnifyingglass (Plus)
                 Button(action: {
                     withAnimation(.easeInOut) {
-                        zoom = 1.0 /// <- Reset zoom
-                        offset = .zero /// <- Reset drag offset
+                        zoom = min(zoom + 1.0, 5.0) /// <-- Increase zoom with a maximum limit
                     }
                 }) {
-                    Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <- Zoom all the way out icon
+                    Image(systemName: "plus.magnifyingglass") /// <-- Zoom-in icon
                         .font(.title)
-                        .foregroundStyle(Color.theme.accent)
+                        .foregroundStyle(zoom < 5.0 ? Color.theme.accent : Color.gray.gradient)
+                }
+                .disabled(zoom >= 5.0)
+                
+                // MARK: Magnifyingglass (Minus)
+                if zoom > 1.0 {
+                    Button(action: {
+                        withAnimation(.easeInOut) {
+                            zoom = max(zoom - 0.5, 1.0) /// <-- Decrease zoom with a maximum limit
+                        }
+                    }) {
+                        Image(systemName: "minus.magnifyingglass") /// <-- Zoom-out icon
+                            .font(.title)
+                            .foregroundStyle(Color.theme.accent)
+                    }
+                }
+                
+                // MARK: Magnifyingglass (All the way out)
+                if zoom > 1.5 {
+                    Button(action: {
+                        withAnimation(.easeInOut) {
+                            zoom = 1.0 /// <-- Reset zoom
+                            offset = .zero /// <-- Reset drag offset
+                        }
+                    }) {
+                        Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <-- Zoom all the way out icon
+                            .font(.title)
+                            .foregroundStyle(Color.theme.accent)
+                    }
                 }
             }
         }
-        .padding([.horizontal, .bottom], 15)
     }
     
     @ViewBuilder
@@ -353,10 +477,10 @@ struct DocumentDetailView: View {
                             .multilineTextAlignment(.center)
                             .frame(width: 200)
                     } else {
-                        Image(systemName: "lock.fill")
+                        Image(systemName: "eye.slash")
                             .font(.largeTitle)
                         
-                        Text("Tap to unlock!")
+                        Text("Tap to preview...")
                             .font(.callout)
                     }
                 }
@@ -423,5 +547,18 @@ struct DocumentDetailView: View {
             print("❌ Failed to get file size: \(error)")
         }
         return nil
+    }
+    
+    // MARK: Helper function to show page number, then auto-hide
+    private func showAndAutoHidePageNumber() {
+        withAnimation {
+            showPageNumber = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { /// <-- Auto-hide after 6s
+            withAnimation {
+                showPageNumber = false
+            }
+        }
     }
 }

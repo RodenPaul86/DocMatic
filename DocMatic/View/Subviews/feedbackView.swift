@@ -10,7 +10,7 @@ import MessageUI
 import PhotosUI
 
 struct feedbackView: View {
-    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @EnvironmentObject private var tabBarVisibility: TabBarVisibility
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @Environment(\.presentationMode) var presentationMode
     @State private var isShowingMailView = false
@@ -141,9 +141,6 @@ struct feedbackView: View {
                         }
                     }
                 }
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Reserve space for the tab bar
-                }
             }
             .onAppear {
                 NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main) { _ in
@@ -152,16 +149,22 @@ struct feedbackView: View {
                 NotificationCenter.default.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main) { _ in
                     isKeyboardVisible = false
                 }
+                withAnimation {
+                    tabBarVisibility.isVisible = false
+                }
             }
             .onDisappear {
                 NotificationCenter.default.removeObserver(self)
+                withAnimation {
+                    tabBarVisibility.isVisible = true
+                }
             }
             .navigationBarTitle("Support")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { isShowingMailView.toggle() }) {
-                        Text("Send")
+                    Button("Send", systemImage: "paperplane") {
+                        isShowingMailView.toggle()
                     }
                     .disabled(textBody.isEmpty)
                     .sheet(isPresented: $isShowingMailView) {

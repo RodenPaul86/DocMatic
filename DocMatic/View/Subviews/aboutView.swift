@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct aboutView: View {
-    @EnvironmentObject var appSubModel: appSubscriptionModel
+    @EnvironmentObject private var tabBarVisibility: TabBarVisibility
     
     var body: some View {
         NavigationStack {
@@ -33,10 +33,17 @@ struct aboutView: View {
                     }
                 }
             }
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                Color.clear.frame(height: appSubModel.isSubscriptionActive ? 80 : 100) /// <-- Reserve space for the tab bar
-            }
             .navigationTitle("About")
+            .onAppear {
+                withAnimation {
+                    tabBarVisibility.isVisible = false
+                }
+            }
+            .onDisappear {
+                withAnimation {
+                    tabBarVisibility.isVisible = true
+                }
+            }
         }
     }
 }
