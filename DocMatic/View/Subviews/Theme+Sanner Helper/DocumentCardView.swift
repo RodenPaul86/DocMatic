@@ -144,11 +144,13 @@ struct DocumentCardView: View {
                     .tint(.primary)
             }
             
-            Button(action: {
-                duplicateDocument()
-            }) {
-                Label("Duplicate", systemImage: "doc.on.doc")
-                    .tint(.primary)
+            if !document.isLocked {
+                Button(action: {
+                    duplicateDocument()
+                }) {
+                    Label("Duplicate", systemImage: "doc.on.doc")
+                        .tint(.primary)
+                }
             }
             
             Button(action: {
