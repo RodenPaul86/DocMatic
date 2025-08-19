@@ -110,7 +110,7 @@ struct ContentView: View {
                     
                     if !appSubModel.isSubscriptionActive {
                         adBannerView()
-                            .padding(.top, 10)
+                            .padding(.top, 15)
                     }
                 }
             }
