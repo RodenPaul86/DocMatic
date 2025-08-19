@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct WidgetSetupView: View {
+    @EnvironmentObject private var tabBarVisibility: TabBarVisibility
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -77,13 +78,14 @@ struct WidgetSetupView: View {
                  */
             }
             .padding()
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    /*
-                    Button(action: { dismiss() }) {
-                        Text("Done")
-                    }
-                     */
+            .onAppear {
+                withAnimation {
+                    tabBarVisibility.isVisible = false
+                }
+            }
+            .onDisappear {
+                withAnimation {
+                    tabBarVisibility.isVisible = true
                 }
             }
         }

@@ -27,7 +27,7 @@ struct feedbackView: View {
         NavigationStack {
             VStack {
                 List {
-                    // Topic Row
+                    // MARK: Topic Section
                     Section {
                         HStack {
                             Text("Topic")
@@ -68,6 +68,7 @@ struct feedbackView: View {
                             .frame(minHeight: 120, alignment: .top) /// <-- Ensures expansion
                     }
                     
+                    // MARK: Added an Image
                     Section(header: Text("Additional Info"), footer: Text("Only upload images related to your ''\(selectedTopic)''.")) {
                         HStack {
                             // Image Preview
@@ -159,13 +160,14 @@ struct feedbackView: View {
                     tabBarVisibility.isVisible = true
                 }
             }
-            .navigationBarTitle("Support")
+            .navigationBarTitle("Sending: \(selectedTopic)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Send", systemImage: "paperplane") {
+                    Button("Send", systemImage: "arrow.up") {
                         isShowingMailView.toggle()
                     }
+                    .buttonStyle(.borderedProminent)
                     .disabled(textBody.isEmpty)
                     .sheet(isPresented: $isShowingMailView) {
                         MailView(

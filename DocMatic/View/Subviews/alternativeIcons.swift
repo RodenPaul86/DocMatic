@@ -66,6 +66,7 @@ enum AppIcon: String, CaseIterable {
 }
 
 struct alternativeIcons: View {
+    @EnvironmentObject private var tabBarVisibility: TabBarVisibility
     @State private var currentAppIcon: AppIcon = .defaultIcon
     @EnvironmentObject var appSubModel: appSubscriptionModel
     @State private var isPaywallPresented: Bool = false
@@ -118,9 +119,6 @@ struct alternativeIcons: View {
                         }
                     }
                 }
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    Color.clear.frame(height: 80) /// <-- Reserve space for the tab bar
-                }
             }
             .navigationTitle("Alternate Icons")
             .alert(isPresented: $isPaywallPresented) {
@@ -139,12 +137,21 @@ struct alternativeIcons: View {
             }
         }
         .onAppear {
+            withAnimation {
+                tabBarVisibility.isVisible = false
+            }
+            
             // Check for the current icon on view appearance, and only reset if needed
             if let alternativeAppIcon = UIApplication.shared.alternateIconName,
                let appIcon = AppIcon.allCases.first(where: { $0.rawValue == alternativeAppIcon }) {
                 currentAppIcon = appIcon
             } else {
                 currentAppIcon = AppIcon.defaultIcon
+            }
+        }
+        .onDisappear {
+            withAnimation {
+                tabBarVisibility.isVisible = true
             }
         }
     }
