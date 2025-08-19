@@ -14,7 +14,7 @@ import WidgetKit
 struct DocumentDetailView: View {
     var document: Document
     @State private var currentPageIndex: Int = 0
-    @State private var showPageNumber: Bool = false
+    @State private var showPageNumber: Bool = true
     
     // MARK: View Properties
     @State private var isLoading: Bool = false
@@ -82,28 +82,15 @@ struct DocumentDetailView: View {
                                                 lastOffset = offset
                                             } : nil /// <- Disable dragging if zoomed out
                                     )
-                                    .highPriorityGesture( /// <-- Double-tap zoom
-                                        TapGesture(count: 2)
-                                            .onEnded {
-                                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                                    if zoom > 1.0 {
-                                                        zoom = 1.0
-                                                        offset = .zero
-                                                        lastOffset = .zero
-                                                    } else {
-                                                        zoom = 2.5
-                                                    }
-                                                }
-                                            }
-                                    )
-                                    .onTapGesture { /// <-- Single-tap show page number
-                                        withAnimation(.spring(response: 0.4)) {
-                                            showPageNumber = true
-                                        }
-                                        
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { /// <-- Auto-hide after 6s
-                                            withAnimation {
-                                                showPageNumber = false
+                                    .onTapGesture { /// <-- Single-tap zoom in
+                                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                            showPageNumber.toggle()
+                                            if zoom > 1.0 {
+                                                zoom = 1.0
+                                                offset = .zero
+                                                lastOffset = .zero
+                                            } else {
+                                                zoom = 2.5
                                             }
                                         }
                                     }
@@ -113,9 +100,6 @@ struct DocumentDetailView: View {
                         }
                     }
                     .tabViewStyle(.page(indexDisplayMode: .never))
-                    .onChange(of: currentPageIndex) { oldValue, newValue in
-                        showAndAutoHidePageNumber()
-                    }
                 }
                 .ignoresSafeArea(edges: .bottom)
                 .loadingScreen(status: $isLoading)
@@ -131,8 +115,6 @@ struct DocumentDetailView: View {
                     }
                 }
                 .onAppear {
-                    showAndAutoHidePageNumber()
-                    
                     withAnimation {
                         tabBarVisibility.isVisible = false
                     }
@@ -165,13 +147,18 @@ struct DocumentDetailView: View {
                     if isUnlocked {
                         if #available(iOS 26.0, *) {
                             if showPageNumber {
-                                Text("\(currentPageIndex + 1) of \(pages.count)")
-                                    .font(.callout.bold())
-                                    .padding()
-                                    .glassEffect(.regular, in: .capsule)
-                                    .foregroundColor(.primary)
-                                    .transition(.opacity.combined(with: .move(edge: .top)))
-                                    .padding()
+                                Button(action: {
+                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                        currentPageIndex = 0
+                                    }
+                                }) {
+                                    Text("\(currentPageIndex + 1) of \(pages.count)")
+                                        .font(.callout.bold())
+                                        .padding()
+                                        .glassEffect(.regular.interactive(), in: .capsule)
+                                        .foregroundColor(.primary)
+                                        .padding()
+                                }
                             }
                         } else {
                             if showPageNumber {
@@ -520,18 +507,5 @@ struct DocumentDetailView: View {
             print("❌ Failed to get file size: \(error)")
         }
         return nil
-    }
-    
-    // MARK: Helper function to show page number, then auto-hide
-    private func showAndAutoHidePageNumber() {
-        withAnimation {
-            showPageNumber = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { /// <-- Auto-hide after 6s
-            withAnimation {
-                showPageNumber = false
-            }
-        }
     }
 }
