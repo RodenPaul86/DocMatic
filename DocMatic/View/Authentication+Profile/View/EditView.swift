@@ -9,7 +9,6 @@ import SwiftUI
 import PhotosUI
 import ImagePlayground
 
-@available(iOS 18.1, *)
 struct EditView: View {
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var avatarImage: Image?

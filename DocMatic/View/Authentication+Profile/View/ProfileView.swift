@@ -65,12 +65,8 @@ struct ProfileView: View {
 #if DEBUG
                             if #available(iOS 26.0, *) {
                                 NavigationLink {
-                                    if #available(iOS 18.1, *) {
-                                        EditView()
-                                            .navigationBarBackButtonHidden(true)
-                                    } else {
-                                        // Fallback on earlier versions
-                                    }
+                                    EditView()
+                                        .navigationBarBackButtonHidden(true)
                                 } label: {
                                     Image(systemName: "pencil.circle.fill")
                                         .font(.title2)
