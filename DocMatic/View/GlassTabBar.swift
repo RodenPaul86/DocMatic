@@ -105,7 +105,7 @@ struct GlassTabBar: View {
                         .font(.largeTitle)
                         .padding()
                         .glassEffect(.regular.interactive())
-                        .overlay {
+                        .overlay { /// <-- Red Indicator
                             if !appSubModel.isSubscriptionActive {
                                 ZStack {
                                     Circle()
@@ -121,7 +121,7 @@ struct GlassTabBar: View {
                                 .transition(.scale.combined(with: .opacity))
                                 .animation(.easeInOut(duration: 0.4), value: ScanManager.shared.scansLeft)
                             }
-                        } /// <-- Red Indicator
+                        }
                         .overlay {
                             if scanManager.scansLeft >= 3 {
                                 lottieView(name: "ArrowDown")

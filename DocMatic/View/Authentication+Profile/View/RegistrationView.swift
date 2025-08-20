@@ -100,18 +100,14 @@ struct RegistrationView: View {
                                         webView(url: "https://docmatic.app/terms.html")
                                             .navigationTitle("Terms & Conditions")
                                             .navigationBarTitleDisplayMode(.inline)
-                                        /*
+                                            .ignoresSafeArea(edges: .bottom)
                                             .toolbar {
-                                                ToolbarItem(placement: .navigationBarTrailing) {
-                                                    if let link = URL(string: "https://docmatic.app/terms.html") {
-                                                        Link(destination: link) {
-                                                            Image(systemName: "safari")
-                                                                .font(.headline)
-                                                        }
+                                                ToolbarItem(placement: .topBarLeading) {
+                                                    Button("Done", systemImage: "xmark") {
+                                                        isShowingTermsOfService = false
                                                     }
                                                 }
                                             }
-                                         */
                                     }
                                 }
                                 
@@ -127,18 +123,14 @@ struct RegistrationView: View {
                                         webView(url: "https://docmatic.app/privacy.html")
                                             .navigationTitle("Privacy Policy")
                                             .navigationBarTitleDisplayMode(.inline)
-                                        /*
+                                            .ignoresSafeArea(edges: .bottom)
                                             .toolbar {
-                                                ToolbarItem(placement: .navigationBarTrailing) {
-                                                    if let link = URL(string: "https://docmatic.app/privacy.html") {
-                                                        Link(destination: link) {
-                                                            Image(systemName: "safari")
-                                                                .font(.headline)
-                                                        }
+                                                ToolbarItem(placement: .topBarLeading) {
+                                                    Button("Done", systemImage: "xmark") {
+                                                        isShowingPrivacyPolicy = false
                                                     }
                                                 }
                                             }
-                                         */
                                     }
                                 }
                             }
@@ -148,28 +140,47 @@ struct RegistrationView: View {
                     }
                     
                     // MARK: Create Account button
-                    Button(action: {
-                        Task {
-                            try await viewModel.createUser(withEmail: email, password: password, fullName: fullName, profileImage: userImage)
+                    if #available(iOS 26.0, *) {
+                        Button(action: {
+                            Task {
+                                try await viewModel.createUser(withEmail: email, password: password, fullName: fullName, profileImage: userImage)
+                            }
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
+                        }) {
+                            Text("Create Account")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 40)
                         }
-                        if isHapticsEnabled {
-                            hapticManager.shared.notify(.notification(.success))
+                        .buttonStyle(.glassProminent)
+                        .disabled(!formIsValid)
+                        .opacity(formIsValid ? 1.0 : 0.5)
+                    } else {
+                        Button(action: {
+                            Task {
+                                try await viewModel.createUser(withEmail: email, password: password, fullName: fullName, profileImage: userImage)
+                            }
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
+                        }) {
+                            Text("Create Account")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 40)
+                                .padding(.horizontal)
                         }
-                    }) {
-                        Text("Create Account")
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
+                        .background(Color.theme.accent, in: .capsule)
+                        .disabled(!formIsValid)
+                        .opacity(formIsValid ? 1.0 : 0.5)
                     }
-                    .background(Color.theme.accent, in: .capsule)
-                    .disabled(!formIsValid)
-                    .opacity(formIsValid ? 1.0 : 0.5)
                 }
                 .padding(.horizontal, 45)
             }
-            .scrollBounceBehavior(.basedOnSize) // Optional
-            .scrollDismissesKeyboard(.interactively) // iOS 16+
+            .scrollBounceBehavior(.basedOnSize) /// <-- Optional
+            .scrollDismissesKeyboard(.interactively) /// <-- iOS 16+
             
             Spacer()
             

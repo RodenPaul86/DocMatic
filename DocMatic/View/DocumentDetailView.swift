@@ -329,9 +329,11 @@ struct DocumentDetailView: View {
                 
                 Spacer(minLength: 0)
                 
+                // MARK: Magnifyingglass (Plue)
                 Button(action: {
                     withAnimation(.easeInOut) {
                         zoom = min(zoom + 1.0, 5.0) /// <-- Increase zoom with a maximum limit
+                        showPageNumber = false
                     }
                 }) {
                     Image(systemName: "plus.magnifyingglass") /// <-- Zoom-in icon
@@ -347,6 +349,9 @@ struct DocumentDetailView: View {
                     Button(action: {
                         withAnimation(.easeInOut) {
                             zoom = max(zoom - 0.5, 1.0) /// <-- Decrease zoom with a maximum limit
+                            if zoom == 1.0 {
+                                showPageNumber = true
+                            }
                         }
                     }) {
                         Image(systemName: "minus.magnifyingglass") /// <-- Zoom-out icon
@@ -363,6 +368,7 @@ struct DocumentDetailView: View {
                         withAnimation(.easeInOut) {
                             zoom = 1.0 /// <-- Reset zoom
                             offset = .zero /// <-- Reset drag offset
+                            showPageNumber = true
                         }
                     }) {
                         Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <-- Zoom all the way out icon

@@ -11,6 +11,7 @@ import ImagePlayground
 
 @available(iOS 18.1, *)
 struct EditView: View {
+    @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var avatarImage: Image?
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var selectedUIImage: UIImage?
@@ -93,12 +94,9 @@ struct EditView: View {
                             .overlay(Circle().stroke(Color(.systemGray5), lineWidth: 1))
                     }
                     
-                    // MARK: Buttons for Photo + Camera
+                    // MARK: Buttons for Photo + Gen AI + Camera
                     VStack(spacing: 24) {
-                        PhotosPicker(
-                            selection: $photosPickerItem,
-                            matching: .not(.screenshots)
-                        ) {
+                        PhotosPicker(selection: $photosPickerItem, matching: .not(.screenshots)) {
                             photoButtonView(image: "photo.on.rectangle.angled.fill", title: "Your Photos")
                         }
                         
@@ -117,44 +115,84 @@ struct EditView: View {
                 }
                 .padding(30)
             }
-            .scrollBounceBehavior(.basedOnSize) // Optional
-            .scrollDismissesKeyboard(.interactively) // iOS 16+
+            .scrollBounceBehavior(.basedOnSize) /// <-- Optional
+            .scrollDismissesKeyboard(.interactively) /// <-- iOS 16+
             
             VStack(spacing: 12) {
                 // MARK: Save Button
-                Button(action: {
-                    Task {
-                        if let image = selectedUIImage {
-                            await authVM.uploadProfileImage(image)
+                if #available(iOS 26.0, *) {
+                    Button(action: {
+                        Task {
+                            if let image = selectedUIImage {
+                                await authVM.uploadProfileImage(image)
+                            }
+                            dismiss()
                         }
-                        dismiss()
+                    }) {
+                        Text("Save Changes")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 40)
                     }
-                }) {
-                    Text("Save Changes")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(Color.theme.accent, in: .capsule)
+                    .buttonStyle(.glassProminent)
+                    .disabled(!hasChanges)
+                    .opacity(hasChanges ? 1.0 : 0.5)
+                } else {
+                    Button(action: {
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.notification(.success))
+                        }
+                        
+                        Task {
+                            if let image = selectedUIImage {
+                                await authVM.uploadProfileImage(image)
+                            }
+                            dismiss()
+                        }
+                    }) {
+                        Text("Save Changes")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(Color.theme.accent, in: .capsule)
+                    }
+                    .disabled(!hasChanges)
+                    .opacity(hasChanges ? 1.0 : 0.5)
                 }
-                .disabled(!hasChanges)
-                .opacity(hasChanges ? 1.0 : 0.5)
                 
                 // MARK: Discard Button
-                Button(action: { dismiss() }) {
-                    Text("Discard")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.theme.accent)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 50)
-                        .background(Color(.systemGray6), in: .capsule)
-                        .overlay(
-                            Capsule()
-                                .stroke(Color(.systemGray5), lineWidth: 1)
-                        )
+                Button(action: {
+                    if isHapticsEnabled {
+                        hapticManager.shared.notify(.notification(.success))
+                    }
+                    
+                    dismiss()
+                }) {
+                    if #available(iOS 26.0, *) {
+                        Text("Discard")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.theme.accent)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(Color(.systemGray6), in: .capsule)
+                            .glassEffect(.regular.interactive(), in: .capsule)
+                    } else {
+                        Text("Discard")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.theme.accent)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(Color(.systemGray6), in: .capsule)
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color(.systemGray5), lineWidth: 1)
+                            )
+                    }
                 }
             }
-            .padding(30)
+            .padding(.horizontal, 30)
+            .ignoresSafeArea(edges: .bottom)
         }
         .onAppear {
             if let user = authVM.currentUser {

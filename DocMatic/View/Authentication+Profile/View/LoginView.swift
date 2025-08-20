@@ -19,7 +19,7 @@ struct LoginView: View {
         NavigationStack {
             VStack {
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 24) {
+                    VStack(spacing: 20) {
                         // MARK: Lottie Image
                         lottieView(name: "personsPlaying")
                             .frame(width: 200, height: 150)
@@ -62,23 +62,42 @@ struct LoginView: View {
                         }
                         
                         // MARK: sign in button
-                        Button(action: {
-                            Task {
-                                try await viewModel.signIn(withEmail: email, password: password)
+                        if #available(iOS 26.0, *) {
+                            Button(action: {
+                                Task {
+                                    try await viewModel.signIn(withEmail: email, password: password)
+                                }
+                                if isHapticsEnabled {
+                                    hapticManager.shared.notify(.notification(.success))
+                                }
+                            }) {
+                                Text("Login")
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                    .frame(maxWidth: .infinity, minHeight: 40)
                             }
-                            if isHapticsEnabled {
-                                hapticManager.shared.notify(.notification(.success))
+                            .buttonStyle(.glassProminent)
+                            .disabled(!formIsValid)
+                            .opacity(formIsValid ? 1.0 : 0.5)
+                        } else {
+                            Button(action: {
+                                Task {
+                                    try await viewModel.signIn(withEmail: email, password: password)
+                                }
+                                if isHapticsEnabled {
+                                    hapticManager.shared.notify(.notification(.success))
+                                }
+                            }) {
+                                Text("Login")
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.white)
+                                    .frame(maxWidth: .infinity, minHeight: 50)
+                                    .padding(.horizontal)
                             }
-                        }) {
-                            Text("Login")
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity, minHeight: 50)
-                                .padding(.horizontal)
+                            .background(Color.theme.accent, in: .capsule)
+                            .disabled(!formIsValid)
+                            .opacity(formIsValid ? 1.0 : 0.5)
                         }
-                        .background(Color.theme.accent, in: .capsule)
-                        .disabled(!formIsValid)
-                        .opacity(formIsValid ? 1.0 : 0.5)
                         
 #if DEBUG
                         HStack {
@@ -93,8 +112,9 @@ struct LoginView: View {
                     .padding(.horizontal, 45)
                     .frame(maxWidth: .infinity)
                 }
-                .scrollBounceBehavior(.basedOnSize) // Optional
-                .scrollDismissesKeyboard(.interactively) // iOS 16+
+                .scrollBounceBehavior(.basedOnSize) /// <-- Optional
+                .scrollDismissesKeyboard(.interactively) /// <-- iOS 16+
+                .offset(y: -30)
                 
                 Spacer()
                 
@@ -112,26 +132,16 @@ struct LoginView: View {
                 }
                 .padding(.bottom)
             }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Done", systemImage: "xmark") {
+                        dismiss()
+                    }
+                }
+            }
             .alert(item: $viewModel.activeAlert) { alert in
                 Alert(title: Text(alert.title), message: Text(alert.message), dismissButton: .default(Text("OK")))
             }
-            .overlay(
-                // MARK: chevron button in top-left
-                HStack {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.title3)
-                            .padding(10)
-                            .background(.ultraThinMaterial, in: Circle())
-                    }
-                    Spacer()
-                }
-                    .padding(.leading)
-                    .padding(.top, 10),
-                alignment: .topLeading
-            )
         }
     }
 }

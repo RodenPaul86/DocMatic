@@ -37,21 +37,38 @@ struct ForgotPassView: View {
                         .keyboardType(.emailAddress)
                     
                     // MARK: Send Link button
-                    Button(action: {
-                        viewModel.sendResetLink(withEmail: email)
-                        if isHapticsEnabled {
-                            hapticManager.shared.notify(.notification(.success))
+                    if #available(iOS 26.0, *) {
+                        Button(action: {
+                            viewModel.sendResetLink(withEmail: email)
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
+                        }) {
+                            Text("Send Link")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 40)
                         }
-                    }) {
-                        Text("Send Link")
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, minHeight: 50)
-                            .padding(.horizontal)
+                        .buttonStyle(.glassProminent)
+                        .disabled(!formIsValid)
+                        .opacity(formIsValid ? 1.0 : 0.5)
+                    } else {
+                        Button(action: {
+                            viewModel.sendResetLink(withEmail: email)
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.notification(.success))
+                            }
+                        }) {
+                            Text("Send Link")
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 50)
+                                .padding(.horizontal)
+                        }
+                        .background(Color.theme.accent, in: .capsule)
+                        .disabled(!formIsValid)
+                        .opacity(formIsValid ? 1.0 : 0.5)
                     }
-                    .background(Color.theme.accent, in: .capsule)
-                    .disabled(!formIsValid)
-                    .opacity(formIsValid ? 1.0 : 0.5)
                 }
                 .padding(.horizontal, 45)
                 .alert(item: $viewModel.activeAlert) { alert in

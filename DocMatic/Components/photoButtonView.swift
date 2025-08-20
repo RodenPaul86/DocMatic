@@ -12,18 +12,28 @@ struct photoButtonView: View {
     let title: String
     
     var body: some View {
-        HStack {
-            Image(systemName: image)
-            Text(title)
+        if #available(iOS 26.0, *) {
+            HStack {
+                Image(systemName: image)
+                Text(title)
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .glassEffect(.regular.interactive())
+        } else {
+            HStack {
+                Image(systemName: image)
+                Text(title)
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(.systemGray5), lineWidth: 1)
+            )
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color(.systemGray5), lineWidth: 1)
-        )
     }
 }
 

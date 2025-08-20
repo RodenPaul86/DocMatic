@@ -63,20 +63,37 @@ struct ProfileView: View {
                                     .clipShape(Circle())
                             }
 #if DEBUG
-                            NavigationLink {
-                                if #available(iOS 18.1, *) {
-                                    EditView()
-                                        .navigationBarBackButtonHidden(true)
-                                } else {
-                                    // Fallback on earlier versions
+                            if #available(iOS 26.0, *) {
+                                NavigationLink {
+                                    if #available(iOS 18.1, *) {
+                                        EditView()
+                                            .navigationBarBackButtonHidden(true)
+                                    } else {
+                                        // Fallback on earlier versions
+                                    }
+                                } label: {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(Color.theme.accent)
+                                        .glassEffect(.regular.interactive(), in: .circle)
                                 }
-                            } label: {
-                                Image(systemName: "pencil.circle.fill")
-                                    .font(.title2)
-                                    .foregroundStyle(Color.theme.accent)
-                                    .background(Circle().fill(Color.white))
+                                .offset(x: 0, y: 0)
+                            } else {
+                                NavigationLink {
+                                    if #available(iOS 18.1, *) {
+                                        EditView()
+                                            .navigationBarBackButtonHidden(true)
+                                    } else {
+                                        // Fallback on earlier versions
+                                    }
+                                } label: {
+                                    Image(systemName: "pencil.circle.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(Color.theme.accent)
+                                        .background(Circle().fill(Color.white))
+                                }
+                                .offset(x: 0, y: 0)
                             }
-                            .offset(x: 0, y: 0)
 #endif
                         }
                         
@@ -86,15 +103,14 @@ struct ProfileView: View {
                         Text(user.email)
                             .font(.subheadline)
                             .foregroundStyle(.gray)
+                        
+                        // MARK: Stats Section
+                        HStack(alignment: .bottom, spacing: 40) {
+                            ProfileStatView(value: "\(scanManager.scanCount) file\(scanManager.scanCount == 1 ? "" : "s")", label: "Scanned", icon: "scanner")
+                            ProfileStatView(value: "\(scanManager.streakCount) day\(scanManager.streakCount == 1 ? "" : "s")", label: "Streak", icon: "flame.fill")
+                        }
                     }
-                    .padding(.top)
-                    
-                    // MARK: Stats Section
-                    HStack(alignment: .bottom, spacing: 40) {
-                        ProfileStatView(value: "\(scanManager.scanCount) file\(scanManager.scanCount == 1 ? "" : "s")", label: "Scanned", icon: "scanner")
-                        ProfileStatView(value: "\(scanManager.streakCount) day\(scanManager.streakCount == 1 ? "" : "s")", label: "Streak", icon: "flame.fill")
-                    }
-                    .padding(.vertical)
+                    .offset(y: -20)
                     
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
@@ -211,9 +227,12 @@ struct ProfileView: View {
                         .padding()
                     }
                 }
-                .safeAreaInset(edge: .bottom) {
-                    customUserButtons()
-                    
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Done", systemImage: "xmark") {
+                            dismiss()
+                        }
+                    }
                 }
                 .onAppear {
                     Task {
@@ -224,23 +243,9 @@ struct ProfileView: View {
                         await viewModel.fetchUser()
                     }
                 }
-                .overlay(
-                    // MARK: chevron button in top-left
-                    HStack {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Image(systemName: "xmark")
-                                .font(.title3)
-                                .padding(10)
-                                .background(.ultraThinMaterial, in: Circle())
-                        }
-                        Spacer()
-                    }
-                        .padding(.leading)
-                        .padding(.top, 10),
-                    alignment: .topLeading
-                )
+                .safeAreaInset(edge: .bottom) {
+                    customUserButtons()
+                }
             }
         }
     }
@@ -254,16 +259,25 @@ struct ProfileView: View {
                     hapticManager.shared.notify(.notification(.success))
                 }
             }) {
-                Text("Sign Out")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.red)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(.systemGray6), in: .capsule)
-                    .overlay(
-                        Capsule()
-                            .stroke(Color(.systemGray5), lineWidth: 1)
-                    )
+                if #available(iOS 26.0, *) {
+                    Text("Sign Out")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                } else {
+                    Text("Sign Out")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.systemGray6), in: .capsule)
+                        .overlay(
+                            Capsule()
+                                .stroke(Color(.systemGray5), lineWidth: 1)
+                        )
+                }
             }
             
             Button(action: {
@@ -274,27 +288,39 @@ struct ProfileView: View {
                     hapticManager.shared.notify(.notification(.success))
                 }
             }) {
-                Text("Delete Account")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.red)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(.systemGray6), in: .capsule)
-                    .overlay(
-                        Capsule()
-                            .stroke(Color(.systemGray5), lineWidth: 1)
-                    )
+                if #available(iOS 26.0, *) {
+                    Text("Delete Account")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .glassEffect(.regular.interactive(), in: .capsule)
+                } else {
+                    Text("Delete Account")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.systemGray6), in: .capsule)
+                        .overlay(
+                            Capsule()
+                                .stroke(Color(.systemGray5), lineWidth: 1)
+                        )
+                }
             }
         }
         .frame(height: 50)
         .padding(.horizontal)
-        .padding(.vertical, 10)
         .background {
-            progressiveBlurView()
-                .blur(radius: 10)
-                .padding(.horizontal, -15)
-                .padding(.bottom, -100)
-                .padding(.top, -10)
+            if #available(iOS 26.0, *) {
+                Color.clear
+            } else {
+                progressiveBlurView()
+                    .blur(radius: 10)
+                    .padding(.horizontal, -15)
+                    .padding(.bottom, -100)
+                    .padding(.top, -10)
+            }
         }
     }
 }

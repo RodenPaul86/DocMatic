@@ -185,42 +185,87 @@ struct HomeView: View {
                 Spacer(minLength: 0)
                 
                 // MARK: Profile Picture
-                Button {
-                    isProfileShowing = true
-                    if isHapticsEnabled {
-                        hapticManager.shared.notify(.impact(.light))
-                    }
-                } label: {
-                    if let urlString = viewModel.currentUser?.profileImageUrl,
-                       let url = URL(string: urlString) {
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                                    .frame(width: 40, height: 40)
-                                    .clipShape(Circle())
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 40, height: 40)
-                                    .clipShape(Circle())
-                            case .failure:
-                                Image(systemName: "person.crop.circle")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 40, height: 40)
-                                    .clipShape(Circle())
-                            @unknown default:
-                                EmptyView()
-                            }
+                if #available(iOS 26.0, *) {
+                    Button {
+                        isProfileShowing = true
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.impact(.light))
                         }
-                    } else {
-                        Image(systemName: "person.crop.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
+                    } label: {
+                        if let urlString = viewModel.currentUser?.profileImageUrl,
+                           let url = URL(string: urlString) {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                        .glassEffect(.regular.interactive(), in: .circle)
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                        .glassEffect(.regular.interactive(), in: .circle)
+                                case .failure:
+                                    Image(systemName: "person.crop.circle")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                        .glassEffect(.regular.interactive(), in: .circle)
+                                @unknown default:
+                                    EmptyView()
+                                }
+                            }
+                        } else {
+                            Image(systemName: "person.crop.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 40, height: 40)
+                                .glassEffect(.regular.interactive(), in: .circle)
+                        }
+                    }
+                    
+                } else {
+                    Button {
+                        isProfileShowing = true
+                        if isHapticsEnabled {
+                            hapticManager.shared.notify(.impact(.light))
+                        }
+                    } label: {
+                        if let urlString = viewModel.currentUser?.profileImageUrl,
+                           let url = URL(string: urlString) {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                case .failure:
+                                    Image(systemName: "person.crop.circle")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                @unknown default:
+                                    EmptyView()
+                                }
+                            }
+                        } else {
+                            Image(systemName: "person.crop.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                        }
                     }
                 }
                 
