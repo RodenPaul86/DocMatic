@@ -10,6 +10,16 @@ import PDFKit
 import LocalAuthentication
 import TipKit
 import WidgetKit
+import AVFoundation
+import Vision
+import VisionKit
+
+class SpeechSynthesizerDelegate: NSObject, AVSpeechSynthesizerDelegate {
+    var didFinishUtterance: (() -> Void)?
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        didFinishUtterance?()
+    }
+}
 
 struct DocumentDetailView: View {
     var document: Document
@@ -56,6 +66,13 @@ struct DocumentDetailView: View {
     
     @Namespace var namespace
     @State var isExpanded: Bool = false
+    
+    @State private var speechSynthesizer = AVSpeechSynthesizer()
+    @State private var speechDelegate = SpeechSynthesizerDelegate()
+    @State private var isSpeaking: Bool = false
+    @State private var summaryText: String? = nil
+    @State private var isSummarizing: Bool = false
+    @State private var showSummary: Bool = false
     
     var body: some View {
         if let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) {
@@ -104,7 +121,31 @@ struct DocumentDetailView: View {
                 .ignoresSafeArea(edges: .bottom)
                 .loadingScreen(status: $isLoading)
                 .overlay {
-                    LockView()
+                    if isSummarizing {
+                        ZStack {
+                            // Dimmed background
+                            Color.black.opacity(0.3)
+                                .ignoresSafeArea()
+                            
+                            VStack(spacing: 16) {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .scaleEffect(1.5)
+                                
+                                Text("Summarizing...")
+                                    .foregroundColor(.white)
+                                    .font(.headline)
+                            }
+                            .padding(24)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(16)
+                            .shadow(radius: 10)
+                        }
+                        .transition(.opacity)
+                        .animation(.easeInOut, value: isSummarizing)
+                    } else {
+                        LockView()
+                    }
                 }
                 .fileMover(isPresented: $showFileMover, file: fileURL) { result in
                     if case .failure(_) = result {
@@ -130,6 +171,10 @@ struct DocumentDetailView: View {
                     
                     let context = LAContext()
                     isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+                    
+                    // Setup speech synthesizer delegate
+                    speechSynthesizer.delegate = speechDelegate
+                    speechDelegate.didFinishUtterance = { self.isSpeaking = false }
                 }
                 .onDisappear {
                     withAnimation {
@@ -237,6 +282,26 @@ struct DocumentDetailView: View {
                             }
                             
                             Section {
+                                Button("Summarize", systemImage: "sparkles") {
+                                    Task {
+                                        isSummarizing = true
+                                        defer { isSummarizing = false; showSummary = true }
+                                        
+                                        // OCR instead of PDFKit string extraction
+                                        let text = await extractTextWithOCR(from: document)
+                                        
+                                        do {
+                                            let client = OpenAISummarizer(apiKey: apiKeys.openAIKey)
+                                            summaryText = try await client.summarizeDocument(text, targetWords: 180)
+                                        } catch {
+                                            summaryText = "Couldn’t summarize: \(error.localizedDescription)"
+                                        }
+                                    }
+                                }
+                                .tint(.primary)
+                            }
+                            
+                            Section {
                                 // MARK: Lock File
                                 Button(action: {
                                     document.isLocked.toggle()
@@ -275,7 +340,7 @@ struct DocumentDetailView: View {
                             if document.isLocked {
                                 Image(systemName: "lock.fill")
                             } else {
-                                Image(systemName: "list.bullet.indent")
+                                Image(systemName: "ellipsis")
                             }
                         }
                         .popoverTip(allinOne)
@@ -305,6 +370,40 @@ struct DocumentDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", systemImage: "xmark") {
                         dismiss()
+                    }
+                }
+            }
+            .sheet(isPresented: $showSummary) {
+                NavigationStack {
+                    VStack(alignment: .leading, spacing: 16) {
+                        if isSummarizing {
+                            ProgressView("Summarizing…")
+                        } else if let summaryText {
+                            ScrollView { Text(summaryText).font(.body).padding(.top, 4) }.padding()
+                        } else {
+                            Text("No summary available.")
+                        }
+                    }
+                    .navigationTitle("Summary")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button(isSpeaking ? "Stop" : "Read Aloud", systemImage: isSpeaking ? "stop.fill" : "speaker.wave.2.fill") {
+                                if isSpeaking {
+                                    speechSynthesizer.stopSpeaking(at: .immediate)
+                                    isSpeaking = false
+                                } else {
+                                    readSummaryAloud()
+                                }
+                            }
+                        }
+                        
+                        
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Done", systemImage: "xmark") {
+                                showSummary = false
+                            }
+                        }
                     }
                 }
             }
@@ -513,5 +612,46 @@ struct DocumentDetailView: View {
             print("❌ Failed to get file size: \(error)")
         }
         return nil
+    }
+    
+    func extractTextWithOCR(from document: Document) async -> String {
+        guard let pages = document.pages?.sorted(by: { $0.pageIndex < $1.pageIndex }) else { return "" }
+        
+        var results: [String] = []
+        
+        for page in pages {
+            if let image = UIImage(data: page.pageData)?.cgImage {
+                let request = VNRecognizeTextRequest()
+                request.recognitionLevel = .accurate
+                request.usesLanguageCorrection = true
+                
+                let handler = VNImageRequestHandler(cgImage: image, options: [:])
+                do {
+                    try handler.perform([request])
+                    let observations = request.results ?? []
+                    let text = observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: " ")
+                    results.append(text)
+                } catch {
+                    print("❌ OCR failed: \(error)")
+                }
+            }
+        }
+        
+        return results.joined(separator: "\n")
+    }
+    
+    private func readSummaryAloud() {
+        // Ensure delegate hookup
+        speechSynthesizer.delegate = speechDelegate
+        speechDelegate.didFinishUtterance = { self.isSpeaking = false }
+        
+        guard let text = summaryText, !text.isEmpty else { return }
+        
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = AVSpeechUtteranceDefaultSpeechRate
+        
+        speechSynthesizer.speak(utterance)
+        isSpeaking = true
     }
 }
