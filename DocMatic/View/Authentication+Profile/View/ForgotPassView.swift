@@ -88,7 +88,6 @@ struct ForgotPassView: View {
                 }
                 .font(.system(size: 14))
             }
-            .padding(.bottom)
         }
     }
 }

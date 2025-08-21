@@ -107,6 +107,14 @@ struct RegistrationView: View {
                                                         isShowingTermsOfService = false
                                                     }
                                                 }
+                                                
+                                                ToolbarItem(placement: .topBarTrailing) {
+                                                    Button("Open in Safari", systemImage: "safari") {
+                                                        if let url = URL(string: "https://docmatic.app/terms.html") {
+                                                            UIApplication.shared.open(url)
+                                                        }
+                                                    }
+                                                }
                                             }
                                     }
                                 }
@@ -128,6 +136,14 @@ struct RegistrationView: View {
                                                 ToolbarItem(placement: .topBarLeading) {
                                                     Button("Done", systemImage: "xmark") {
                                                         isShowingPrivacyPolicy = false
+                                                    }
+                                                }
+                                                
+                                                ToolbarItem(placement: .topBarTrailing) {
+                                                    Button("Open in Safari", systemImage: "safari") {
+                                                        if let url = URL(string: "https://docmatic.app/privacy.html") {
+                                                            UIApplication.shared.open(url)
+                                                        }
                                                     }
                                                 }
                                             }
@@ -192,7 +208,6 @@ struct RegistrationView: View {
                 }
                 .font(.system(size: 14))
             }
-            .padding(.bottom)
         }
     }
 }

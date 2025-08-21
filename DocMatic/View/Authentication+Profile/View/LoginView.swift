@@ -114,7 +114,6 @@ struct LoginView: View {
                 }
                 .scrollBounceBehavior(.basedOnSize) /// <-- Optional
                 .scrollDismissesKeyboard(.interactively) /// <-- iOS 16+
-                .offset(y: -30)
                 
                 Spacer()
                 
@@ -130,7 +129,6 @@ struct LoginView: View {
                     }
                     .font(.system(size: 14))
                 }
-                .padding(.bottom)
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
