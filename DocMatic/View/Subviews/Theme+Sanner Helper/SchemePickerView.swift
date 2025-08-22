@@ -31,7 +31,7 @@ struct SchemeHostView<Content: View>: View {
         }
     }
     
-    /// View Properties
+    // MARK: View Properties
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @Environment(\.colorScheme) private var scheme
     @State private var schemePreviews: [SchemePreview] = []
@@ -68,7 +68,7 @@ struct SchemeHostView<Content: View>: View {
             }
     }
     
-    /// Generating Scheme Previews and then pushing the sheet view
+    // MARK: Generating Scheme Previews and then pushing the sheet view
     private func generateSchemePreviews() {
         Task {
             if let window = (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.keyWindow, schemePreviews.isEmpty {
@@ -125,6 +125,7 @@ fileprivate extension ColorScheme {
     
 }
 
+// MARK: Appearance View
 struct SchemePickerView: View {
     @Binding fileprivate var previews: [SchemePreview]
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
@@ -152,14 +153,18 @@ struct SchemePickerView: View {
         .padding(20)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background {
-            ZStack {
-                Rectangle()
-                    .fill(.background)
-                
-                Rectangle()
-                    .fill(Color.primary.opacity(0.05))
+            if #available(iOS 26.0, *) {
+                ZStack {}
+            } else {
+                ZStack {
+                    Rectangle()
+                        .fill(.background)
+                    
+                    Rectangle()
+                        .fill(Color.primary.opacity(0.05))
+                }
+                .clipShape(.rect(cornerRadius: 20))
             }
-            .clipShape(.rect(cornerRadius: 20))
         }
         .padding([.horizontal, .bottom], 10)
         .presentationDetents([.height(320)])
@@ -167,7 +172,6 @@ struct SchemePickerView: View {
         .onChange(of: appScheme, initial: true) { oldValue, newValue in
             localSchemeState = newValue
         }
-        .animation(.easeInOut, value: appScheme)
     }
     
     @ViewBuilder
@@ -248,3 +252,4 @@ extension UIView {
         }
     }
 }
+

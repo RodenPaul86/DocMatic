@@ -130,7 +130,7 @@ struct FAQView: View {
             }
             .padding()
         }
-        .navigationTitle("FAQ")
+        .navigationTitle("Frequently Asked")
         .onAppear {
             withAnimation {
                 tabBarVisibility.isVisible = false
