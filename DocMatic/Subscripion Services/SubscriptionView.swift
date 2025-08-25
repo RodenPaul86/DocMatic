@@ -23,108 +23,167 @@ struct SubscriptionView: View {
     @State private var introOfferAvailable: Bool = false
     
     var body: some View {
-        VStack {
-            // MARK: Custom Navigation Bar
-            HStack {
-                // Restore Button
-                Button(action: {
-                    restorePurchases()
-                }) {
-                    Text("Restore")
-                        .foregroundStyle(.gray.opacity(0.5))
-                        .bold()
-                }
-                
-                Spacer()
-                
-                // MARK: Title: DocMatic
-                Text(Bundle.main.appName)
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                
-                Text("Pro")
-                    .font(.caption.italic().bold())
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-                    .background(Color.theme.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                
-                Spacer()
-                
-                // MARK: Close Button
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title)
-                        .tint(Color(.lightGray))
-                        .opacity(0.25)
-                }
-            }
-            .padding([.top, .horizontal])
-            
-            Spacer()
-            
+        ZStack {
             if isLoading {
-                ZStack {
-                    Color.black.opacity(0.5).ignoresSafeArea() // Optional background overlay to dim the screen
-                    VStack {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white)) // Circular spinner
-                        
-                        Text("Loading...")
-                            .font(.headline)
-                            .foregroundColor(.white) // Text color
-                            .padding(.top, 10) // Padding between the spinner and text
-                    }
-                    .frame(width: 120, height: 120) // Increased size
-                    .background(Color.gray.opacity(0.2)) // Background color for ProgressView
-                    .cornerRadius(10) // Rounded corners
-                    .shadow(radius: 5) // Optional shadow for better visibility
+                Color.black.opacity(0.5).ignoresSafeArea() /// <-- Optional background overlay to dim the screen
+                VStack {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white)) /// <-- Circular spinner
+                    
+                    Text("Loading...")
+                        .font(.headline)
+                        .foregroundColor(.white) /// <-- Text color
+                        .padding(.top, 10) /// <-- Padding between the spinner and text
                 }
+                .frame(width: 120, height: 120) /// <-- Increased size
+                .background(Color.gray.opacity(0.2)) /// <-- Background color for ProgressView
+                .cornerRadius(10) /// <-- Rounded corners
+                .shadow(radius: 5) /// <-- Optional shadow for better visibility
             } else {
                 // MARK: Feature List
                 ScrollView(.vertical, showsIndicators: false) {
                     PricingView()
-                        .padding([.top, .horizontal])
+                        .padding(.top, 70) // Make room for custom nav
+                        .padding(.horizontal)
+                        .padding(.bottom, 80) // Make room for Subscription Buttons
                 }
-                
-                // MARK: Subscription Options and Subscribe button
-                VStack {
-                    // Annualy, Weekly & Lifetime offers
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 15) {
-                            SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
-                            SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
-                            SubscriptionButton(plan: .lifetime, selectedPlan: $selectedPlan, offering: currentOffering)
+            }
+            
+            // MARK: Top Navigation (always on top)
+            VStack {
+                HStack {
+                    // Restore Button
+                    Button(action: { restorePurchases() }) {
+                        if #available(iOS 26.0, *) {
+                            Text("Restore")
+                                .foregroundStyle(.gray.opacity(0.5))
+                                .padding(10)
+                                .glassEffect(.regular.interactive(), in: .capsule)
+                        } else {
+                            Text("Restore")
+                                .foregroundStyle(.gray.opacity(0.5))
+                                .bold()
                         }
                     }
-                    .scrollTargetBehavior(.paging)
-                    .scrollClipDisabled()
                     
-                    // MARK: Subscribe Button (Full Width)
+                    Spacer()
+                    
+                    // MARK: Title: DocMatic
+                    Text(Bundle.main.appName)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    Text("Pro")
+                        .font(.caption.italic().bold())
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color.theme.accent)
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                    
+                    Spacer()
+                    
+                    // MARK: Close Button
                     Button(action: {
-                        purchase(selectedPlan)
-                        if isHapticsEnabled {
-                            hapticManager.shared.notify(.impact(.light))
-                        }
+                        presentationMode.wrappedValue.dismiss()
                     }) {
-                        Text(introOfferAvailable ? "Try for Free!" : "Subscribe")
-                            .fontWeight(.bold)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.theme.accent, in: .capsule)
-                            .foregroundColor(.white)
-                            .cornerRadius(14)
+                        if #available(iOS 26.0, *) {
+                            Image(systemName: "xmark")
+                                .tint(Color.theme.accent)
+                                .padding()
+                                .glassEffect(.regular.interactive(), in: .circle)
+                        } else {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title)
+                                .tint(Color(.lightGray).opacity(0.25))
+                        }
                     }
-                    .padding(.top)
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 30)
+                .padding()
+                .frame(height: 60)
+                .background(Color.black)
+                
+                Spacer()
+            }
+            
+            // MARK: Bottom Subscription Options and Subscribe button
+            VStack {
+                Spacer()
+                if #available(iOS 26.0, *) {
+                    VStack {
+                        // Annualy, Weekly & Lifetime offers
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 15) {
+                                SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
+                                SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
+                                SubscriptionButton(plan: .lifetime, selectedPlan: $selectedPlan, offering: currentOffering)
+                            }
+                        }
+                        .scrollTargetBehavior(.paging)
+                        .scrollClipDisabled()
+                        
+                        // MARK: Subscribe Button (Full Width)
+                        Button(action: {
+                            purchase(selectedPlan)
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.impact(.light))
+                            }
+                        }) {
+                            Text(introOfferAvailable ? "Try for Free!" : "Subscribe")
+                                .fontWeight(.bold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .glassEffect(.regular.interactive().tint(Color.theme.accent), in: .capsule)
+                        }
+                        .padding(.top)
+                    }
+                    .padding(.horizontal)
+                    .padding([.top, .bottom])
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .glassEffect(.regular.tint(.black), in: .rect(cornerRadius: 20))
+                    )
+                } else {
+                    VStack {
+                        // Annualy, Weekly & Lifetime offers
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 15) {
+                                SubscriptionButton(plan: .annual, selectedPlan: $selectedPlan, offering: currentOffering)
+                                SubscriptionButton(plan: .weekly, selectedPlan: $selectedPlan, offering: currentOffering)
+                                SubscriptionButton(plan: .lifetime, selectedPlan: $selectedPlan, offering: currentOffering)
+                            }
+                        }
+                        .scrollTargetBehavior(.paging)
+                        .scrollClipDisabled()
+                        
+                        // MARK: Subscribe Button (Full Width)
+                        Button(action: {
+                            purchase(selectedPlan)
+                            if isHapticsEnabled {
+                                hapticManager.shared.notify(.impact(.light))
+                            }
+                        }) {
+                            Text(introOfferAvailable ? "Try for Free!" : "Subscribe")
+                                .fontWeight(.bold)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Color.theme.accent, in: .capsule)
+                                .cornerRadius(14)
+                        }
+                        .padding(.top)
+                    }
+                    .padding(.horizontal)
+                    .padding([.top, .bottom])
+                    .background(
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.black) /// <-- solid black background
+                    )
+                }
             }
         }
+        .ignoresSafeArea(edges: .bottom)
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Restore Purchases"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
@@ -244,3 +303,4 @@ struct SubscriptionView: View {
     SubscriptionView(isPaywallPresented: .constant(false))
         .preferredColorScheme(.dark)
 }
+

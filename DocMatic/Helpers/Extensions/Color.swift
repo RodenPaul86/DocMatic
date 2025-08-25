@@ -14,7 +14,7 @@ extension Color {
 }
 
 struct ColorTheme {
-    let accent = Color("Default").gradient
+    let accent = Color("Default")
 }
 
 struct LaunchTheme {

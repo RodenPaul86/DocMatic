@@ -201,7 +201,7 @@ struct SchemePickerView: View {
                     .clipShape(.rect(cornerRadius: 15))
                     .overlay(
                         RoundedRectangle(cornerRadius: 15)
-                            .stroke(isSelected ? Color.theme.accent : Color.gray.gradient, lineWidth: 1)
+                            .stroke(isSelected ? Color.theme.accent.gradient : Color.gray.gradient, lineWidth: 1)
                             .animation(.easeInOut, value: isSelected)
                     )
             }

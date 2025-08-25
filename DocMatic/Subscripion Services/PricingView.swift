@@ -62,7 +62,7 @@ struct PricingView: View {
                             .foregroundStyle(.gray)
                     } else {
                         Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundStyle(feature.freeHasAccess ? Color.theme.accent : Color.red.gradient)
+                            .foregroundStyle(feature.freeHasAccess ? Color.theme.accent.gradient : Color.red.gradient)
                             .frame(width: 50)
                     }
                     

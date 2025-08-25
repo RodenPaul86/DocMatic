@@ -76,7 +76,7 @@ struct SubscriptionButton: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.theme.accent)
+                        .background(Color.theme.accent.gradient)
                         .clipShape(RoundedRectangle(cornerRadius: 4))
                 }
             }
@@ -94,7 +94,7 @@ struct SubscriptionButton: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(isSelected ? Color.theme.accent : Color(.systemGray6).gradient, lineWidth: 2)
+                .stroke(isSelected ? Color.theme.accent.gradient : Color(.systemGray6).gradient, lineWidth: 2)
         )
         .onTapGesture {
             selectedPlan = plan
@@ -116,7 +116,7 @@ struct SubscriptionButton: View {
             VStack(alignment: .leading, spacing: 4) {
                 //Text(currency.format(originalYearlyPrice))
                 Text("$259.48")
-                    .foregroundStyle(Color.theme.accent)
+                    .foregroundStyle(Color.theme.accent.gradient)
                     .bold()
                     .strikethrough()
                 Text("\(price) / yr")
@@ -133,7 +133,7 @@ struct SubscriptionButton: View {
             VStack(alignment: .leading, spacing: 4) {
                 if isTrialEligible {
                     Text("3-Day Trial")
-                        .foregroundStyle(Color.theme.accent)
+                        .foregroundStyle(Color.theme.accent.gradient)
                         .bold()
                 }
                 Text("\(price) / wk")
@@ -144,7 +144,7 @@ struct SubscriptionButton: View {
         case .lifetime:
             VStack(alignment: .leading, spacing: 4) {
                 Text("No Renewals")
-                    .foregroundStyle(Color.theme.accent)
+                    .foregroundStyle(Color.theme.accent.gradient)
                     .bold()
                 
                 Text("\(price) / once")

@@ -177,7 +177,7 @@ struct AppIconRow: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(isSelected ? Color.theme.accent : Color(.systemGray6).gradient, lineWidth: 1)
+                            .stroke(isSelected ? Color.theme.accent.gradient : Color(.systemGray6).gradient, lineWidth: 1)
                     )
             }
             
@@ -193,7 +193,7 @@ struct AppIconRow: View {
             } else {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "")
                     .font(.title2)
-                    .foregroundStyle(isSelected ? Color.theme.accent : Color(.systemGray6).gradient)
+                    .foregroundStyle(isSelected ? Color.theme.accent.gradient : Color(.systemGray6).gradient)
             }
         }
         .contentShape(.rect)

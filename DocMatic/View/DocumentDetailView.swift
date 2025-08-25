@@ -230,8 +230,7 @@ struct DocumentDetailView: View {
             }
             .navigationBarBackButtonHidden(true)
             .navigationTitle(document.name)
-            .toolbar {
-                // Header View
+            .toolbar { /// <-- Header View
                 ToolbarItem(placement: .topBarLeading) {
                     if isUnlocked {
                         Menu {
@@ -377,11 +376,15 @@ struct DocumentDetailView: View {
                 NavigationStack {
                     VStack(alignment: .leading, spacing: 16) {
                         if isSummarizing {
-                            ProgressView("Summarizing…")
+                            ZStack {
+                                ProgressView("Summarizing…")
+                            }
                         } else if let summaryText {
                             ScrollView { Text(summaryText).font(.body).padding(.top, 4) }.padding()
                         } else {
-                            Text("No summary available.")
+                            ZStack {
+                                Text("No summary available.")
+                            }
                         }
                     }
                     .navigationTitle("Summary")
@@ -397,7 +400,6 @@ struct DocumentDetailView: View {
                                 }
                             }
                         }
-                        
                         
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Done", systemImage: "xmark") {
@@ -437,7 +439,7 @@ struct DocumentDetailView: View {
                 }) {
                     Image(systemName: "plus.magnifyingglass") /// <-- Zoom-in icon
                         .font(.title)
-                        .foregroundStyle(zoom < 5.0 ? Color.theme.accent : Color.gray.gradient)
+                        .foregroundStyle(zoom < 5.0 ? Color.theme.accent.gradient : Color.gray.gradient)
                         .frame(width: 50, height: 50)
                         .glassEffect(.regular.interactive(), in: .circle)
                 }
@@ -494,7 +496,7 @@ struct DocumentDetailView: View {
                 }) {
                     Image(systemName: "plus.magnifyingglass") /// <-- Zoom-in icon
                         .font(.title)
-                        .foregroundStyle(zoom < 5.0 ? Color.theme.accent : Color.gray.gradient)
+                        .foregroundStyle(zoom < 5.0 ? Color.theme.accent.gradient : Color.gray.gradient)
                 }
                 .disabled(zoom >= 5.0)
                 
