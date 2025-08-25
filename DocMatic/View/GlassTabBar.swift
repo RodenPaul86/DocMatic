@@ -54,7 +54,7 @@ struct GlassTabBar: View {
                         }
                     }
                     .padding(6)
-                    .glassEffect()
+                    .glassEffect(.regular.interactive(), in: .capsule)
                 } else {
                     HStack(spacing: 0) {
                         ForEach(tabs, id: \.self) { tab in
