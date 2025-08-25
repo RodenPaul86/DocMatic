@@ -11,6 +11,7 @@ import WebKit
 import TipKit
 
 struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @AppStorage("AppScheme") private var appScheme: AppScheme = .device
     @SceneStorage("ShowScenePickerView") private var showPickerView: Bool = false
     @AppStorage("resetDatastore") private var resetDatastore: Bool = false
@@ -18,13 +19,13 @@ struct SettingsView: View {
     @AppStorage("isHapticsEnabled") private var isHapticsEnabled: Bool = true
     @State private var resetOnboarding: Bool = false
     @EnvironmentObject var appSubModel: appSubscriptionModel
-    @Environment(\.dismiss) private var dismiss
     
     @State private var showDebug: Bool = false
     @State private var debugMessage: String = ""
     @State private var isPaywallPresented: Bool = false
     @State private var isPresentedManageSubscription: Bool = false
-    @State private var showStoreView = false
+    @State private var showStoreView: Bool = false
+    @State private var isAboutShowing: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -37,6 +38,10 @@ struct SettingsView: View {
                         }
                     }
                     .listRowInsets(EdgeInsets())
+                } else {
+                    customRow(icon: "crown", firstLabel: "Manage Subscription") {
+                        isPresentedManageSubscription = true
+                    }
                 }
                 
                 Section(header: Text("Customization")) {
@@ -65,18 +70,11 @@ struct SettingsView: View {
                     customRow(icon: "envelope", firstLabel: "Contact Support", destination: AnyView(feedbackView()))
                 }
                 
-                Section(header: Text("Info"), footer: Text("Help shape future updates of DocMatic. Your feedback makes a difference!")) {
-                    customRow(icon: "list.clipboard", firstLabel: "About", destination: AnyView(aboutView()))
-                    if appSubModel.isSubscriptionActive {
-                        customRow(icon: "crown", firstLabel: "Manage Subscription") {
-                            isPresentedManageSubscription = true
-                        }
-                    }
+                Section(header: Text("Other"), footer: Text("Help shape future updates of DocMatic. Your feedback makes a difference!")) {
                     customRow(icon: "widget.small", firstLabel: "Install Widget", destination: AnyView(WidgetSetupView()))
                     customRow(icon: "square.fill.text.grid.1x2", firstLabel: "More Apps") {
                         showStoreView.toggle()
                     }
-                    
                     customRow(icon: "paperplane", firstLabel: "Join TestFlight (Beta)", url: "https://testflight.apple.com/join/UzzQuFBX", showJoinInsteadOfSafari: true)
                 }
                 
@@ -122,14 +120,39 @@ struct SettingsView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if UIDevice.current.userInterfaceIdiom == .pad {
-                        Button(action: { dismiss() }) {
-                            Text("Done")
-                                .foregroundStyle(Color.theme.accent)
+                if #available(iOS 26.0, *) {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("About", systemImage: "info.circle") {
+                            isAboutShowing = true
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            Button("Done", systemImage: "xmark") {
+                                dismiss()
+                            }
+                        }
+                    }
+                } else {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("About", systemImage: "info.circle") {
+                            isAboutShowing = true
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        if UIDevice.current.userInterfaceIdiom == .pad {
+                            Button(action: { dismiss() }) {
+                                Text("Done")
+                                    .foregroundStyle(Color.theme.accent)
+                            }
                         }
                     }
                 }
+            }
+            .sheet(isPresented: $isAboutShowing) {
+                aboutView()
             }
             .safeAreaInset(edge: .bottom) {
                 if UIDevice.current.userInterfaceIdiom == .phone {
