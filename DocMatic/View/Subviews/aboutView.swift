@@ -32,7 +32,6 @@ struct aboutView: View {
                 }
             }
             .navigationTitle("About")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done", systemImage: "xmark") {

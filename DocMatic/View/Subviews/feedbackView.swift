@@ -160,7 +160,7 @@ struct feedbackView: View {
                     tabBarVisibility.isVisible = true
                 }
             }
-            .navigationBarTitle("Sending: \(selectedTopic)")
+            .navigationBarTitle("Send: \(selectedTopic)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

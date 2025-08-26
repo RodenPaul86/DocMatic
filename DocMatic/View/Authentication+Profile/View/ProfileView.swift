@@ -224,7 +224,7 @@ struct ProfileView: View {
                     }
                 }
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         Button("Done", systemImage: "xmark") {
                             dismiss()
                         }
