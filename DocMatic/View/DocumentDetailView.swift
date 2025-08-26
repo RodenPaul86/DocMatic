@@ -235,12 +235,9 @@ struct DocumentDetailView: View {
                 ToolbarItem(placement: .topBarLeading) {
                     if isUnlocked {
                         Menu {
-                            if let documentSize {
-                                Section {
-                                    Label("Size: \(documentSize)", systemImage: "doc")
-                                        .tint(.primary)
-                                        .disabled(true)
-                                }
+                            Section {
+                                Text("Size: \(documentSize ?? "")")
+                                    .disabled(true)
                             }
                             
                             Section {
