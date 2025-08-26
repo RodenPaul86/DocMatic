@@ -12,7 +12,6 @@ import TipKit
 import WidgetKit
 import AVFoundation
 import Vision
-import VisionKit
 
 class SpeechSynthesizerDelegate: NSObject, AVSpeechSynthesizerDelegate {
     var didFinishUtterance: (() -> Void)?
