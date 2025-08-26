@@ -59,6 +59,7 @@ struct DocumentDetailView: View {
     @Environment(\.scenePhase) private var scene
     @EnvironmentObject var tabBarVisibility: TabBarVisibility
     @EnvironmentObject var profileViewModel: ProfileViewModel
+    @EnvironmentObject var appSubModel: appSubscriptionModel
     
     let allinOne = AllinOne()
     
@@ -280,24 +281,26 @@ struct DocumentDetailView: View {
                                 }
                             }
                             
-                            Section {
-                                Button("Summarize", systemImage: "sparkles") {
-                                    Task {
-                                        isSummarizing = true
-                                        defer { isSummarizing = false; showSummary = true }
-                                        
-                                        // OCR instead of PDFKit string extraction
-                                        let text = await extractTextWithOCR(from: document)
-                                        
-                                        do {
-                                            let client = OpenAISummarizer(apiKey: apiKeys.openAIKey)
-                                            summaryText = try await client.summarizeDocument(text, targetWords: 180)
-                                        } catch {
-                                            summaryText = "Couldn’t summarize: \(error.localizedDescription)"
+                            if appSubModel.isSubscriptionActive {
+                                Section {
+                                    Button("Summarize", systemImage: "sparkles") {
+                                        Task {
+                                            isSummarizing = true
+                                            defer { isSummarizing = false; showSummary = true }
+                                            
+                                            // OCR instead of PDFKit string extraction
+                                            let text = await extractTextWithOCR(from: document)
+                                            
+                                            do {
+                                                let client = OpenAISummarizer(apiKey: apiKeys.openAIKey)
+                                                summaryText = try await client.summarizeDocument(text, targetWords: 180)
+                                            } catch {
+                                                summaryText = "Couldn’t summarize: \(error.localizedDescription)"
+                                            }
                                         }
                                     }
+                                    .tint(.primary)
                                 }
-                                .tint(.primary)
                             }
                             
                             Section {
@@ -374,40 +377,56 @@ struct DocumentDetailView: View {
             }
             .sheet(isPresented: $showSummary) {
                 NavigationStack {
-                    VStack(alignment: .leading, spacing: 16) {
-                        if isSummarizing {
-                            ZStack {
-                                ProgressView("Summarizing…")
-                            }
-                        } else if let summaryText {
-                            ScrollView { Text(summaryText).font(.body).padding(.top, 4) }.padding()
-                        } else {
-                            ZStack {
-                                Text("No summary available.")
+                    ZStack(alignment: .bottomLeading) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            if isSummarizing {
+                                ZStack {
+                                    ProgressView("Summarizing…")
+                                }
+                            } else if let summaryText {
+                                ScrollView { Text(summaryText).font(.body).padding(.top, 4) }.padding()
+                            } else {
+                                ZStack {
+                                    Text("No summary available.")
+                                }
                             }
                         }
-                    }
-                    .navigationTitle("Summary")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button(isSpeaking ? "Stop" : "Read Aloud", systemImage: isSpeaking ? "stop.fill" : "speaker.wave.2.fill") {
-                                if isSpeaking {
-                                    speechSynthesizer.stopSpeaking(at: .immediate)
-                                    isSpeaking = false
-                                } else {
-                                    readSummaryAloud()
+                        .navigationTitle("Summary")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button(isSpeaking ? "Stop" : "Read Aloud", systemImage: isSpeaking ? "stop.fill" : "speaker.wave.2.fill") {
+                                    if isSpeaking {
+                                        speechSynthesizer.stopSpeaking(at: .immediate)
+                                        isSpeaking = false
+                                    } else {
+                                        readSummaryAloud()
+                                    }
+                                }
+                            }
+                            
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button("Done", systemImage: "xmark") {
+                                    showSummary = false
                                 }
                             }
                         }
                         
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Done", systemImage: "xmark") {
-                                showSummary = false
-                            }
-                        }
+                        Text("Powered by ChatGPT")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(
+                                Capsule()
+                                    .fill(Color.black.opacity(0.6))
+                            )
+                            .padding([.leading, .bottom], 16)
                     }
+                    .ignoresSafeArea(edges: .bottom)
                 }
+                .presentationDetents([.medium, .large]) /// <-- half and full
+                .presentationDragIndicator(.visible)   /// <-- little drag handle
             }
         }
     }
