@@ -11,8 +11,8 @@ struct PricingView: View {
     let features: [(name: String, free: String?, proType: ProFeatureType, freeHasAccess: Bool)] = [
         ("Document Scans", "3", .infinity, true),
         ("Drag & Drop PDF's", "3", .infinity, true),
-        ("Remove Annoying Ad Banners", nil, .checkmark, false),
-        ("Remove Watermarks", nil, .checkmark, false),
+        ("PDF Summarization", nil, .checkmark, false),
+        ("Remove Ads & Watermarks", nil, .checkmark, false),
         ("Lock & Home Screen Widgets", nil, .checkmark, true),
         ("Import from Files & URL", nil, .checkmark, false),
         ("Alternate App Icons", nil, .checkmark, false),
@@ -83,7 +83,7 @@ struct PricingView: View {
         .font(.subheadline)
         .padding()
         .background(Color.gray.opacity(0.2))
-        .cornerRadius(15)
+        .cornerRadius(20)
     }
 }
 

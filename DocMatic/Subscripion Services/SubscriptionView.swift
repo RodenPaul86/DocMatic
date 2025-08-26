@@ -51,6 +51,7 @@ struct SubscriptionView: View {
             
             // MARK: Top Navigation (always on top)
             VStack {
+                // Header
                 HStack {
                     // Restore Button
                     Button(action: { restorePurchases() }) {
