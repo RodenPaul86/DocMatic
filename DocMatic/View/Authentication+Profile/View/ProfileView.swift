@@ -62,7 +62,7 @@ struct ProfileView: View {
                                     .background(Color(.systemGray3))
                                     .clipShape(Circle())
                             }
-#if DEBUG
+                            
                             if #available(iOS 26.0, *) {
                                 NavigationLink {
                                     EditView()
@@ -70,27 +70,22 @@ struct ProfileView: View {
                                 } label: {
                                     Image(systemName: "pencil.circle.fill")
                                         .font(.title2)
-                                        .foregroundStyle(Color.theme.accent)
+                                        .foregroundStyle(Color.theme.accent.gradient)
                                         .glassEffect(.regular.interactive(), in: .circle)
                                 }
                                 .offset(x: 0, y: 0)
                             } else {
                                 NavigationLink {
-                                    if #available(iOS 18.1, *) {
-                                        EditView()
-                                            .navigationBarBackButtonHidden(true)
-                                    } else {
-                                        // Fallback on earlier versions
-                                    }
+                                    EditView()
+                                        .navigationBarBackButtonHidden(true)
                                 } label: {
                                     Image(systemName: "pencil.circle.fill")
                                         .font(.title2)
-                                        .foregroundStyle(Color.theme.accent)
+                                        .foregroundStyle(Color.theme.accent.gradient)
                                         .background(Circle().fill(Color.white))
                                 }
                                 .offset(x: 0, y: 0)
                             }
-#endif
                         }
                         
                         Text(user.fullname)
@@ -105,6 +100,7 @@ struct ProfileView: View {
                             ProfileStatView(value: "\(scanManager.scanCount) file\(scanManager.scanCount == 1 ? "" : "s")", label: "Scanned", icon: "scanner")
                             ProfileStatView(value: "\(scanManager.streakCount) day\(scanManager.streakCount == 1 ? "" : "s")", label: "Streak", icon: "flame.fill")
                         }
+                        .padding(.top)
                     }
                     .offset(y: -20)
                     
@@ -225,7 +221,7 @@ struct ProfileView: View {
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done", systemImage: "xmark") {
+                        Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
                             dismiss()
                         }
                     }

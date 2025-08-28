@@ -164,22 +164,29 @@ struct feedbackView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Send", systemImage: "arrow.up") {
-                        isShowingMailView.toggle()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(textBody.isEmpty)
-                    .sheet(isPresented: $isShowingMailView) {
-                        MailView(
-                            isShowing: $isShowingMailView,
-                            recipient: "support@docmatic.app",
-                            subject: "DocMatic: \(selectedTopic)",
-                            body: generateEmailBody(),
-                            imageData: imageData
-                        ) {
-                            presentationMode.wrappedValue.dismiss()
+                    if #available(iOS 26.0, *) {
+                        Button("Send", systemImage:  "arrow.up") {
+                            isShowingMailView.toggle()
                         }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(textBody.isEmpty)
+                    } else {
+                        Button("Send") {
+                            isShowingMailView.toggle()
+                        }
+                        .disabled(textBody.isEmpty)
                     }
+                }
+            }
+            .sheet(isPresented: $isShowingMailView) {
+                MailView(
+                    isShowing: $isShowingMailView,
+                    recipient: "support@docmatic.app",
+                    subject: "DocMatic: \(selectedTopic)",
+                    body: generateEmailBody(),
+                    imageData: imageData
+                ) {
+                    presentationMode.wrappedValue.dismiss()
                 }
             }
         }

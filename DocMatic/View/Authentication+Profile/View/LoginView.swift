@@ -131,8 +131,8 @@ struct LoginView: View {
                 }
             }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Done", systemImage: "xmark") {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
                         dismiss()
                     }
                 }

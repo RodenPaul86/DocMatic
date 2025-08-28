@@ -139,8 +139,8 @@ struct SubscriptionView: View {
                         }
                         .padding(.top)
                     }
-                    .padding(.horizontal)
-                    .padding([.top, .bottom])
+                    .padding([.top, .horizontal])
+                    .padding(.bottom, 20)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
                             .glassEffect(.regular.tint(.black), in: .rect(cornerRadius: 20))
@@ -170,13 +170,13 @@ struct SubscriptionView: View {
                                 .foregroundStyle(.white)
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color.theme.accent, in: .capsule)
+                                .background(Color.theme.accent.gradient, in: .capsule)
                                 .cornerRadius(14)
                         }
                         .padding(.top)
                     }
-                    .padding(.horizontal)
-                    .padding([.top, .bottom])
+                    .padding([.top, .horizontal])
+                    .padding(.bottom, 40)
                     .background(
                         RoundedRectangle(cornerRadius: 20)
                             .fill(Color.black) /// <-- solid black background

@@ -34,7 +34,7 @@ struct aboutView: View {
             .navigationTitle("About")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done", systemImage: "xmark") {
+                    Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
                         dismiss()
                     }
                 }

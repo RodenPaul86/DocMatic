@@ -207,14 +207,18 @@ struct DocumentDetailView: View {
                             }
                         } else {
                             if showPageNumber {
-                                Text("\(currentPageIndex + 1) of \(pages.count)")
-                                    .font(.callout.bold())
-                                    .padding(8)
-                                    .background(.black.opacity(0.6))
-                                    .foregroundColor(.white)
-                                    .clipShape(Capsule())
-                                    .transition(.opacity.combined(with: .move(edge: .top)))
-                                    .padding()
+                                Button(action: {
+                                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                        currentPageIndex = 0
+                                    }
+                                }) {
+                                    Text("\(currentPageIndex + 1) of \(pages.count)")
+                                        .font(.callout.bold())
+                                        .padding()
+                                        .background(.ultraThinMaterial, in: .capsule)
+                                        .foregroundColor(.primary)
+                                        .padding()
+                                }
                             }
                         }
                         
@@ -366,7 +370,7 @@ struct DocumentDetailView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done", systemImage: "xmark") {
+                    Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
                         dismiss()
                     }
                 }
@@ -402,22 +406,27 @@ struct DocumentDetailView: View {
                             }
                             
                             ToolbarItem(placement: .topBarTrailing) {
-                                Button("Done", systemImage: "xmark") {
+                                Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
                                     showSummary = false
                                 }
                             }
                         }
                         
-                        Text("Powered by ChatGPT")
-                            .font(.caption)
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(
-                                Capsule()
-                                    .fill(Color.black.opacity(0.6))
-                            )
-                            .padding([.leading, .bottom], 16)
+                        if #available(iOS 26.0, *) {
+                            Text("Powered by ChatGPT")
+                                .font(.caption)
+                                .foregroundColor(.primary)
+                                .padding()
+                                .glassEffect(.regular, in: .capsule)
+                                .padding([.leading, .bottom], 16)
+                        } else {
+                            Text("Powered by ChatGPT")
+                                .font(.caption)
+                                .foregroundColor(.primary)
+                                .padding()
+                                .background(.ultraThinMaterial, in: .capsule)
+                                .padding([.leading, .bottom], 16)
+                        }
                     }
                     .ignoresSafeArea(edges: .bottom)
                 }
@@ -500,6 +509,8 @@ struct DocumentDetailView: View {
                 Text("Zoom: \(zoomPercentage)%")
                     .font(.callout)
                     .foregroundStyle(.primary)
+                    .padding()
+                    .background(.ultraThinMaterial, in: .capsule)
                 
                 Spacer(minLength: 0)
                 
@@ -507,11 +518,14 @@ struct DocumentDetailView: View {
                 Button(action: {
                     withAnimation(.easeInOut) {
                         zoom = min(zoom + 1.0, 5.0) /// <-- Increase zoom with a maximum limit
+                        showPageNumber = false
                     }
                 }) {
                     Image(systemName: "plus.magnifyingglass") /// <-- Zoom-in icon
                         .font(.title)
                         .foregroundStyle(zoom < 5.0 ? Color.theme.accent.gradient : Color.gray.gradient)
+                        .frame(width: 50, height: 50)
+                        .background(.ultraThinMaterial, in: .circle)
                 }
                 .disabled(zoom >= 5.0)
                 
@@ -520,11 +534,16 @@ struct DocumentDetailView: View {
                     Button(action: {
                         withAnimation(.easeInOut) {
                             zoom = max(zoom - 0.5, 1.0) /// <-- Decrease zoom with a maximum limit
+                            if zoom == 1.0 {
+                                showPageNumber = true
+                            }
                         }
                     }) {
                         Image(systemName: "minus.magnifyingglass") /// <-- Zoom-out icon
                             .font(.title)
                             .foregroundStyle(Color.theme.accent)
+                            .frame(width: 50, height: 50)
+                            .background(.ultraThinMaterial, in: .circle)
                     }
                 }
                 
@@ -534,14 +553,18 @@ struct DocumentDetailView: View {
                         withAnimation(.easeInOut) {
                             zoom = 1.0 /// <-- Reset zoom
                             offset = .zero /// <-- Reset drag offset
+                            showPageNumber = true
                         }
                     }) {
                         Image(systemName: "arrow.up.left.and.down.right.magnifyingglass") /// <-- Zoom all the way out icon
                             .font(.title)
                             .foregroundStyle(Color.theme.accent)
+                            .frame(width: 50, height: 50)
+                            .background(.ultraThinMaterial, in: .circle)
                     }
                 }
             }
+            .padding(.bottom, 20)
         }
     }
     
