@@ -370,7 +370,7 @@ struct DocumentDetailView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
+                    Button("Done", systemImage: "xmark") {
                         dismiss()
                     }
                 }
@@ -406,7 +406,7 @@ struct DocumentDetailView: View {
                             }
                             
                             ToolbarItem(placement: .topBarTrailing) {
-                                Button("Done", systemImage: Bundle.main.appVersion == "26" ? "xmark" : "Done") {
+                                Button("Done", systemImage: "xmark") {
                                     showSummary = false
                                 }
                             }

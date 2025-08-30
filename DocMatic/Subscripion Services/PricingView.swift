@@ -25,65 +25,128 @@ struct PricingView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // MARK: Header
-            HStack {
-                Text("Features")
-                    .font(.headline)
-                    .foregroundStyle(.gray)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Text("Free")
-                    .font(.headline)
-                    .foregroundStyle(.gray)
-                    .frame(width: 50) /// <-- Fixed width for alignment
-                
-                Text("Pro")
-                    .font(.headline.italic())
-                    .foregroundStyle(Color.theme.accent)
-                    .frame(width: 50) /// <-- Fixed width for alignment
-            }
-            
-            Divider()
-            
-            // MARK: Feature List
-            ForEach(features, id: \.name) { feature in
+        if #available(iOS 26.0, *) {
+            VStack(alignment: .leading, spacing: 12) {
+                // MARK: Header
                 HStack {
-                    // Feature Name
-                    Text(feature.name)
+                    Text("Features")
+                        .font(.headline)
+                        .foregroundStyle(.gray)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Spacer()
+                    Text("Free")
+                        .font(.headline)
+                        .foregroundStyle(.gray)
+                        .frame(width: 50) /// <-- Fixed width for alignment
                     
-                    // Free Version Column
-                    if let freeValue = feature.free {
-                        Text(freeValue)
-                            .frame(width: 50, alignment: .center)
-                            .foregroundStyle(.gray)
-                    } else {
-                        Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            .foregroundStyle(feature.freeHasAccess ? Color.theme.accent.gradient : Color.red.gradient)
+                    Text("Pro")
+                        .font(.headline.italic())
+                        .foregroundStyle(Color.theme.accent)
+                        .frame(width: 50) /// <-- Fixed width for alignment
+                }
+                
+                Divider()
+                
+                // MARK: Feature List
+                ForEach(features, id: \.name) { feature in
+                    HStack {
+                        // Feature Name
+                        Text(feature.name)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer()
+                        
+                        // Free Version Column
+                        if let freeValue = feature.free {
+                            Text(freeValue)
+                                .frame(width: 50, alignment: .center)
+                                .foregroundStyle(.gray)
+                        } else {
+                            Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
+                                .foregroundStyle(feature.freeHasAccess ? Color.theme.accent.gradient : Color.red.gradient)
+                                .frame(width: 50)
+                        }
+                        
+                        // Pro Version Column
+                        Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
+                            .foregroundStyle(Color.theme.accent)
                             .frame(width: 50)
                     }
-                    
-                    // Pro Version Column
-                    Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
-                        .foregroundStyle(Color.theme.accent)
-                        .frame(width: 50)
+                    .padding(.vertical, 5)
                 }
-                .padding(.vertical, 5)
+                
+                Divider()
+                
+                Text("All subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. You can manage or cancel your subscription anytime in your iTunes settings, or in the app’s settings.")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
             }
+            .font(.subheadline)
+            .padding()
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(20)
             
-            Divider()
-            
-            Text("All Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. You can manage your subscription or cancel anytime in your iTunes settings or in the app settings.")
-                .font(.caption)
-                .foregroundStyle(.gray)
+        } else {
+            VStack(alignment: .leading, spacing: 12) {
+                // MARK: Header
+                HStack {
+                    Text("Features")
+                        .font(.headline)
+                        .foregroundStyle(.gray)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Text("Free")
+                        .font(.headline)
+                        .foregroundStyle(.gray)
+                        .frame(width: 50) /// <-- Fixed width for alignment
+                    
+                    Text("Pro")
+                        .font(.headline.italic())
+                        .foregroundStyle(Color.theme.accent)
+                        .frame(width: 50) /// <-- Fixed width for alignment
+                }
+                
+                Divider()
+                
+                // MARK: Feature List
+                ForEach(features, id: \.name) { feature in
+                    HStack {
+                        // Feature Name
+                        Text(feature.name)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer()
+                        
+                        // Free Version Column
+                        if let freeValue = feature.free {
+                            Text(freeValue)
+                                .frame(width: 50, alignment: .center)
+                                .foregroundStyle(.gray)
+                        } else {
+                            Image(systemName: feature.freeHasAccess ? "checkmark.circle.fill" : "xmark.circle.fill")
+                                .foregroundStyle(feature.freeHasAccess ? Color.theme.accent.gradient : Color.red.gradient)
+                                .frame(width: 50)
+                        }
+                        
+                        // Pro Version Column
+                        Image(systemName: feature.proType == .infinity ? "infinity" : "checkmark.circle.fill")
+                            .foregroundStyle(Color.theme.accent)
+                            .frame(width: 50)
+                    }
+                    .padding(.vertical, 5)
+                }
+                
+                Divider()
+                
+                Text("All Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period. You can manage your subscription or cancel anytime in your iTunes settings or in the app settings.")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
+            }
+            .font(.subheadline)
+            .padding()
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(12)
         }
-        .font(.subheadline)
-        .padding()
-        .background(Color.gray.opacity(0.2))
-        .cornerRadius(20)
     }
 }
 

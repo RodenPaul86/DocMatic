@@ -12,6 +12,20 @@ struct releaseNotesView: View {
     
     let updates: [appUpdate] = [
         appUpdate(
+            title: "DocMatic 2.1",
+            version: "2.1.0",
+            date: "September 2025",
+            description: "DocMatic is now ready for iOS 26!",
+            imageName: "",
+            features: [
+                "Optimized for iOS 26.",
+                "Redesigned document preview UI for a more polished and intuitive experience.",
+                "Summarizes key information about your documents in a single view."
+            ],
+            bugFixes: ["Minor fixes and stability improvements."]
+        ),
+        
+        appUpdate(
             title: "Foundation for the Future",
             version: "2.0.0",
             date: "July 2025",
@@ -91,77 +105,150 @@ struct UpdateCard: View {
     let update: appUpdate
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            
-            // Centered Title and Version/Date
-            VStack(spacing: 4) {
-                if !update.title.isEmpty {
-                    Text(update.title)
-                        .font(.title2.bold())
+        if #available(iOS 26.0, *) {
+            VStack(alignment: .leading, spacing: 12) {
+                // Centered Title and Version/Date
+                VStack(spacing: 4) {
+                    if !update.title.isEmpty {
+                        Text(update.title)
+                            .font(.title2.bold())
+                    }
+                    
+                    Text("v\(update.version) • \(update.date)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    // Description
+                    if !update.description.isEmpty {
+                        Text(update.description)
+                            .font(.body)
+                            .padding(.top, 6)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                
+                // Centered Optional image
+                VStack(spacing: 6) {
+                    if !update.imageName.isEmpty {
+                        Image(update.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 400)
+                            .cornerRadius(30)
+                            .padding(.bottom, 6)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                
+                // Features
+                if let features = update.features, !features.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("What's New")
+                            .font(.headline)
+                        ForEach(features, id: \.self) { feature in
+                            HStack(alignment: .top) {
+                                Text("•")
+                                Text(feature)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
                 }
                 
-                Text("v\(update.version) • \(update.date)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                
-                // Description
-                if !update.description.isEmpty {
-                    Text(update.description)
-                        .font(.body)
-                        .padding(.top, 6)
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .multilineTextAlignment(.center)
-            
-            // Centered Optional image
-            VStack(spacing: 6) {
-                if !update.imageName.isEmpty {
-                    Image(update.imageName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxHeight: 400)
-                        .cornerRadius(12)
-                        .padding(.bottom, 6)
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .multilineTextAlignment(.center)
-            
-            // Features
-            if let features = update.features, !features.isEmpty {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("What's New")
-                        .font(.headline)
-                    ForEach(features, id: \.self) { feature in
-                        HStack(alignment: .top) {
-                            Text("•")
-                            Text(feature)
-                                .fixedSize(horizontal: false, vertical: true)
+                // Bug Fixes
+                if let bugFixes = update.bugFixes, !bugFixes.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Bug Fixes")
+                            .font(.headline)
+                        ForEach(bugFixes, id: \.self) { fix in
+                            HStack(alignment: .top) {
+                                Text("•")
+                                Text(fix)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                     }
                 }
             }
+            .padding()
+            .background(Color("BGTile"))
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
             
-            // Bug Fixes
-            if let bugFixes = update.bugFixes, !bugFixes.isEmpty {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Bug Fixes")
-                        .font(.headline)
-                    ForEach(bugFixes, id: \.self) { fix in
-                        HStack(alignment: .top) {
-                            Text("•")
-                            Text(fix)
-                                .fixedSize(horizontal: false, vertical: true)
+        } else {
+            VStack(alignment: .leading, spacing: 12) {
+                // Centered Title and Version/Date
+                VStack(spacing: 4) {
+                    if !update.title.isEmpty {
+                        Text(update.title)
+                            .font(.title2.bold())
+                    }
+                    
+                    Text("v\(update.version) • \(update.date)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    // Description
+                    if !update.description.isEmpty {
+                        Text(update.description)
+                            .font(.body)
+                            .padding(.top, 6)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                
+                // Centered Optional image
+                VStack(spacing: 6) {
+                    if !update.imageName.isEmpty {
+                        Image(update.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(maxHeight: 400)
+                            .cornerRadius(12)
+                            .padding(.bottom, 6)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                
+                // Features
+                if let features = update.features, !features.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("What's New")
+                            .font(.headline)
+                        ForEach(features, id: \.self) { feature in
+                            HStack(alignment: .top) {
+                                Text("•")
+                                Text(feature)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                }
+                
+                // Bug Fixes
+                if let bugFixes = update.bugFixes, !bugFixes.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Bug Fixes")
+                            .font(.headline)
+                        ForEach(bugFixes, id: \.self) { fix in
+                            HStack(alignment: .top) {
+                                Text("•")
+                                Text(fix)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
                     }
                 }
             }
+            .padding()
+            .background(Color("BGTile"))
+            .cornerRadius(12)
+            .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
         }
-        .padding()
-        .background(Color("BGTile"))
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
     }
 }
 
