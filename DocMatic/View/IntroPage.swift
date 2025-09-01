@@ -9,6 +9,7 @@ import SwiftUI
 
 struct IntroPage: View {
     @Binding var showIntroView: Bool
+    @Environment(\.dismiss) private var dismiss
     @State private var selectedItem: Item = items.first!
     @State private var introItems: [Item] = items
     @State private var activeIndex: Int = 0
@@ -18,16 +19,47 @@ struct IntroPage: View {
     var body: some View {
         VStack(spacing: 0) {
             // MARK: Back Button
-            Button(action: { updateItem(isForward: false) }) {
-                Image(systemName: "chevron.left")
-                    .font(.title3.bold())
-                    .foregroundStyle(Color.theme.accent)
-                    .padding(10)
-                    .background(.ultraThinMaterial, in: Circle())
-                    .contentShape(.rect)
+            HStack {
+                Button(action: { updateItem(isForward: false) }) {
+                    if #available(iOS 26.0, *) {
+                        Image(systemName: "chevron.left")
+                            .font(.title3.bold())
+                            .foregroundStyle(Color.theme.accent)
+                            .padding(10)
+                            .glassEffect(.regular.interactive(), in: .circle)
+                            .contentShape(.rect)
+                    } else {
+                        Image(systemName: "chevron.left")
+                            .font(.title3.bold())
+                            .foregroundStyle(Color.theme.accent)
+                            .padding(10)
+                            .background(.ultraThinMaterial, in: Circle())
+                            .contentShape(.rect)
+                    }
+                }
+                
+                Spacer()
+                
+                Button(action: { dismiss() }) {
+                    if #available(iOS 26.0, *) {
+                        Text("Skip")
+                            .font(.title3.bold())
+                            .foregroundStyle(Color.theme.accent)
+                            .padding(10)
+                            .glassEffect(.regular.interactive(), in: .capsule)
+                            .contentShape(.rect)
+                    } else {
+                        Text("Skip")
+                            .font(.title3.bold())
+                            .foregroundStyle(Color.theme.accent)
+                            .padding(10)
+                            .background(.ultraThinMaterial, in: Capsule())
+                            .contentShape(.rect)
+                    }
+                }
             }
             .padding(15)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity)
             .opacity(selectedItem.id != introItems.first?.id ? 1 : 0) /// <-- Only Visible from second item
             
             ZStack {
@@ -69,13 +101,24 @@ struct IntroPage: View {
                         updateItem(isForward: true)
                     }
                 }) {
-                    Text(selectedItem.id == introItems.last?.id ? "Continue" : "Next")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                        .contentTransition(.numericText())
-                        .frame(width: 250)
-                        .padding(.vertical, 12)
-                        .background(Color.theme.accent, in: .capsule)
+                    if #available(iOS 26.0, *) {
+                        Text(selectedItem.id == introItems.last?.id ? "Continue" : "Next")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .contentTransition(.numericText())
+                            .frame(width: 250)
+                            .padding(.vertical, 12)
+                            .background(Color.theme.accent, in: .capsule)
+                            .glassEffect(.regular.interactive(), in: .capsule)
+                    } else {
+                        Text(selectedItem.id == introItems.last?.id ? "Continue" : "Next")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .contentTransition(.numericText())
+                            .frame(width: 250)
+                            .padding(.vertical, 12)
+                            .background(Color.theme.accent.gradient, in: .capsule)
+                    }
                 }
                 .padding(.top, 25)
             }
@@ -160,4 +203,8 @@ struct IntroPage: View {
             }
         }
     }
+}
+
+#Preview {
+    IntroPage(showIntroView: .constant(true), onContinue: {})
 }

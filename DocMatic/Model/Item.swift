@@ -64,7 +64,7 @@ let items: [Item] = [
     
     .init(
         image: "party.popper",
-        title: "Welcome to DocMatic!",
+        title: "Welcome!",
         description: "Thanks so much for giving my app a try. I made it with users like you in mind!",
         scale: 0.35,
         anchor: .bottomLeading,
