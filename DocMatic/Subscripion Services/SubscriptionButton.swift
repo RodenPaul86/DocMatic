@@ -24,11 +24,8 @@ struct SubscriptionButton: View {
     var offering: Offering?
     
     @State private var currentOffering: Offering?
-    
-    //@StateObject private var currency = CurrencyFormatter()
+    @StateObject private var currency = CurrencyFormatter()
     @State private var originalYearlyPrice: Double = 259.48
-    
-    @State private var isTrialEligible: Bool = false
     
     var isSelected: Bool {
         selectedPlan == plan
@@ -101,9 +98,6 @@ struct SubscriptionButton: View {
                 hapticManager.shared.notify(.impact(.light))
             }
         }
-        .onAppear {
-            checkTrialEligibilityIfNeeded()
-        }
     }
     
     @ViewBuilder
@@ -113,11 +107,11 @@ struct SubscriptionButton: View {
         switch plan {
         case .annual:
             VStack(alignment: .leading, spacing: 4) {
-                //Text(currency.format(originalYearlyPrice))
-                Text("$259.48")
+                Text(currency.format(originalYearlyPrice))
                     .foregroundStyle(Color.theme.accent.gradient)
                     .bold()
                     .strikethrough()
+                
                 Text("\(price) / yr")
                     .foregroundStyle(.primary)
                     .bold()
@@ -130,16 +124,14 @@ struct SubscriptionButton: View {
             
         case .weekly:
             VStack(alignment: .leading, spacing: 4) {
-                if isTrialEligible {
-                    Text("3-Day Trial")
-                        .foregroundStyle(Color.theme.accent.gradient)
-                        .bold()
-                }
+                Text("3-Day Trial")
+                    .foregroundStyle(Color.theme.accent.gradient)
+                    .bold()
+                
                 Text("\(price) / wk")
                     .foregroundStyle(.primary)
                     .bold()
             }
-            
         case .lifetime:
             VStack(alignment: .leading, spacing: 4) {
                 Text("No Renewals")
@@ -149,21 +141,6 @@ struct SubscriptionButton: View {
                 Text("\(price) / once")
                     .foregroundStyle(.primary)
                     .bold()
-            }
-        }
-    }
-    
-    private func checkTrialEligibilityIfNeeded() {
-        guard plan == .weekly, let product = offering?.weekly?.storeProduct else { return }
-        
-        Purchases.shared.checkTrialOrIntroDiscountEligibility(productIdentifiers: [product.productIdentifier]) { eligibilityMap in
-            if let eligibility = eligibilityMap[product.productIdentifier] {
-                switch eligibility.status {
-                case .eligible:
-                    isTrialEligible = true
-                default:
-                    isTrialEligible = false
-                }
             }
         }
     }
