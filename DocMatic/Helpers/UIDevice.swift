@@ -73,7 +73,7 @@ public extension UIDevice {
         case "iPhone18,1":                                      return "iPhone 17 Pro"
         case "iPhone18,2":                                      return "iPhone 17 Pro Max"
         case "iPhone18,3":                                      return "iPhone 17"
-        case "iPhone18,4":                                      return "iPhone 17 Plus"
+        case "iPhone18,4":                                      return "iPhone Air"
             
             //MARK: iPads
         case "iPad1,1", "iPad1,2":                              return "iPad 1st gen"

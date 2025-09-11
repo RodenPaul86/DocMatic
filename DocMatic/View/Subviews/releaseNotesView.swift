@@ -19,7 +19,7 @@ struct releaseNotesView: View {
             imageName: "",
             features: [
                 "Optimized for iOS 26.",
-                "Profile Images: add your own photo or design a profile image with Image Playground.",
+                "Profile Image: add your own photo or design a profile image with Image Playgrounds.",
                 "Redesigned document view UI for a more polished and intuitive experience.",
                 "AI Summarized information about your document."
             ],
