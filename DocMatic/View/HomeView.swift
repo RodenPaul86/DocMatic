@@ -395,11 +395,13 @@ struct HomeView: View {
             content
                 .offset(y: offsetY(proxy))
         }
-        .fullScreenCover(isPresented: $isProfileShowing) {
+        .sheet(isPresented: $isProfileShowing) {
             if viewModel.userSession != nil {
                 ProfileView()
+                    .interactiveDismissDisabled(true)
             } else {
                 LoginView()
+                    .interactiveDismissDisabled(true)
             }
         }
     }

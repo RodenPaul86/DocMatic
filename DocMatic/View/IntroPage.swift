@@ -20,7 +20,10 @@ struct IntroPage: View {
         VStack(spacing: 0) {
             // MARK: Back Button
             HStack {
-                Button(action: { updateItem(isForward: false) }) {
+                Button(action: {
+                    hapticManager.shared.notify(.impact(.light))
+                    updateItem(isForward: false)
+                }) {
                     if #available(iOS 26.0, *) {
                         Image(systemName: "chevron.left")
                             .font(.title3.bold())
@@ -40,7 +43,10 @@ struct IntroPage: View {
                 
                 Spacer()
                 
-                Button(action: { dismiss() }) {
+                Button(action: {
+                    hapticManager.shared.notify(.impact(.light))
+                    dismiss()
+                }) {
                     if #available(iOS 26.0, *) {
                         Text("Skip")
                             .font(.title3.bold())
@@ -94,6 +100,7 @@ struct IntroPage: View {
                 
                 // MARK: Next/Continue Button
                 Button(action: {
+                    hapticManager.shared.notify(.impact(.light))
                     if selectedItem.id == introItems.last?.id {
                         showIntroView = true
                         onContinue() /// <-- Trigger Paywall

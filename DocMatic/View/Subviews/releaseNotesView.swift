@@ -19,8 +19,9 @@ struct releaseNotesView: View {
             imageName: "",
             features: [
                 "Optimized for iOS 26.",
-                "Redesigned document preview UI for a more polished and intuitive experience.",
-                "Summarizes key information about your documents in a single view."
+                "Profile Images: add your own photo or design a profile image with Image Playground.",
+                "Redesigned document view UI for a more polished and intuitive experience.",
+                "AI Summarized information about your document."
             ],
             bugFixes: ["Minor fixes and stability improvements."]
         ),
@@ -174,7 +175,7 @@ struct UpdateCard: View {
             }
             .padding()
             .background(Color("BGTile"))
-            .cornerRadius(12)
+            .cornerRadius(30)
             .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 2)
             
         } else {

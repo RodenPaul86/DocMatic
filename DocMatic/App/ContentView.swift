@@ -114,7 +114,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .confirmationDialog("Choose how you’d like to add a document.", isPresented: $showImportOption, titleVisibility: .visible) {
+            .confirmationDialog("Choose how you like to add a document.", isPresented: $showImportOption, titleVisibility: .visible) {
                 Button("Scan a Document") {
                     showScannerView = true
                 }
@@ -166,7 +166,7 @@ struct ContentView: View {
                     pdfURLString = ""
                 }
             } message: {
-                Text("e.g., https://example.com/file.pdf")
+                Text("Example: https://example.com/file.pdf")
             }
         }
         .onAppear {
