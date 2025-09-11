@@ -432,7 +432,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DocMatic.widgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2025.7.020;
+				CURRENT_PROJECT_VERSION = 2025.9.022;
 				DEVELOPMENT_TEAM = WM7RG95JZ8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DocMatic.widget/Info.plist;
@@ -444,7 +444,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.studio4design.DocMatic.DocMatic-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -466,7 +466,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = DocMatic.widgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2025.7.020;
+				CURRENT_PROJECT_VERSION = 2025.9.022;
 				DEVELOPMENT_TEAM = WM7RG95JZ8;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DocMatic.widget/Info.plist;
@@ -478,7 +478,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.studio4design.DocMatic.DocMatic-widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -503,7 +503,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = DocMatic/DocMatic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2025.9.021;
+				CURRENT_PROJECT_VERSION = 2025.9.022;
 				DEVELOPMENT_ASSET_PATHS = "\"DocMatic/Preview Content\"";
 				DEVELOPMENT_TEAM = WM7RG95JZ8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -532,7 +532,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.studio4design.DocMatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -554,7 +554,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = DocMatic/DocMatic.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2025.9.021;
+				CURRENT_PROJECT_VERSION = 2025.9.022;
 				DEVELOPMENT_ASSET_PATHS = "\"DocMatic/Preview Content\"";
 				DEVELOPMENT_TEAM = WM7RG95JZ8;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -583,7 +583,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 3.0.0;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.studio4design.DocMatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
