@@ -13,6 +13,21 @@
 		3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270D2D4A659300E8D13A /* RevenueCat */; };
 		3A9D27102D4A659300E8D13A /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A9D270F2D4A659300E8D13A /* RevenueCatUI */; };
 		3ABE6EBE2DFD9ECE0042B6C8 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 3ABE6EBD2DFD9ECE0042B6C8 /* Lottie */; };
+		3AC909902E7319FA00312069 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9098F2E7319FA00312069 /* AdSupport.framework */; };
+		3AC909922E731A0F00312069 /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909912E731A0F00312069 /* AppTrackingTransparency.framework */; };
+		3AC909942E731A1C00312069 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909932E731A1C00312069 /* AVFoundation.framework */; };
+		3AC909962E731A2D00312069 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909952E731A2D00312069 /* CoreAudio.framework */; };
+		3AC909982E731A3A00312069 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909972E731A3A00312069 /* CoreFoundation.framework */; };
+		3AC9099A2E731A4700312069 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909992E731A4700312069 /* CoreGraphics.framework */; };
+		3AC9099C2E731A5600312069 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9099B2E731A5600312069 /* CoreMedia.framework */; };
+		3AC9099E2E731A6200312069 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9099D2E731A6200312069 /* CoreTelephony.framework */; };
+		3AC909A02E731A6F00312069 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC9099F2E731A6F00312069 /* Foundation.framework */; };
+		3AC909A22E731A7B00312069 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909A12E731A7B00312069 /* JavaScriptCore.framework */; };
+		3AC909A42E731A9300312069 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909A32E731A9300312069 /* QuartzCore.framework */; };
+		3AC909A62E731A9E00312069 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909A52E731A9E00312069 /* StoreKit.framework */; };
+		3AC909A82E731AAE00312069 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909A72E731AAE00312069 /* SystemConfiguration.framework */; };
+		3AC909AA2E731AB900312069 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909A92E731AB900312069 /* UIKit.framework */; };
+		3AC909AC2E731AC500312069 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AC909AB2E731AC500312069 /* WebKit.framework */; };
 		3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AD12EA62D57E06E00A3699E /* StoreKit.framework */; };
 		3AED09BC2E258A5D00A3787F /* FirebaseAI in Frameworks */ = {isa = PBXBuildFile; productRef = 3AED09BB2E258A5D00A3787F /* FirebaseAI */; };
 		3AED09BE2E258A5D00A3787F /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 3AED09BD2E258A5D00A3787F /* FirebaseAnalytics */; };
@@ -72,6 +87,22 @@
 		3A96593A2DFF13AE00A5AB6E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		3A96593C2DFF13AE00A5AB6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		3AA0011E2D39CBFC0087A850 /* DocMatic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocMatic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AC9098F2E7319FA00312069 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/AdSupport.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909912E731A0F00312069 /* AppTrackingTransparency.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppTrackingTransparency.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/AppTrackingTransparency.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909932E731A1C00312069 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/AVFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909952E731A2D00312069 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909972E731A3A00312069 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909992E731A4700312069 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
+		3AC9099B2E731A5600312069 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/CoreMedia.framework; sourceTree = DEVELOPER_DIR; };
+		3AC9099D2E731A6200312069 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/CoreTelephony.framework; sourceTree = DEVELOPER_DIR; };
+		3AC9099F2E731A6F00312069 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909A12E731A7B00312069 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909A32E731A9300312069 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909A52E731A9E00312069 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909A72E731AAE00312069 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909A92E731AB900312069 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909AB2E731AC500312069 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
+		3AC909AD2E731AE800312069 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
 		3AD12EA62D57E06E00A3699E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -135,21 +166,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AED09C22E258A5D00A3787F /* FirebaseAnalyticsIdentitySupport in Frameworks */,
+				3AC909A82E731AAE00312069 /* SystemConfiguration.framework in Frameworks */,
+				3AC909AC2E731AC500312069 /* WebKit.framework in Frameworks */,
+				3AC909922E731A0F00312069 /* AppTrackingTransparency.framework in Frameworks */,
 				3AED09D02E258A5D00A3787F /* FirebaseCore in Frameworks */,
 				3AED09E82E258A5D00A3787F /* FirebasePerformance in Frameworks */,
+				3AC909AA2E731AB900312069 /* UIKit.framework in Frameworks */,
 				3AED09EA2E258A5D00A3787F /* FirebaseRemoteConfig in Frameworks */,
 				3AED09C62E258A5D00A3787F /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				3AED09E22E258A5D00A3787F /* FirebaseInstallations in Frameworks */,
 				3AED09BC2E258A5D00A3787F /* FirebaseAI in Frameworks */,
 				3AED09D82E258A5D00A3787F /* FirebaseFirestore in Frameworks */,
+				3AC9099C2E731A5600312069 /* CoreMedia.framework in Frameworks */,
 				3AD12EA72D57E06F00A3699E /* StoreKit.framework in Frameworks */,
 				3AED09E42E258A5D00A3787F /* FirebaseMLModelDownloader in Frameworks */,
+				3AC9099E2E731A6200312069 /* CoreTelephony.framework in Frameworks */,
 				3AED09E62E258A5D00A3787F /* FirebaseMessaging in Frameworks */,
+				3AC909942E731A1C00312069 /* AVFoundation.framework in Frameworks */,
 				3AED09EC2E258A5D00A3787F /* FirebaseStorage in Frameworks */,
 				3AED09D62E258A5D00A3787F /* FirebaseDynamicLinks in Frameworks */,
 				3AED09BE2E258A5D00A3787F /* FirebaseAnalytics in Frameworks */,
 				3AED09CE2E258A5D00A3787F /* FirebaseAuthCombine-Community in Frameworks */,
 				3AED09DE2E258A5D00A3787F /* FirebaseFunctionsCombine-Community in Frameworks */,
+				3AC909A22E731A7B00312069 /* JavaScriptCore.framework in Frameworks */,
+				3AC909962E731A2D00312069 /* CoreAudio.framework in Frameworks */,
 				3AED09E02E258A5D00A3787F /* FirebaseInAppMessaging-Beta in Frameworks */,
 				3AED09D42E258A5D00A3787F /* FirebaseDatabase in Frameworks */,
 				3AED09C42E258A5D00A3787F /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
@@ -157,14 +197,20 @@
 				3A9D270E2D4A659300E8D13A /* RevenueCat in Frameworks */,
 				3AED09DA2E258A5D00A3787F /* FirebaseFirestoreCombine-Community in Frameworks */,
 				3AED09EE2E258A5D00A3787F /* FirebaseStorageCombine-Community in Frameworks */,
+				3AC9099A2E731A4700312069 /* CoreGraphics.framework in Frameworks */,
+				3AC909A02E731A6F00312069 /* Foundation.framework in Frameworks */,
 				3AED09C02E258A5D00A3787F /* FirebaseAnalyticsCore in Frameworks */,
 				3AED09DC2E258A5D00A3787F /* FirebaseFunctions in Frameworks */,
 				3ABE6EBE2DFD9ECE0042B6C8 /* Lottie in Frameworks */,
+				3AC909A42E731A9300312069 /* QuartzCore.framework in Frameworks */,
 				3AED09F02E258A5D00A3787F /* FirebaseVertexAI in Frameworks */,
+				3AC909982E731A3A00312069 /* CoreFoundation.framework in Frameworks */,
 				3AED09CC2E258A5D00A3787F /* FirebaseAuth in Frameworks */,
 				3AED09D22E258A5D00A3787F /* FirebaseCrashlytics in Frameworks */,
+				3AC909902E7319FA00312069 /* AdSupport.framework in Frameworks */,
 				3AED09C82E258A5D00A3787F /* FirebaseAppCheck in Frameworks */,
 				3AED09CA2E258A5D00A3787F /* FirebaseAppDistribution-Beta in Frameworks */,
+				3AC909A62E731A9E00312069 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +239,22 @@
 		3AD12EA52D57E06E00A3699E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3AC909AD2E731AE800312069 /* libz.tbd */,
+				3AC909AB2E731AC500312069 /* WebKit.framework */,
+				3AC909A92E731AB900312069 /* UIKit.framework */,
+				3AC909A72E731AAE00312069 /* SystemConfiguration.framework */,
+				3AC909A52E731A9E00312069 /* StoreKit.framework */,
+				3AC909A32E731A9300312069 /* QuartzCore.framework */,
+				3AC909A12E731A7B00312069 /* JavaScriptCore.framework */,
+				3AC9099F2E731A6F00312069 /* Foundation.framework */,
+				3AC9099D2E731A6200312069 /* CoreTelephony.framework */,
+				3AC9099B2E731A5600312069 /* CoreMedia.framework */,
+				3AC909992E731A4700312069 /* CoreGraphics.framework */,
+				3AC909972E731A3A00312069 /* CoreFoundation.framework */,
+				3AC909952E731A2D00312069 /* CoreAudio.framework */,
+				3AC909932E731A1C00312069 /* AVFoundation.framework */,
+				3AC909912E731A0F00312069 /* AppTrackingTransparency.framework */,
+				3AC9098F2E7319FA00312069 /* AdSupport.framework */,
 				3AD12EA62D57E06E00A3699E /* StoreKit.framework */,
 				3A96593A2DFF13AE00A5AB6E /* WidgetKit.framework */,
 				3A96593C2DFF13AE00A5AB6E /* SwiftUI.framework */,
@@ -219,8 +281,6 @@
 				3A96593E2DFF13AE00A5AB6E /* DocMatic.widget */,
 			);
 			name = DocMatic.widgetExtension;
-			packageProductDependencies = (
-			);
 			productName = DocMatic.widgetExtension;
 			productReference = 3A9659392DFF13AE00A5AB6E /* DocMatic.widgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";

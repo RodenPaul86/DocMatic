@@ -181,7 +181,7 @@ struct DocumentDetailView: View {
                         tabBarVisibility.isVisible = true
                     }
                 }
-                .onChange(of: scene) { oldValue, newValue in
+                .onChange(of: scene) { _, newValue in
                     if newValue != .active && document.isLocked {
                         isUnlocked = false
                     }

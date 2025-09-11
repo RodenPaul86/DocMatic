@@ -46,7 +46,7 @@ struct SchemeHostView<Content: View>: View {
             }, content: {
                 SchemePickerView(previews: $schemePreviews)
             })
-            .onChange(of: showPickerView) { oldValue, newValue in
+            .onChange(of: showPickerView) { _, newValue in
                 if newValue {
                     generateSchemePreviews()
                 } else {
@@ -169,7 +169,7 @@ struct SchemePickerView: View {
         .padding([.horizontal, .bottom], 10)
         .presentationDetents([.height(320)])
         .presentationBackground(.clear)
-        .onChange(of: appScheme, initial: true) { oldValue, newValue in
+        .onChange(of: appScheme, initial: true) { _, newValue in
             localSchemeState = newValue
         }
     }

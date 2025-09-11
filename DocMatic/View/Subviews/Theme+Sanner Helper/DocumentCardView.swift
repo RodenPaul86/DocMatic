@@ -91,7 +91,7 @@ struct DocumentCardView: View {
                 .foregroundStyle(.gray)
         }
         .padding(10) /// <- Padding for a cleaner look around the content
-        .onChange(of: isUnlocked) { oldValue, newValue in
+        .onChange(of: isUnlocked) { _, newValue in
             if newValue && document.isLocked {
                 document.isLocked = false
                 try? context.save()

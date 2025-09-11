@@ -303,7 +303,7 @@ struct HomeView: View {
                 TextField(speechRecognizer.isListening ? "Listening..." : "Search", text: $searchText)
                     .disabled(speechRecognizer.isListening ? true : false)
                     .focused($isFocused)
-                    .onChange(of: isFocused) { oldValue, newValue in
+                    .onChange(of: isFocused) { _, newValue in
                         withAnimation {
                             tabBarVisibility.isVisible = !newValue
                         }

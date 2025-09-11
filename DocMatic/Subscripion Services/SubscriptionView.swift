@@ -192,7 +192,7 @@ struct SubscriptionView: View {
             fetchOfferings()
             updateIntroOffer()
         }
-        .onChange(of: selectedPlan) { oldValue, newValue in
+        .onChange(of: selectedPlan) { _,_ in
             updateIntroOffer()
         }
     }

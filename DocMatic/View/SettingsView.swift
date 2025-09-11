@@ -91,7 +91,7 @@ struct SettingsView: View {
                     }
                     
                     customRow(icon: "exclamationmark.arrow.trianglehead.counterclockwise.rotate.90", firstLabel: "Reset Onboarding", showToggle: true, toggleValue: $resetOnboarding)
-                        .onChange(of: resetOnboarding) { oldValue, newValue in
+                        .onChange(of: resetOnboarding) { _, newValue in
                             if newValue {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                     resetUserDefaults()
@@ -102,14 +102,14 @@ struct SettingsView: View {
                         }
                     
                     customRow(icon: "arrow.trianglehead.2.clockwise.rotate.90", firstLabel: "Reset Datastore", showToggle: true, toggleValue: $resetDatastore)
-                        .onChange(of: resetDatastore) { oldValue, newValue in
+                        .onChange(of: resetDatastore) { _, newValue in
                             if newValue {
                                 debugMessage = "Success!, Restart App."
                             }
                         }
                     
                     customRow(icon: "lightbulb.max", firstLabel: "Show Tips For Testing", showToggle: true, toggleValue: $showTipsForTesting)
-                        .onChange(of: showTipsForTesting) { oldValue, newValue in
+                        .onChange(of: showTipsForTesting) { _, newValue in
                             if newValue {
                                 debugMessage = "Success!, Restart App."
                             }

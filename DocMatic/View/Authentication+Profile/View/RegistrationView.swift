@@ -74,7 +74,7 @@ struct RegistrationView: View {
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
                         .focused($emailFieldIsFocused)
-                        .onChange(of: emailFieldIsFocused) { focused in
+                        .onChange(of: emailFieldIsFocused) { _, focused in
                             if !focused {
                                 emailFieldWasTouched = true // Mark field as touched after focus is lost
                             }
