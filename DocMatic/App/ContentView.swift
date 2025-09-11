@@ -511,6 +511,7 @@ struct ContentView: View {
         let newDoc = Document(name: docName, createdAt: Date())
         var pages: [DocumentPage] = []
         
+        // 🔹 Generate image previews of each PDF page
         for i in 0..<document.pageCount {
             guard let page = document.page(at: i) else { continue }
             
@@ -539,30 +540,35 @@ struct ContentView: View {
         
         newDoc.pages = pages
         
-        // ✅ Save the original PDF to the app’s Documents folder
+        // 🔹 Save a persistent copy of the original PDF in your app’s Documents folder
         let fileName = "\(docName).pdf"
         let destination = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             .appendingPathComponent(fileName)
         
         do {
             if FileManager.default.fileExists(atPath: destination.path) {
+                // If you don’t want to overwrite, add unique suffix instead
                 try FileManager.default.removeItem(at: destination)
             }
+            
             try FileManager.default.copyItem(at: url, to: destination)
-            print("📄 Original PDF copied to: \(destination.lastPathComponent)")
+            print("📄 Copied PDF into app folder: \(destination.lastPathComponent)")
             
-            // Optionally store the file name or URL on your Document model:
-            // newDoc.pdfURL = destination
+            // Store metadata about the saved file
+            newDoc.originalFileName = fileName
+            newDoc.originalFileURL = destination.path
             
+            // Save to SwiftData
             context.insert(newDoc)
             try context.save()
             
+            // Update ScanManager
             ScanManager.shared.documents.append(newDoc)
             ScanManager.shared.documents = ScanManager.shared.documents
             
-            print("✅ Document saved successfully")
+            print("✅ Document imported and saved successfully")
         } catch {
-            print("❌ Failed to save document: \(error)")
+            print("❌ Failed to save PDF copy: \(error)")
         }
     }
     
@@ -571,60 +577,60 @@ struct ContentView: View {
             print("❌ Failed to load PDF")
             return
         }
-
+        
         let docName = url.deletingPathExtension().lastPathComponent
         let newDoc = Document(name: docName, createdAt: Date())
         var pages: [DocumentPage] = []
-
+        
         for i in 0..<document.pageCount {
             guard let page = document.page(at: i) else { continue }
-
+            
             let pageBounds = page.bounds(for: .mediaBox)
             let renderer = UIGraphicsImageRenderer(size: pageBounds.size)
-
+            
             let img = renderer.image { ctx in
                 let cgContext = ctx.cgContext
-
+                
                 UIColor.white.set()
                 cgContext.fill(pageBounds)
-
+                
                 cgContext.saveGState()
                 cgContext.translateBy(x: 0, y: pageBounds.height)
                 cgContext.scaleBy(x: 1, y: -1)
-
+                
                 page.draw(with: .mediaBox, to: cgContext)
                 cgContext.restoreGState()
             }
-
+            
             if let data = img.jpegData(compressionQuality: 0.9) {
                 let docPage = DocumentPage(document: newDoc, pageIndex: i, pageData: data)
                 pages.append(docPage)
             }
         }
-
+        
         newDoc.pages = pages
-
+        
         // ✅ Save the original PDF to the app’s Documents folder
         let fileName = "\(docName).pdf"
         let destination = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             .appendingPathComponent(fileName)
-
+        
         do {
             if FileManager.default.fileExists(atPath: destination.path) {
                 try FileManager.default.removeItem(at: destination)
             }
             try FileManager.default.copyItem(at: url, to: destination)
             print("📄 Original PDF copied to: \(destination.lastPathComponent)")
-
+            
             // Optionally store the file name or URL on your Document model:
             // newDoc.pdfURL = destination
-
+            
             context.insert(newDoc)
             try context.save()
-
+            
             ScanManager.shared.documents.append(newDoc)
             ScanManager.shared.documents = ScanManager.shared.documents
-
+            
             print("✅ Document saved successfully")
         } catch {
             print("❌ Failed to save document: \(error)")

@@ -18,6 +18,9 @@ class Document {
     /// For Zoom Transitioning
     var uniqueViewID: String = UUID().uuidString
     
+    var originalFileName: String?
+    var originalFileURL: String?
+    
     init(name: String, createdAt: Date = Date(), pages: [DocumentPage]? = nil) {
         self.name = name
         self.createdAt = createdAt
