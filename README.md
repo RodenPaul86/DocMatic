@@ -48,7 +48,7 @@
            width="160" height="80"
            style="border: none; outline: none; box-shadow: none;" />
     </a>
-    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v1.1.2">
+    <a href="https://github.com/RodenPaul86/DocMatic/releases/tag/v2.1.0">
       <img src="Images/Badges/github-badge.png"
            alt="Get it on GitHub"
            height="80"
